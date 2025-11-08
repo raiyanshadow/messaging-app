@@ -10,6 +10,8 @@ public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
     AddChatChannelInteractor(AddChatChannelOutputBoundary presenter) {
         this.presenter = presenter;
     }
+
+    @Override
     public void CreateChannel(CreateChatRequestModel request) {
         CreateChatResponeModel response = new CreateChatResponeModel(request.chatName, request.chatID);
 //        TRYING TO FIND HOW TO STORE CHANNEL INFORMATION SO I NEED A DATABASE OR SOMETHING

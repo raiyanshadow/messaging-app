@@ -1,0 +1,6 @@
+DB_URL=jdbc:postgresql://db.egwwgffidqtyqxqiuocm.supabase.co:5432/postgres
+DB_USER=postgres
+DB_PASSWORD=C69tt4we30tE
+
+MSG_APP_ID=F0DD09FE-824B-4435-A8D0-8CDD577C4A4F
+MSG_TOKEN=c08ac61bd997aecded9764a446044c2d98a1a45b

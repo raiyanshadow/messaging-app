@@ -4,16 +4,16 @@ package entity;
 public class DirectChatChannel {
     private Integer chatID;
     private String chatName;
-    private Integer userID1;
-    private Integer userID2;
+    private User user1;
+    private User user2;
     private String chatURL;
 
-    public DirectChatChannel(Integer chatID, String chatName, String chatURL, Integer userID1, Integer userID2) {
+    public DirectChatChannel(Integer chatID, String chatName, String chatURL, User user1, User user2) {
         this.chatID = chatID;
         this.chatName = chatName;
         this.chatURL = chatURL;
-        this.userID1 = userID1;
-        this.userID2 = userID2;
+        this.user1 = user1;
+        this.user2 = user2;
     }
 
     public Integer getChatID() {
@@ -30,20 +30,20 @@ public class DirectChatChannel {
         this.chatName = chatName;
     }
 
-    public Integer getUserID1() {
-        return userID1;
+    public User getUser1() {
+        return user1;
     }
 
-    public void setUserID1(Integer userID1) {
-        this.userID1 = userID1;
+    public void setUser1(User user1) {
+        this.user1 = user1;
     }
 
-    public Integer getUserID2() {
-        return userID2;
+    public User getUser2() {
+        return user2;
     }
 
-    public void setUserID2(Integer userID2) {
-        this.userID2 = userID2;
+    public void setUser2(User user2) {
+        this.user2 = user2;
     }
 
     public String getChatURL() {

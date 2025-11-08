@@ -3,19 +3,17 @@ package data_access;
 import entity.DirectChatChannel;
 import entity.DirectChatChannelFactory;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DBChatChannelDataAccessObject {
     private final Connection connection;
     private final int ERROR_CODE = -404;
     private final DBUserDataAccessObject userDAO;
-    private final DBMessageDataAccessObject messageDAO;
+//    private final DBMessageDataAccessObject messageDAO;
 
     public DBChatChannelDataAccessObject(Connection connection) {
         this.connection = connection;
         this.userDAO = new DBUserDataAccessObject(this.connection);
-        this.messageDAO = new DBMessageDataAccessObject(this.connection);
+//        this.messageDAO = new DBMessageDataAccessObject(this.connection);
     }
 
     public DirectChatChannel getDirectChatChannelByURL(String channelURL) throws SQLException{
@@ -28,7 +26,8 @@ public class DBChatChannelDataAccessObject {
                         resultSet.getInt("chat_id"),
                         userDAO.getUserFromUserId(resultSet.getInt("user1_id")),
                         userDAO.getUserFromUserId(resultSet.getInt("user2_id")),
-                        messageDAO.getMessagesFromChannelURL(channelURL),
+                        resultSet.getString("channel_url"),
+//                        messageDAO.getMessagesFromChannelURL(channelURL),
                         resultSet.getString("name")
                 );
             }
@@ -49,7 +48,8 @@ public class DBChatChannelDataAccessObject {
                         resultSet.getInt("chat_id"),
                         userDAO.getUserFromUserId(resultSet.getInt("user1_id")),
                         userDAO.getUserFromUserId(resultSet.getInt("user2_id")),
-                        messageDAO.getMessagesFromChannelURL(channelURL),
+                        resultSet.getString("channel_url"),
+//                        messageDAO.getMessagesFromChannelURL(channelURL),
                         resultSet.getString("name")
                 );
             }
@@ -62,10 +62,10 @@ public class DBChatChannelDataAccessObject {
         String query = "INSERT INTO direct_chat_channel (user1_id, user2_id, channel_url) " +
                 "VALUES (?, ?, ?) RETURNING chat_id";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setInt(1, chat.getUsers().get(0)); // user 1
-            preparedStatement.setInt(2, chat.getUsers().get(1)); // user 2
-            preparedStatement.setString(3, chat.getChannelURL());
-            preparedStatement.setString(4, chat.getName());
+            preparedStatement.setInt(1, chat.getUser1().getUserID()); // user 1
+            preparedStatement.setInt(2, chat.getUser2().getUserID()); // user 2
+            preparedStatement.setString(3, chat.getChatURL());
+            preparedStatement.setString(4, chat.getChatName());
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getInt("chat_id");

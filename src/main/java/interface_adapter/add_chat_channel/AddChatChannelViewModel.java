@@ -1,4 +1,43 @@
 package interface_adapter.add_chat_channel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AddChatChannelViewModel {
+    private String message;
+    private String error;
+
+    private final List<ViewModelListener> listeners = new ArrayList<>();
+
+    public interface ViewModelListener {
+        void onViewModelChange(AddChatChannelViewModel viewModel);
+    }
+
+    public AddChatChannelViewModel(String message, String error) {
+        this.message = message;
+        this.error = error;
+    }
+    public String getMessage() {
+        return message;
+    }
+    public void setMessage(String message) {
+        this.message = message;
+        NotifyListeners();
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+        NotifyListeners();
+    }
+
+    public void NotifyListeners(){
+        for(ViewModelListener listener : listeners){
+            listener.onViewModelChange(this);
+        }
+    }
+
 }

@@ -4,14 +4,16 @@ import java.util.*;
 
 public class User {
 
-    private List<User> contacts;
+    final private int userID;
     private String preferredLanguage;
     private String username;
     private String password;
+    private List<Contact> contacts;
 //    private String loginToken;
 //    private String encryptionKey;
 
-    public User(String username, String password, String preferredLanguage) {
+    public User(int userID, String username, String password, String preferredLanguage) {
+        this.userID = userID;
         if ("".equals(username)) {
             throw new IllegalArgumentException("Username cannot be empty");
         }
@@ -25,27 +27,34 @@ public class User {
     }
 
     public void addContact(User user) {
-        this.contacts.add(user);
+        Contact to_add = new Contact(this, user);
+        if (!contacts.contains(to_add)) {
+            contacts.add(to_add);
+        }
     }
     public void removeContact(User user) {
-        this.contacts.remove(user);
+        Contact to_remove = new Contact(this, user);
+        contacts.remove(to_remove);
     }
-    public void getPreferredLanguage() {
-        this.preferredLanguage = preferredLanguage;
+
+    public int getUserID() {return userID;}
+    public String getPreferredLanguage() {
+        return preferredLanguage;
     }
     public void setPreferredLanguage(String preferredLanguage) {
         this.preferredLanguage = preferredLanguage;
     }
-    public void getUsername() {
-        this.username = username;
+    public String getUsername() {
+        return username;
     }
     public void setUsername(String username) {
         this.username = username;
     }
-    public void getPassword() {
-        this.password = password;
+    public String getPassword() {
+        return password;
     }
     public void setPassword(String password) {
         this.password = password;
     }
+    public List<Contact> getContacts() { return contacts; }
 }

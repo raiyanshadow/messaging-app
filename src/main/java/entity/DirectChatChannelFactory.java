@@ -1,21 +1,17 @@
 package entity;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.ArrayList;
 
 public class DirectChatChannelFactory {
-    public static DirectChatChannel createDirectChatChannel(int chatID, User user1, User user2, List<Message> messages, String chatName) {
+    public static DirectChatChannel createDirectChatChannel(Integer chatID, User user1, User user2, String channelURL, String chatName) {
         if (user1 == null || user2 == null) {
             throw new IllegalArgumentException("Users must not be null");
         }
-        List <User> users = new ArrayList<>();
-        users.add(user1);
-        users.add(user2);
-        DirectChatChannel chat = new DirectChatChannel(chatID, chatName);
-        chat.setMessagesSent(messages);
-        return chat;
+        return new DirectChatChannel(chatID, chatName, channelURL, user1, user2);
     }
     public static DirectChatChannel createEmptyChatChannel() {
-        return new DirectChatChannel(-1, "");
+        return new DirectChatChannel(-1, "", "", new User(-1, "", "", ""), new User(-1, "", "", ""));
     }
 }

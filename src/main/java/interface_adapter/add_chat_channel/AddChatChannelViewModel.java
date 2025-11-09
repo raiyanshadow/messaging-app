@@ -6,8 +6,13 @@ import java.util.List;
 public class AddChatChannelViewModel {
     private String message;
     private String error;
+    private Boolean HasError;
 
-    private final List<ViewModelListener> listeners = new ArrayList<>();
+    public final List<ViewModelListener> listeners = new ArrayList<>();
+
+    public boolean getHasError() {
+        return HasError;
+    }
 
     public interface ViewModelListener {
         void onViewModelChange(AddChatChannelViewModel viewModel);

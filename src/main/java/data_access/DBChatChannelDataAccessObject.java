@@ -24,8 +24,8 @@ public class DBChatChannelDataAccessObject {
             if (resultSet.next()) {
                 return DirectChatChannelFactory.createDirectChatChannel(
                         resultSet.getInt("chat_id"),
-                        userDAO.getUserFromUserId(resultSet.getInt("user1_id")),
-                        userDAO.getUserFromUserId(resultSet.getInt("user2_id")),
+                        userDAO.getUserFromID(resultSet.getInt("user1_id")),
+                        userDAO.getUserFromID(resultSet.getInt("user2_id")),
                         resultSet.getString("channel_url"),
 //                        messageDAO.getMessagesFromChannelURL(channelURL),
                         resultSet.getString("name")
@@ -46,8 +46,8 @@ public class DBChatChannelDataAccessObject {
                 return DirectChatChannelFactory.createDirectChatChannel(
                         channelID,
                         resultSet.getInt("chat_id"),
-                        userDAO.getUserFromUserId(resultSet.getInt("user1_id")),
-                        userDAO.getUserFromUserId(resultSet.getInt("user2_id")),
+                        userDAO.getUserFromID(resultSet.getInt("user1_id")),
+                        userDAO.getUserFromID(resultSet.getInt("user2_id")),
                         resultSet.getString("channel_url"),
 //                        messageDAO.getMessagesFromChannelURL(channelURL),
                         resultSet.getString("name")

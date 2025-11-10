@@ -1,8 +1,17 @@
 package entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import data_access.ChatChannelAccessObject;
+import data_access.DBChatChannelDataAccessObject;
+import data_access.DBConnectionFactory;
+
+import java.nio.channels.Channel;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import java.util.List;
 import java.util.ArrayList;
+
 
 public class DirectChatChannel {
     private Integer chatID;
@@ -10,15 +19,13 @@ public class DirectChatChannel {
     private User user1;
     private User user2;
     private String chatURL;
-    private List<Message> messages;
 
-    public DirectChatChannel(Integer chatID, String chatName, String chatURL, User user1, User user2, List<Message> messages) {
+    public DirectChatChannel(Integer chatID, String chatName, String chatURL, User user1, User user2) {
         this.chatID = chatID;
         this.chatName = chatName;
         this.chatURL = chatURL;
         this.user1 = user1;
         this.user2 = user2;
-        this.messages = messages;
     }
 
     public Integer getChatID() {
@@ -57,13 +64,6 @@ public class DirectChatChannel {
 
     public void setChatURL(String chatURL) {
         this.chatURL = chatURL;
-    }
-
-    public List<Message> getMessages() {
-        return messages;
-    }
-    public void addMessage(Message message) {
-        this.messages.add(message);
     }
 
 

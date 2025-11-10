@@ -1,13 +1,17 @@
 package use_case.add_contact;
 
+import entity.User;
+
+// after pressing button to add contact show that <user> has been added as a contact
 public class AddContactOutputData {
-    private int userID;
+    private final User user;
 
-    public AddContactOutputData(int userID) {
-        this.userID = userID;
+    public AddContactOutputData(User user) {
+        this.user = user;
     }
 
-    int getUserID() {
-        return userID;
+    User getUser() {
+        return user;
     }
+
 }

@@ -1,9 +1,11 @@
 package interface_adapter.add_chat_channel;
 
+import interface_adapter.ViewModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddChatChannelViewModel {
+public class AddChatChannelViewModel extends ViewModel<AddChatChannelState> {
     private String message;
     private String error;
     private Boolean HasError;

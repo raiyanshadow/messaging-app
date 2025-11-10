@@ -1,7 +1,7 @@
 package entity;
 
 public class DirectChatChannelFactory {
-    public static DirectChatChannel createDirectChatChannel(Integer chatID, int chatId, User user1, User user2, String channelURL, String chatName) {
+    public static DirectChatChannel createDirectChatChannel(Integer chatID, User user1, User user2, String channelURL, String chatName) {
         if (user1 == null || user2 == null) {
             throw new IllegalArgumentException("Users must not be null");
         }

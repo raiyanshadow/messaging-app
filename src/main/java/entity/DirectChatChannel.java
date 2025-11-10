@@ -59,14 +59,6 @@ public class DirectChatChannel {
         return chatURL;
     }
 
-    public Channel CreateChannelURLBetween(User a, User b) throws SQLException {
-        // call Sendbird REST API:
-        String url = "jdbc:postgresql://db.egwwgffidqtyqxqiuocm.supabase.co:5432/postgres" + "/v3/group_channels";
-        // build JSON payload with userIds = [a.getUserID(), b.getUserID()]
-        // send POST, parse JSON, get channel_url
-        
-    }
-
     public void setChatURL(String chatURL) {
         this.chatURL = chatURL;
     }

@@ -24,7 +24,7 @@ public class DBChatChannelDataAccessObject implements ChatChannelAccessObject{
             if (resultSet.next()) {
                 return DirectChatChannelFactory.createDirectChatChannel(
                         resultSet.getInt("chat_id"),
-                        resultSet.getInt("chat_id"), userDAO.getUserFromID(resultSet.getInt("user1_id")),
+                        userDAO.getUserFromID(resultSet.getInt("user1_id")),
                         userDAO.getUserFromID(resultSet.getInt("user2_id")),
                         resultSet.getString("channel_url"),
 //                        messageDAO.getMessagesFromChannelURL(channelURL),

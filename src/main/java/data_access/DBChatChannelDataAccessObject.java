@@ -42,10 +42,10 @@ public class DBChatChannelDataAccessObject {
             preparedStatement.setInt(1, channelID);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                String channelURL = resultSet.getString("channel_url");
+//                String channelURL = resultSet.getString("channel_url");
                 return DirectChatChannelFactory.createDirectChatChannel(
                         channelID,
-                        resultSet.getInt("chat_id"),
+//                        resultSet.getInt("chat_id"),
                         userDAO.getUserFromID(resultSet.getInt("user1_id")),
                         userDAO.getUserFromID(resultSet.getInt("user2_id")),
                         resultSet.getString("channel_url"),

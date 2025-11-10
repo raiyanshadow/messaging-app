@@ -4,7 +4,7 @@ import entity.DirectChatChannel;
 import entity.DirectChatChannelFactory;
 import java.sql.*;
 
-public class DBChatChannelDataAccessObject {
+public class DBChatChannelDataAccessObject implements ChatChannelAccessObject{
     private final Connection connection;
     private final int ERROR_CODE = -404;
     private final DBUserDataAccessObject userDAO;
@@ -24,7 +24,7 @@ public class DBChatChannelDataAccessObject {
             if (resultSet.next()) {
                 return DirectChatChannelFactory.createDirectChatChannel(
                         resultSet.getInt("chat_id"),
-                        userDAO.getUserFromID(resultSet.getInt("user1_id")),
+                        resultSet.getInt("chat_id"), userDAO.getUserFromID(resultSet.getInt("user1_id")),
                         userDAO.getUserFromID(resultSet.getInt("user2_id")),
                         resultSet.getString("channel_url"),
 //                        messageDAO.getMessagesFromChannelURL(channelURL),

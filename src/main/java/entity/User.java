@@ -4,7 +4,7 @@ import java.util.*;
 
 public class User {
 
-    final private int userID;
+    private int userID;
     private String preferredLanguage;
     private String username;
     private String password;
@@ -37,7 +37,14 @@ public class User {
         contacts.remove(to_remove);
     }
 
-    public int getUserID() {return userID;}
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
     public String getPreferredLanguage() {
         return preferredLanguage;
     }

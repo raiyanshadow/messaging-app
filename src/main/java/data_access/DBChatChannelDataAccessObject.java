@@ -28,7 +28,7 @@ public class DBChatChannelDataAccessObject {
                         userDAO.getUserFromID(resultSet.getInt("user2_id")),
                         resultSet.getString("channel_url"),
                         resultSet.getString("name"),
-                        messageDAO.getMessagesFromChannelURL(channelURL),
+                        messageDAO.getMessagesFromChannelURL(channelURL)
                 );
             }
             else {

@@ -17,10 +17,9 @@ public class DirectChatChannel {
     private User user2;
     private String chatURL;
 
-    public DirectChatChannel(Integer chatID, String chatName, String chatURL, User user1, User user2) {
+    public DirectChatChannel(Integer chatID, String chatName, User user1, User user2) {
         this.chatID = chatID;
         this.chatName = chatName;
-        this.chatURL = chatURL;
         this.user1 = user1;
         this.user2 = user2;
     }

@@ -1,6 +1,5 @@
 package entity;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import data_access.ChatChannelAccessObject;
 import data_access.DBChatChannelDataAccessObject;
@@ -9,6 +8,10 @@ import data_access.DBConnectionFactory;
 import java.nio.channels.Channel;
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import java.util.List;
+import java.util.ArrayList;
+
 
 public class DirectChatChannel {
     private Integer chatID;

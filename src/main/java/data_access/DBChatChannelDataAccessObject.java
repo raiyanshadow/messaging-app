@@ -4,16 +4,16 @@ import entity.DirectChatChannel;
 import entity.DirectChatChannelFactory;
 import java.sql.*;
 
-public class DBChatChannelDataAccessObject implements ChatChannelAccessObject{
+public class DBChatChannelDataAccessObject {
     private final Connection connection;
     private final int ERROR_CODE = -404;
     private final DBUserDataAccessObject userDAO;
-//    private final DBMessageDataAccessObject messageDAO;
+    private final DBMessageDataAccessObject messageDAO;
 
     public DBChatChannelDataAccessObject(Connection connection) {
         this.connection = connection;
         this.userDAO = new DBUserDataAccessObject(this.connection);
-//        this.messageDAO = new DBMessageDataAccessObject(this.connection);
+        this.messageDAO = new DBMessageDataAccessObject(this.connection);
     }
 
     public DirectChatChannel getDirectChatChannelByURL(String channelURL) throws SQLException{
@@ -24,11 +24,11 @@ public class DBChatChannelDataAccessObject implements ChatChannelAccessObject{
             if (resultSet.next()) {
                 return DirectChatChannelFactory.createDirectChatChannel(
                         resultSet.getInt("chat_id"),
-                        resultSet.getInt("chat_id"), userDAO.getUserFromID(resultSet.getInt("user1_id")),
+                        userDAO.getUserFromID(resultSet.getInt("user1_id")),
                         userDAO.getUserFromID(resultSet.getInt("user2_id")),
                         resultSet.getString("channel_url"),
-//                        messageDAO.getMessagesFromChannelURL(channelURL),
-                        resultSet.getString("name")
+                        resultSet.getString("name"),
+                        messageDAO.getMessagesFromChannelURL(channelURL),
                 );
             }
             else {
@@ -42,15 +42,15 @@ public class DBChatChannelDataAccessObject implements ChatChannelAccessObject{
             preparedStatement.setInt(1, channelID);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-//                String channelURL = resultSet.getString("channel_url");
+                String channelURL = resultSet.getString("channel_url");
                 return DirectChatChannelFactory.createDirectChatChannel(
                         channelID,
 //                        resultSet.getInt("chat_id"),
                         userDAO.getUserFromID(resultSet.getInt("user1_id")),
                         userDAO.getUserFromID(resultSet.getInt("user2_id")),
                         resultSet.getString("channel_url"),
-//                        messageDAO.getMessagesFromChannelURL(channelURL),
-                        resultSet.getString("name")
+                        resultSet.getString("name"),
+                        messageDAO.getMessagesFromChannelURL(channelURL)
                 );
             }
             else {

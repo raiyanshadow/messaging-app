@@ -24,8 +24,8 @@ public class AddChatView extends JFrame implements AddChatChannelViewModel.ViewM
 
 
 
-        createButton.addActionListener(e ->
-                controller.CreateChannel(chatNameField.getText()));
+        //createButton.addActionListener(e ->
+                //controller.CreateChannel(chatNameField.getText()));
 
         setTitle("Create Chat");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

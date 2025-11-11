@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class DirectChatChannelFactory {
-    public static DirectChatChannel createDirectChatChannel(Integer chatID, User user1, User user2, String channelURL, String chatName, List<Message> messages) {
+    public static DirectChatChannel createDirectChatChannel(Integer chatID, User user1, User user2, String channelURL, String chatName) {
         if (user1 == null || user2 == null) {
             throw new IllegalArgumentException("Users must not be null");
         }

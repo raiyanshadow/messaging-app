@@ -1,13 +1,8 @@
 package session;
-
-import data_access.DBConnectionFactory;
-import data_access.DBUserDataAccessObject;
 import entity.User;
-
-import java.sql.Connection;
 import java.sql.SQLException;
 
-public class SessionManager {
+public class SessionManager implements Session{
     private User mainUser;
     private boolean isLoggedin;
 

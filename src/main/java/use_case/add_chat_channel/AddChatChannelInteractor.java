@@ -5,6 +5,7 @@ import data_access.UserDataAccess;
 import entity.DirectChatChannel;
 import entity.User;
 import io.github.cdimascio.dotenv.Dotenv;
+import session.Session;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,19 +18,20 @@ public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
     List<Object> save_chat;
     ChatChannelAccessObject chatChannelDataAccess;
     UserDataAccess userDataAccess;
+    Session sessionManager;
 
-    AddChatChannelInteractor(AddChatChannelOutputBoundary presenter,
-                             ChatChannelAccessObject chatChannelAccessObject , UserDataAccess userDataAccess) {
+    AddChatChannelInteractor(AddChatChannelOutputBoundary presenter, ChatChannelAccessObject chatChannelAccessObject,
+                             UserDataAccess userDataAccess, Session sessionManager) {
         this.presenter = presenter;
         this.chatChannelDataAccess = chatChannelDataAccess;
         this.userDataAccess = userDataAccess;
+        this.sessionManager = sessionManager;
     }
 
     @Override
     public void CreateChannel(CreateChatRequestModel request) {
         CreateChatResponeModel response = new CreateChatResponeModel(request.chatName, request.chatID);
-        //        TRYING TO FIND HOW TO STORE CHANNEL INFORMATION SO I NEED A DATABASE OR SOMETHING
-        //DirectChatChannel newChat = new DirectChatChannel(request.chatID, request.chatName, )
+        DirectChatChannel newChat = new DirectChatChannel(request.chatID, request.chatName, charurl, sessionManager.)
 
         presenter.PresentChat(response);
 

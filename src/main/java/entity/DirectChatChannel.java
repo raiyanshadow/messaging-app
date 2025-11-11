@@ -21,10 +21,9 @@ public class DirectChatChannel {
     private String chatURL;
     private List<Message> messages;
 
-    public DirectChatChannel(Integer chatID, String chatName, String chatURL, User user1, User user2, List<Message> messages) {
+    public DirectChatChannel(Integer chatID, String chatName, User user1, User user2) {
         this.chatID = chatID;
         this.chatName = chatName;
-        this.chatURL = chatURL;
         this.user1 = user1;
         this.user2 = user2;
         this.messages = messages;

@@ -26,8 +26,7 @@ public class DBUserDataAccessObject implements UserDataAccess {
             ResultSet keys = statement.getGeneratedKeys();
             if (keys.next()) {
                 int generatedId = keys.getInt(1);
-                // No need to change the final userID field; just log the ID
-                System.out.println("Created user with ID: " + generatedId);
+                user.setUserID(generatedId);
             }
         }
     }

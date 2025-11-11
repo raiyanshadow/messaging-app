@@ -1,12 +1,12 @@
 package use_case.update_chat_channel;
 
 public class UpdateChatChannelInputData {
-    private Integer chatID;
+    private String chatURL;
 
-    public UpdateChatChannelInputData(Integer chatID) {
-        this.chatID = chatID;
+    public UpdateChatChannelInputData(String chatURL) {
+        this.chatURL = chatURL;
     }
-    public Integer getChatID() {
-        return chatID;
+    public String getChatURL() {
+        return chatURL;
     }
 }

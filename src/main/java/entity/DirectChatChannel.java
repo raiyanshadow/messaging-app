@@ -27,7 +27,7 @@ public class DirectChatChannel {
         this.chatURL = chatURL;
         this.user1 = user1;
         this.user2 = user2;
-        this.messages = new ArrayList<>();
+        this.messages = messages;
     }
 
     public Integer getChatID() {

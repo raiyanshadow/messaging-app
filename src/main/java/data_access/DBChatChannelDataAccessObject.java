@@ -21,35 +21,13 @@ public class DBChatChannelDataAccessObject {
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, channelURL);
             ResultSet resultSet = preparedStatement.executeQuery();
+
             if (resultSet.next()) {
                 return DirectChatChannelFactory.createDirectChatChannel(
-                        resultSet.getInt("chat_id"),
+                        resultSet.getString("name"),
                         userDAO.getUserFromID(resultSet.getInt("user1_id")),
                         userDAO.getUserFromID(resultSet.getInt("user2_id")),
                         resultSet.getString("channel_url"),
-                        resultSet.getString("name"),
-                        messageDAO.getMessagesFromChannelURL(channelURL)
-                );
-            }
-            else {
-                return DirectChatChannelFactory.createEmptyChatChannel();
-            }
-        }
-    }
-    public DirectChatChannel getDirectChatChannelByID(int channelID) throws SQLException{
-        String query = "SELECT * FROM direct_chat_channel WHERE channel_id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setInt(1, channelID);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                String channelURL = resultSet.getString("channel_url");
-                return DirectChatChannelFactory.createDirectChatChannel(
-                        channelID,
-//                        resultSet.getInt("chat_id"),
-                        userDAO.getUserFromID(resultSet.getInt("user1_id")),
-                        userDAO.getUserFromID(resultSet.getInt("user2_id")),
-                        resultSet.getString("channel_url"),
-                        resultSet.getString("name"),
                         messageDAO.getMessagesFromChannelURL(channelURL)
                 );
             }

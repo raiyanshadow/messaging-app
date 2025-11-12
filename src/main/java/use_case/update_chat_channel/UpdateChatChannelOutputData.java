@@ -7,15 +7,13 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class UpdateChatChannelOutputData {
-    private Integer chatID;
     private String chatName;
     private User user1;
     private User user2;
     private String chatURL;
     private List<Message> messages;
 
-    public UpdateChatChannelOutputData(Integer chatID, String chatName, String chatURL, User user1, User user2, List<Message> messages) {
-        this.chatID = chatID;
+    public UpdateChatChannelOutputData(String chatName, String chatURL, User user1, User user2, List<Message> messages) {
         this.chatName = chatName;
         this.user1 = user1;
         this.user2 = user2;
@@ -23,9 +21,6 @@ public class UpdateChatChannelOutputData {
         this.messages = messages;
     }
 
-    public Integer getChatID() {
-        return chatID;
-    }
     public String getChatName() {
         return chatName;
     }

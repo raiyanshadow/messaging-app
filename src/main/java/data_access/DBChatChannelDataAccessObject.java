@@ -2,9 +2,11 @@ package data_access;
 
 import entity.DirectChatChannel;
 import entity.DirectChatChannelFactory;
+import use_case.update_chat_channel.UpdateChatChannelUserDataAccessInterface;
+
 import java.sql.*;
 
-public class DBChatChannelDataAccessObject {
+public class DBChatChannelDataAccessObject implements UpdateChatChannelUserDataAccessInterface {
     private final Connection connection;
     private final int ERROR_CODE = -404;
     private final DBUserDataAccessObject userDAO;

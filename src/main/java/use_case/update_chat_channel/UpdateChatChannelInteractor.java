@@ -14,17 +14,17 @@ public class UpdateChatChannelInteractor implements UpdateChatChannelInputBounda
 
     @Override
     public void execute(UpdateChatChannelInputData inputData) throws SQLException {
-        final Integer chatId = inputData.getChatID();
-        if (chatId == null) {
-            updateChatChannelPresenter.prepareFailView("Chat ID is null");
+        final String chatURL = inputData.getChatURL();
+        if (chatURL == null) {
+            updateChatChannelPresenter.prepareFailView("Chat URL is null");
         }
         else {
-            final DirectChatChannel chat = updateChatChannelUserDataAccess.getDirectChatChannelByID(chatId);
+            final DirectChatChannel chat = updateChatChannelUserDataAccess.getDirectChatChannelByURL(chatURL);
             if (chat == null) {
                 updateChatChannelPresenter.prepareFailView("Chat not found");
             }
             else {
-                final UpdateChatChannelOutputData outputData = new UpdateChatChannelOutputData(chat.getChatID(), chat.getChatName(), chat.getChatURL(), chat.getUser1(), chat.getUser2(), chat.getMessages());
+                final UpdateChatChannelOutputData outputData = new UpdateChatChannelOutputData(chat.getChatName(), chat.getChatURL(), chat.getUser1(), chat.getUser2(), chat.getMessages());
                 updateChatChannelPresenter.prepareSuccessView(outputData);
             }
         }

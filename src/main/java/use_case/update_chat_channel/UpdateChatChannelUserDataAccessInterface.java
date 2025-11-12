@@ -5,5 +5,5 @@ import entity.DirectChatChannel;
 import java.sql.SQLException;
 
 public interface UpdateChatChannelUserDataAccessInterface {
-    DirectChatChannel getDirectChatChannelByID(int chatID) throws SQLException;
+    DirectChatChannel getDirectChatChannelByURL(String chatURL) throws SQLException;
 }

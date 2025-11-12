@@ -1,5 +1,7 @@
 package use_case.add_contact;
 
+import entity.User;
+
 public class AddContactInteractor implements AddContactInputBoundary {
 
     private final AddContactUserDataAccessInterface userDataAccessObject;
@@ -13,15 +15,21 @@ public class AddContactInteractor implements AddContactInputBoundary {
 
     @Override
     public void execute(AddContactInputData addContactInputData) {
-        // user exists so we can add them as a contact
-        if (userDataAccessObject.exists(addContactInputData.getUser())) {
-            userDataAccessObject.addContact(addContactInputData.getUser());
+        final User user1 = addContactInputData.getUser1();
+        final User user2 = addContactInputData.getUser2();
+        // user2 (user who should receive add contact request) does not exist
+        if (!userDataAccessObject.exists(user2)) {
+            userPresenter.prepareFailView("The user you want to add does not exist");
+        }
 
-            // final AddContactOutputData addContactOutputData = new AddContactOutputData(user)
-            // userPresenter.prepareSuccessView(ad);
+        else { // user2 does exist
+
+            // user1 adds user2 as a contact and vice versa
+            userDataAccessObject.addContact(user1, user2);
+            // prepare output
+            final AddContactOutputData addContactOutputData = new AddContactOutputData(user1, user2);
+            userPresenter.prepareSuccessView(addContactOutputData);
         }
-        else {
-            userPresenter.prepareFailView("User does not exist, unable to add as a contact");
-        }
+
     }
 }

@@ -2,26 +2,22 @@ package use_case.add_contact;
 
 import entity.User;
 
-// to add contact user must input another user
 public class AddContactInputData {
+    // user1 is the user who send out add contact request
+    private final User user1;
+    // user2 is the user who receives add contact request
+    private final User user2;
 
-
-    private final User user;
-    private final String username;
-
-    public AddContactInputData(User user, String username) {
-
-        this.user = user;
-        this.username = username;
+    public AddContactInputData(User user1, User user2) {
+        this.user1 = user1;
+        this.user2 = user2;
     }
 
-
-    String getUsername() {
-        return username;
+    User getUser1() {
+        return user1;
+    }
+    User getUser2() {
+        return user2;
     }
 
-
-    User getUser() {
-        return user;
-    }
 }

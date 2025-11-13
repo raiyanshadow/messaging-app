@@ -14,27 +14,20 @@ import java.util.ArrayList;
 
 
 public class DirectChatChannel {
-    private Integer chatID;
     private String chatName;
     private User user1;
     private User user2;
     private String chatURL;
     private List<Message> messages;
 
-    public DirectChatChannel(Integer chatID, String chatName, User user1, User user2) {
-        this.chatID = chatID;
+    public DirectChatChannel(String chatName, User user1, User user2, List<Message> messages) {
         this.chatName = chatName;
         this.user1 = user1;
         this.user2 = user2;
         this.messages = messages;
+        this.chatURL = "";
     }
 
-    public Integer getChatID() {
-        return chatID;
-    }
-    public void setChatID(Integer chatID) {
-        this.chatID = chatID;
-    }
     public String getChatName() {
         return chatName;
     }
@@ -74,6 +67,5 @@ public class DirectChatChannel {
     public void setMessages(List<Message> messages) {
         this.messages = messages;
     }
-
 
 }

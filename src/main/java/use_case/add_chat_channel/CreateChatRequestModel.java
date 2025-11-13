@@ -6,15 +6,13 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class CreateChatRequestModel {
-    String username;
-    Integer userID;;
     String chatName;
-    Integer chatID;
+    User contactUser;
 
-    public CreateChatRequestModel(String username, Integer userID, String chatName, Integer chatID) {
-        this.username = username;
-        this.userID = userID;
+
+    public CreateChatRequestModel(String chatName, User contactUser ) {
         this.chatName = chatName;
-        this.chatID = chatID;
+        this.contactUser = contactUser;
     }
+
 }

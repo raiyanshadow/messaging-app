@@ -9,10 +9,12 @@ public class User {
     private String username;
     private String password;
     private List<Contact> contacts;
+    private List<String> userChats;
 //    private String loginToken;
 //    private String encryptionKey;
 
     public User(int userID, String username, String password, String preferredLanguage) {
+        this.userChats = new ArrayList<String>();
         this.userID = userID;
         if ("".equals(username)) {
             throw new IllegalArgumentException("Username cannot be empty");
@@ -64,4 +66,13 @@ public class User {
         this.password = password;
     }
     public List<Contact> getContacts() { return contacts; }
+    public void addChat(String url){
+        userChats.add(url);
+    }
+    public void removeChat(String url){
+        userChats.remove(url);
+    }
+    public List<String> returnChats(){
+        return this.userChats;
+    }
 }

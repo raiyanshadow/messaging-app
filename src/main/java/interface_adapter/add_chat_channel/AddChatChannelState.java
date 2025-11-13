@@ -2,11 +2,14 @@ package interface_adapter.add_chat_channel;
 
 import entity.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddChatChannelState {
     private List<String> contacts;
-
+    public AddChatChannelState() {
+        this.contacts = new ArrayList<>();
+    };
     public AddChatChannelState(List<String> contacts) {
         this.contacts = contacts;
     }

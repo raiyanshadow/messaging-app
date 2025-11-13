@@ -3,6 +3,8 @@ package data_access;
 import entity.DirectChatChannel;
 import entity.DirectChatChannelFactory;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DBChatChannelDataAccessObject {
     private final Connection connection;
@@ -50,5 +52,24 @@ public class DBChatChannelDataAccessObject {
             }
         }
         throw new SQLException("Could not add chat");
+    }
+
+    public List<String> getChatURLsByUserId(int userId) throws SQLException {
+        String query = "SELECT channel_url FROM direct_chat_channel " +
+                "WHERE user1_id = ? OR user2_id = ?";
+
+        List<String> chatUrls = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(2, userId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                chatUrls.add(resultSet.getString("channel_url"));
+            }
+        }
+
+        return chatUrls;
     }
 }

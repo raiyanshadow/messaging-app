@@ -12,7 +12,6 @@ public class ChatChannelState {
     }
 
     public ChatChannelState(){};
-
     public String getChatName() {
         return chatName;
     }

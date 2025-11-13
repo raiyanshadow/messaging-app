@@ -14,4 +14,5 @@ public class CreateChatRequestModel {
         this.chatName = chatName;
         this.contactUser = contactUser;
     }
+
 }

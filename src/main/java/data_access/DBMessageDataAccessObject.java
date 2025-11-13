@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DBMessageDataAccessObject {
+public class DBMessageDataAccessObject implements MessageDataAccessObject {
     private final Connection connection;
     public final int ERROR = -404;
     private final DBUserDataAccessObject userDAO;

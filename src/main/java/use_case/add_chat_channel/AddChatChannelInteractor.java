@@ -1,37 +1,90 @@
 package use_case.add_chat_channel;
 
-import data_access.ChatChannelAccessObject;
-import data_access.UserDataAccess;
+import data_access.ChatChannelDataAccessObject;
+import data_access.ContactDataAccessObject;
+import data_access.UserDataAccessObject;
+import entity.Contact;
 import entity.DirectChatChannel;
+import entity.Message;
 import entity.User;
 import io.github.cdimascio.dotenv.Dotenv;
+import session.Session;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
 public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
     AddChatChannelOutputBoundary presenter;
     List<Object> save_chat;
-    ChatChannelAccessObject chatChannelDataAccess;
-    UserDataAccess userDataAccess;
+    ChatChannelDataAccessObject chatChannelDataAccess;
+    UserDataAccessObject userDataAccess;
+    ContactDataAccessObject contactDataAccess;
+    Session sessionManager;
 
     AddChatChannelInteractor(AddChatChannelOutputBoundary presenter,
-                             ChatChannelAccessObject chatChannelAccessObject , UserDataAccess userDataAccess) {
+                             ChatChannelDataAccessObject chatChannelAccessObject,
+                             UserDataAccessObject userDataAccess,
+                             ContactDataAccessObject contactDataAccess,
+                             Session sessionManager) {
         this.presenter = presenter;
         this.chatChannelDataAccess = chatChannelDataAccess;
         this.userDataAccess = userDataAccess;
+        this.sessionManager = sessionManager;
     }
 
+    // TODO: Add chat with Sendbird API as well
     @Override
-    public void CreateChannel(CreateChatRequestModel request) {
-        CreateChatResponeModel response = new CreateChatResponeModel(request.chatName, request.chatID);
-        //        TRYING TO FIND HOW TO STORE CHANNEL INFORMATION SO I NEED A DATABASE OR SOMETHING
-        DirectChatChannel newChat = new DirectChatChannel(request.chatID, request.chatName, )
+    public void CreateChannel(AddChatChannelInputData request) throws SQLException {
+        final User currentUser = sessionManager.getMainUser();
+        final User toAdd = userDataAccess.getUserFromID(request.getReceiverID());
+        final List<Integer> contactIDs = currentUser.getContactIDs();
 
+        //create response model for any new info needed for view
+        AddChatChannelOutputData response = new AddChatChannelOutputData(
+                request.getChatName(),
+                "",
+                request.getSenderID(),
+                request.getReceiverID(),
+                contactIDs);
+
+        final List<String> currentUserChannels = chatChannelDataAccess.getChatURLsByUserId(currentUser.getUserID());
+        final List<String> toAddUserChannels = chatChannelDataAccess.getChatURLsByUserId(toAdd.getUserID());
+        boolean newChat = true;
+
+        //check if chat is already made with contact user
+        for (String currentUserChannel : currentUserChannels) {
+            for (String toAddUserChannel : toAddUserChannels) {
+                if (currentUserChannel.equals(toAddUserChannel)) {
+                    newChat = false;
+                }
+            }
+        }
+
+        if (newChat) {
+            if (!contactIDs.contains(toAdd.getUserID())) {
+                contactIDs.add(toAdd.getUserID());
+                Contact newContact = new Contact(currentUser, toAdd);
+                currentUser.getContacts().add(newContact);
+                currentUser.setContacts(currentUser.getContacts());
+                sessionManager.setMainUser(currentUser);
+                contactDataAccess.updateUserContacts(currentUser, currentUser.getContacts());
+            }
+
+            //create direct channel entity
+            DirectChatChannel newChannel = new DirectChatChannel(request.getChatName(),
+                    currentUser, toAdd, new ArrayList<>());
+
+            //add channel entity to db
+            chatChannelDataAccess.addChat(newChannel);
+        } else {
+            response.setNewChat(false);
+        }
+
+        //call presenter to update view
         presenter.PresentChat(response);
-
     }
 }

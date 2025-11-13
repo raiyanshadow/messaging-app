@@ -5,7 +5,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DBUserDataAccessObject implements UserDataAccess {
+public class DBUserDataAccessObject implements UserDataAccessObject {
 
     private final Connection connection;
 

@@ -2,6 +2,8 @@ package data_access;
 
 import entity.DirectChatChannel;
 import entity.DirectChatChannelFactory;
+import entity.Message;
+import entity.MessageFactory;
 import use_case.update_chat_channel.UpdateChatChannelUserDataAccessInterface;
 
 import java.sql.*;
@@ -74,5 +76,27 @@ public class DBChatChannelDataAccessObject implements UpdateChatChannelUserDataA
             }
         }
         throw new SQLException("Could not add chat");
+    }
+
+    public Message getLastMessage(String channelUrl) throws SQLException {
+        String query = "SELECT * FROM text_message WHERE channel_url = ? ORDER BY created_at DESC LIMIT 1";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, channelUrl);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return MessageFactory.createTextMessage (
+                        rs.getInt("message_id"),
+                        rs.getString("channel_url"),
+                        userDAO.getUserFromID(rs.getInt("sender_id")),
+                        userDAO.getUserFromID(rs.getInt("receiver_id")),
+                        rs.getString("status"),
+                        rs.getTimestamp("created_at"),
+                        rs.getString("content")
+                );
+            } else {
+                return null; // no messages found
+            }
+        }
     }
 }

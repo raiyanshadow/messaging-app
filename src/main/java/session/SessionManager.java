@@ -2,7 +2,7 @@ package session;
 import entity.User;
 import java.sql.SQLException;
 
-public class SessionManager implements Session{
+public class SessionManager implements Session {
     private User mainUser;
     private boolean isLoggedin;
 

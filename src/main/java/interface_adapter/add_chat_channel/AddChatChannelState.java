@@ -6,18 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddChatChannelState {
-    private List<String> contacts;
+    private List<Integer> contactIDs;
     public AddChatChannelState() {
-        this.contacts = new ArrayList<>();
+        this.contactIDs = new ArrayList<>();
     };
-    public AddChatChannelState(List<String> contacts) {
-        this.contacts = contacts;
+    public AddChatChannelState(List<Integer> contactIDs) {
+        this.contactIDs = contactIDs;
     }
 
-    public List<String> getContacts() {
-        return contacts;
+    public List<Integer> getContacts() {
+        return contactIDs;
     }
-    public void setContacts(List<String> contacts) {
-        this.contacts = contacts;
+    public void setContacts(List<Integer> contactIDs) {
+        this.contactIDs = contactIDs;
     }
 }

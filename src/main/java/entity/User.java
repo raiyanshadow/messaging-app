@@ -66,6 +66,16 @@ public class User {
         this.password = password;
     }
     public List<Contact> getContacts() { return contacts; }
+    public List<Integer> getContactIDs() {
+        List<Integer> contactIDs = new ArrayList<>();
+        for (Contact contact : contacts) {
+            contactIDs.add(contact.getContact().getUserID());
+        }
+        return contactIDs;
+    }
+    public void setContacts(List<Contact> contacts) {
+        this.contacts = contacts;
+    }
     public void addChat(String url){
         userChats.add(url);
     }

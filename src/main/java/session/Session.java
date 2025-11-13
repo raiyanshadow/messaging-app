@@ -3,8 +3,10 @@ package session;
 import entity.User;
 
 public interface Session {
-    public User getMainUser();
-    public void setMainUser(User mainUser);
-    public boolean isLoggedin();
-    public void setLoggedin(boolean loggedin);
+
+    User getMainUser();
+    void setMainUser(User mainUser);
+
+    boolean isLoggedin();
+    void setLoggedin(boolean loggedin);
 }

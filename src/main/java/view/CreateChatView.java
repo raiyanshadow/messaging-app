@@ -25,6 +25,7 @@ public class CreateChatView extends JFrame implements PropertyChangeListener {
     public CreateChatView(Session sessionmanager, AddChatChannelController addChatChannelController) {
         this.sessionmanager = sessionmanager;
         this.addChatChannelController = addChatChannelController;
+        final User currentUser = sessionmanager.getMainUser();
 
         setTitle("Create Chat");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -83,7 +84,8 @@ public class CreateChatView extends JFrame implements PropertyChangeListener {
                     }
                 }
                 try {
-                    addChatChannelController.CreateChannel(contactUser, chatname.getText());
+                    addChatChannelController.CreateChannel(contactUser.getUsername(), chatname.getText(),
+                            currentUser.getUserID(), contactUser.getUserID());
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }

@@ -1,29 +1,20 @@
 package entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import data_access.ChatChannelAccessObject;
-import data_access.DBChatChannelDataAccessObject;
-import data_access.DBConnectionFactory;
-
-import java.nio.channels.Channel;
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class DirectChatChannel {
     private String chatName;
-    private User user1;
-    private User user2;
+    private User sender;
+    private User receiver;
     private String chatURL;
     private List<Message> messages;
 
-    public DirectChatChannel(String chatName, User user1, User user2, List<Message> messages) {
+    public DirectChatChannel(String chatName, User sender, User receiver, List<Message> messages) {
         this.chatName = chatName;
-        this.user1 = user1;
-        this.user2 = user2;
+        this.sender = sender;
+        this.receiver = receiver;
         this.messages = messages;
         this.chatURL = "";
     }
@@ -37,19 +28,19 @@ public class DirectChatChannel {
     }
 
     public User getUser1() {
-        return user1;
+        return sender;
     }
 
     public void setUser1(User user1) {
-        this.user1 = user1;
+        this.sender = user1;
     }
 
     public User getUser2() {
-        return user2;
+        return receiver;
     }
 
-    public void setUser2(User user2) {
-        this.user2 = user2;
+    public void setUser2(User receiver) {
+        this.receiver = receiver;
     }
 
     public String getChatURL() {
@@ -62,6 +53,14 @@ public class DirectChatChannel {
 
     public List<Message> getMessages() {
         return messages;
+    }
+
+    public List<Integer> getMessageIDs() {
+        List<Integer> messageIDs = new ArrayList<>();
+        for  (Message message : messages) {
+            messageIDs.add(message.getMessageID());
+        }
+        return messageIDs;
     }
 
     public void setMessages(List<Message> messages) {

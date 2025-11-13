@@ -4,9 +4,9 @@ import java.sql.Timestamp;
 
 public abstract class Message<T> {
     protected final int messageID;
-    protected final String channelURL;
-    protected final User sender;
-    protected final User receiver;
+    protected String channelURL;
+    protected User sender;
+    protected User receiver;
     protected String status;
     protected final Timestamp timestamp;
 

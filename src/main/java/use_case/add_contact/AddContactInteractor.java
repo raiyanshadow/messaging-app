@@ -24,8 +24,8 @@ public class AddContactInteractor implements AddContactInputBoundary {
 
         else { // user2 does exist
 
-            // user1 adds user2 as a contact and vice versa
-            userDataAccessObject.addContact(user1, user2);
+            // user1 sends user2 a add contact request
+            userDataAccessObject.sendRequest(user1, user2);
             // prepare output
             final AddContactOutputData addContactOutputData = new AddContactOutputData(user1, user2);
             userPresenter.prepareSuccessView(addContactOutputData);

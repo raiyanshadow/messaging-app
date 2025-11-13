@@ -1,4 +1,4 @@
 package use_case.friend_request;
 
-public class FriendRequestInputBoundary {
+public interface FriendRequestInputBoundary {
 }

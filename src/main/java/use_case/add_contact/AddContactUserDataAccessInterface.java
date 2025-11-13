@@ -16,6 +16,6 @@ public interface AddContactUserDataAccessInterface {
      * @param user1 the user who wants to add a contact (sends out add contact request)
      * @param user2 the user to be added (receives add contact request)
      */
-    void addContact(User user1, User user2);
+    void sendRequest(User user1, User user2);
 
 }

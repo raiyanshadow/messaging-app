@@ -2,13 +2,13 @@ package use_case.add_contact;
 
 public interface AddContactOutputBoundary {
     /**
-     * successfully added contact
+     * successfully sent contact request
      * @param addContactOutputData the data to present
      */
     void prepareSuccessView(AddContactOutputData addContactOutputData);
 
     /**
-     * failed to add contact
+     * failed to send add contact request
      * @param errorMessage the error message to display when failed to add contact
      */
     void prepareFailView(String errorMessage);

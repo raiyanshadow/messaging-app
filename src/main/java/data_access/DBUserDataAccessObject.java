@@ -76,4 +76,23 @@ public class DBUserDataAccessObject implements UserDataAccessObject {
         }
         return users;
     }
+
+    public User getUserFromName(String username) throws SQLException {
+        String query = "SELECT * FROM \"user\" WHERE username = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, username); // use String for name
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next()) {
+                return new User(
+                        rs.getInt("id"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("preferred_language")
+                );
+            }
+        }
+        return null; // no user found
+    }
+
 }

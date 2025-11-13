@@ -1,6 +1,5 @@
 package interface_adapter.add_chat_channel;
 
-import session.SessionManager;
 import use_case.add_chat_channel.AddChatChannelInputBoundary;
 import use_case.add_chat_channel.AddChatChannelInputData;
 import use_case.add_chat_channel.AddChatChannelInteractor;
@@ -15,9 +14,10 @@ public class AddChatChannelController {
     }
 
     public void CreateChannel(String username, String chatName,
-                              Integer senderID, Integer receiverID, Integer chatID) throws SQLException {
+                              Integer senderID, Integer receiverID) throws SQLException {
 
-        AddChatChannelInputData request = new AddChatChannelInputData(username, chatName, senderID, receiverID, chatID);
+        AddChatChannelInputData request = new AddChatChannelInputData(username, chatName,
+                senderID, receiverID);
         addChatChannelInteractor.CreateChannel(request);
 
     }

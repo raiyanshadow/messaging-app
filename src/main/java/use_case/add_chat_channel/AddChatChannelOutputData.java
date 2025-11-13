@@ -5,29 +5,32 @@ import java.util.ArrayList;
 
 public class AddChatChannelOutputData {
     private String chatName;
-    private Integer chatID;
+    private String chatUrl;
     private Integer senderID;
     private Integer receiverID;
     private List<Integer> contactIDs = new ArrayList<>();
+    private boolean newChat;
 
-    public AddChatChannelOutputData(String chatName, Integer chatID, Integer senderID, Integer receiverID,
+    public AddChatChannelOutputData(String chatName, String chatUrl, Integer senderID, Integer receiverID,
                                     List<Integer> contactIDs) {
         this.chatName = chatName;
-        this.chatID = chatID;
+        this.chatUrl = chatUrl;
         this.senderID = senderID;
         this.receiverID = receiverID;
         this.contactIDs = new ArrayList<>(contactIDs);
+        this.newChat = true;
     }
 
     public String getChatName() { return chatName; }
-    public Integer getChatID() { return chatID; }
+    public String getChatUrl() { return chatUrl; }
     public Integer getSenderID() { return senderID; }
     public Integer getReceiverID() { return receiverID; }
     public List<Integer> getContactIDs() { return contactIDs; }
 
     public void setChatName(String chatName) { this.chatName = chatName; }
-    public void setChatID(Integer chatID) { this.chatID = chatID; }
+    public void setChatUrl(String chatUrl) { this.chatUrl = chatUrl; }
     public void setSenderID(Integer senderID) { this.senderID = senderID; }
     public void setReceiverID(Integer receiverID) { this.receiverID = receiverID; }
     public void setContactIDs(List<Integer> contactIDs) { this.contactIDs = contactIDs; }
+    public void setNewChat(boolean newChat) { this.newChat = newChat; }
 }

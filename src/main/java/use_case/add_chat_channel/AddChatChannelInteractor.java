@@ -5,10 +5,16 @@ import data_access.ContactDataAccessObject;
 import data_access.UserDataAccessObject;
 import entity.Contact;
 import entity.DirectChatChannel;
+import entity.Message;
 import entity.User;
+import io.github.cdimascio.dotenv.Dotenv;
 import session.Session;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
@@ -37,29 +43,48 @@ public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
         final User toAdd = userDataAccess.getUserFromID(request.getReceiverID());
         final List<Integer> contactIDs = currentUser.getContactIDs();
 
-        if (!contactIDs.contains(toAdd.getUserID())) {
-            contactIDs.add(toAdd.getUserID());
-            Contact newContact = new Contact(currentUser, toAdd);
-            currentUser.getContacts().add(newContact);
-            currentUser.setContacts(currentUser.getContacts());
-            sessionManager.setMainUser(currentUser);
-            contactDataAccess.updateUserContacts(currentUser, currentUser.getContacts());
-        }
-
-
-        DirectChatChannel newChat = new DirectChatChannel(request.getChatID(), request.getChatName(),
-                currentUser, toAdd);
-
-        chatChannelDataAccess.addChat(newChat);
-
+        //create response model for any new info needed for view
         AddChatChannelOutputData response = new AddChatChannelOutputData(
                 request.getChatName(),
-                request.getChatID(),
+                "",
                 request.getSenderID(),
                 request.getReceiverID(),
                 contactIDs);
 
-        presenter.PresentChat(response);
+        final List<String> currentUserChannels = chatChannelDataAccess.getChatURLsByUserId(currentUser.getUserID());
+        final List<String> toAddUserChannels = chatChannelDataAccess.getChatURLsByUserId(toAdd.getUserID());
+        boolean newChat = true;
 
+        //check if chat is already made with contact user
+        for (String currentUserChannel : currentUserChannels) {
+            for (String toAddUserChannel : toAddUserChannels) {
+                if (currentUserChannel.equals(toAddUserChannel)) {
+                    newChat = false;
+                }
+            }
+        }
+
+        if (newChat) {
+            if (!contactIDs.contains(toAdd.getUserID())) {
+                contactIDs.add(toAdd.getUserID());
+                Contact newContact = new Contact(currentUser, toAdd);
+                currentUser.getContacts().add(newContact);
+                currentUser.setContacts(currentUser.getContacts());
+                sessionManager.setMainUser(currentUser);
+                contactDataAccess.updateUserContacts(currentUser, currentUser.getContacts());
+            }
+
+            //create direct channel entity
+            DirectChatChannel newChannel = new DirectChatChannel(request.getChatName(),
+                    currentUser, toAdd, new ArrayList<>());
+
+            //add channel entity to db
+            chatChannelDataAccess.addChat(newChannel);
+        } else {
+            response.setNewChat(false);
+        }
+
+        //call presenter to update view
+        presenter.PresentChat(response);
     }
 }

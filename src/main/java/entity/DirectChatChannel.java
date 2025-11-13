@@ -5,27 +5,20 @@ import java.util.List;
 
 
 public class DirectChatChannel {
-    private Integer chatID;
     private String chatName;
-    private User user1;
-    private User user2;
+    private User sender;
+    private User receiver;
     private String chatURL;
     private List<Message> messages;
 
-    public DirectChatChannel(Integer chatID, String chatName, User user1, User user2) {
-        this.chatID = chatID;
+    public DirectChatChannel(String chatName, User sender, User receiver, List<Message> messages) {
         this.chatName = chatName;
-        this.user1 = user1;
-        this.user2 = user2;
+        this.sender = sender;
+        this.receiver = receiver;
         this.messages = messages;
+        this.chatURL = "";
     }
 
-    public Integer getChatID() {
-        return chatID;
-    }
-    public void setChatID(Integer chatID) {
-        this.chatID = chatID;
-    }
     public String getChatName() {
         return chatName;
     }
@@ -35,19 +28,19 @@ public class DirectChatChannel {
     }
 
     public User getUser1() {
-        return user1;
+        return sender;
     }
 
     public void setUser1(User user1) {
-        this.user1 = user1;
+        this.sender = user1;
     }
 
     public User getUser2() {
-        return user2;
+        return receiver;
     }
 
-    public void setUser2(User user2) {
-        this.user2 = user2;
+    public void setUser2(User receiver) {
+        this.receiver = receiver;
     }
 
     public String getChatURL() {
@@ -73,6 +66,5 @@ public class DirectChatChannel {
     public void setMessages(List<Message> messages) {
         this.messages = messages;
     }
-
 
 }

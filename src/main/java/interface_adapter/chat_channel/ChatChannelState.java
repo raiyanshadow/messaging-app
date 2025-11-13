@@ -12,6 +12,7 @@ public class ChatChannelState {
     private User sender;
     private User receiver;
     private String error;
+    private String chatName;
     private boolean shouldGoHome = false;
 
     public List<Message> getMessages() { return messages; }
@@ -21,6 +22,7 @@ public class ChatChannelState {
     public User getReceiver() { return receiver; }
     public String getError() { return error; }
     public boolean getShouldGoHome() { return shouldGoHome; }
+    public String  getChatName() { return chatName; }
 
     public void setMessages(List<Message> messages) { this.messages = new ArrayList<>(messages); }
     public void setMessageIDs(List<Integer> messageIDs) { this.messageIDs = new ArrayList<>(messageIDs); }
@@ -29,5 +31,6 @@ public class ChatChannelState {
     public void setReceiver(User receiver) { this.receiver = receiver; }
     public void setError(String error) { this.error = error; }
     public void setShouldGoHome(boolean shouldGoHome) { this.shouldGoHome = shouldGoHome; }
+    public void setChatName(String chatName) { this.chatName = chatName; }
 
 }

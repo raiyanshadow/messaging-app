@@ -19,8 +19,12 @@ public class AddChatChannelPresenter implements AddChatChannelOutputBoundary {
 
     @Override
     public void PresentChat(AddChatChannelOutputData response) {
-        if (response.getChatName() == null) {
-            System.out.println("hi");
+        if (!response.isNewChat()) {
+            // Update the AddChatChannelViewModel with an error message
+            AddChatChannelState state = viewModel2.getState();
+            state.setErrorMessage("You already have a chat with this user.");
+            viewModel2.firePropertyChange();
+            return;
         } else {
             final interface_adapter.chat_channel.ChatChannelState chatChannelState = viewModel.getState();
             chatChannelState.setChatName(response.getChatName());

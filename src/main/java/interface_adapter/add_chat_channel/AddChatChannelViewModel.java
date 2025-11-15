@@ -12,6 +12,10 @@ public class AddChatChannelViewModel extends ViewModel<AddChatChannelState> {
 
     public final List<ViewModelListener> listeners = new ArrayList<>();
 
+    public AddChatChannelViewModel(String viewName) {
+        super(viewName);
+    }
+
     public boolean getHasError() {
         return HasError;
     }
@@ -20,10 +24,6 @@ public class AddChatChannelViewModel extends ViewModel<AddChatChannelState> {
         void onViewModelChange(AddChatChannelViewModel viewModel);
     }
 
-    public AddChatChannelViewModel(String message, String error) {
-        this.message = message;
-        this.error = error;
-    }
 
     public String getMessage() {
         return message;

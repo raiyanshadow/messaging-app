@@ -19,7 +19,6 @@ import java.util.List;
 
 public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
     AddChatChannelOutputBoundary presenter;
-    List<Object> save_chat;
     ChatChannelDataAccessObject chatChannelDataAccess;
     UserDataAccessObject userDataAccess;
     ContactDataAccessObject contactDataAccess;
@@ -63,27 +62,18 @@ public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
                 }
             }
         }
-
         if (newChat) {
-            if (!contactIDs.contains(toAdd.getUserID())) {
-                contactIDs.add(toAdd.getUserID());
-                Contact newContact = new Contact(currentUser, toAdd);
-                currentUser.getContacts().add(newContact);
-                currentUser.setContacts(currentUser.getContacts());
-                sessionManager.setMainUser(currentUser);
-                contactDataAccess.updateUserContacts(currentUser, currentUser.getContacts());
-            }
-
             //create direct channel entity
             DirectChatChannel newChannel = new DirectChatChannel(request.getChatName(),
                     currentUser, toAdd, new ArrayList<>());
 
             //add channel entity to db
             chatChannelDataAccess.addChat(newChannel);
-        } else {
-            response.setNewChat(false);
+        }else{
+            newChat = false;
         }
 
+        response.setNewChat(newChat);
         //call presenter to update view
         presenter.PresentChat(response);
     }

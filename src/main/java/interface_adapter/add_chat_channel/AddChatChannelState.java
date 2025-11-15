@@ -7,6 +7,7 @@ import java.util.List;
 
 public class AddChatChannelState {
     private List<Integer> contactIDs;
+    private String errorMessage = null;
     public AddChatChannelState() {
         this.contactIDs = new ArrayList<>();
     };
@@ -19,5 +20,12 @@ public class AddChatChannelState {
     }
     public void setContacts(List<Integer> contactIDs) {
         this.contactIDs = contactIDs;
+    }
+
+    public void setErrorMessage(String s) {
+        this.errorMessage = s;
+    }
+    public String getErrorMessage(){
+        return this.errorMessage;
     }
 }

@@ -79,6 +79,9 @@ public class User {
     public void addChat(String url){
         userChats.add(url);
     }
+    public List<String> getUserChats(){
+        return userChats;
+    }
     public void removeChat(String url){
         userChats.remove(url);
     }

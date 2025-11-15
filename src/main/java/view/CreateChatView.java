@@ -111,6 +111,14 @@ public class CreateChatView extends JFrame implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         final AddChatChannelState state = (AddChatChannelState) evt.getNewValue();
+        if (state.getErrorMessage() != null) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    state.getErrorMessage(),
+                    "Chat Warning",
+                    JOptionPane.WARNING_MESSAGE
+            );
+        }
     }
 
 

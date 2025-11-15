@@ -1,5 +1,7 @@
 package app;
 
+import SendBirdAPI.ChannelCreator;
+import entity.User;
 import io.github.cdimascio.dotenv.Dotenv;
 import java.sql.*;
 
@@ -14,10 +16,14 @@ public class Main {
             String user = dotenv.get("DB_USER");
             String password = dotenv.get("DB_PASSWORD");
 
-            try (Connection conn = DriverManager.getConnection(url, user, password)) {
-                System.out.println("Success");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            String appId = dotenv.get("MSG_APP_ID");
+            String apiToken = dotenv.get("MSG_TOKEN");
+
+            User user1 = new User(1, "Alice", "abc", "English");
+            User user2 = new User(2, "Bob", "def", "English");
+
+            ChannelCreator channelCreator = new ChannelCreator(appId);
+            String channelUrl = channelCreator.SendbirdChannelCreator(apiToken, "example", user1, user2);
+            System.out.println("Channel URL: " + channelUrl);
         }
 }

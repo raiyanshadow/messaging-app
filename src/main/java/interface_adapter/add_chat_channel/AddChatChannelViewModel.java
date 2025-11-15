@@ -24,6 +24,7 @@ public class AddChatChannelViewModel extends ViewModel<AddChatChannelState> {
         this.message = message;
         this.error = error;
     }
+
     public String getMessage() {
         return message;
     }

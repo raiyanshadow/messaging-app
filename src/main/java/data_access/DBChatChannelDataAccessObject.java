@@ -2,18 +2,24 @@ package data_access;
 
 import entity.DirectChatChannel;
 import entity.DirectChatChannelFactory;
-import java.sql.*;
+import entity.Message;
+import entity.MessageFactory;
+import use_case.update_chat_channel.UpdateChatChannelUserDataAccessInterface;
 
-public class DBChatChannelDataAccessObject implements ChatChannelAccessObject{
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DBChatChannelDataAccessObject implements UpdateChatChannelUserDataAccessInterface {
     private final Connection connection;
     private final int ERROR_CODE = -404;
     private final DBUserDataAccessObject userDAO;
-//    private final DBMessageDataAccessObject messageDAO;
+    private final DBMessageDataAccessObject messageDAO;
 
     public DBChatChannelDataAccessObject(Connection connection) {
         this.connection = connection;
         this.userDAO = new DBUserDataAccessObject(this.connection);
-//        this.messageDAO = new DBMessageDataAccessObject(this.connection);
+        this.messageDAO = new DBMessageDataAccessObject(this.connection);
     }
 
     public DirectChatChannel getDirectChatChannelByURL(String channelURL) throws SQLException{
@@ -23,12 +29,11 @@ public class DBChatChannelDataAccessObject implements ChatChannelAccessObject{
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return DirectChatChannelFactory.createDirectChatChannel(
-                        resultSet.getInt("chat_id"),
-                        resultSet.getInt("chat_id"), userDAO.getUserFromID(resultSet.getInt("user1_id")),
+                        resultSet.getString("name"),
+                        userDAO.getUserFromID(resultSet.getInt("user1_id")),
                         userDAO.getUserFromID(resultSet.getInt("user2_id")),
                         resultSet.getString("channel_url"),
-//                        messageDAO.getMessagesFromChannelURL(channelURL),
-                        resultSet.getString("name")
+                        messageDAO.getMessagesFromChannelURL(channelURL)
                 );
             }
             else {
@@ -42,15 +47,13 @@ public class DBChatChannelDataAccessObject implements ChatChannelAccessObject{
             preparedStatement.setInt(1, channelID);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-//                String channelURL = resultSet.getString("channel_url");
+                String channelURL = resultSet.getString("channel_url");
                 return DirectChatChannelFactory.createDirectChatChannel(
-                        channelID,
-//                        resultSet.getInt("chat_id"),
+                        resultSet.getString("name"),
                         userDAO.getUserFromID(resultSet.getInt("user1_id")),
                         userDAO.getUserFromID(resultSet.getInt("user2_id")),
                         resultSet.getString("channel_url"),
-//                        messageDAO.getMessagesFromChannelURL(channelURL),
-                        resultSet.getString("name")
+                        messageDAO.getMessagesFromChannelURL(channelURL)
                 );
             }
             else {
@@ -72,5 +75,46 @@ public class DBChatChannelDataAccessObject implements ChatChannelAccessObject{
             }
         }
         throw new SQLException("Could not add chat");
+    }
+
+    public Message getLastMessage(String channelUrl) throws SQLException {
+        String query = "SELECT * FROM text_message WHERE channel_url = ? ORDER BY created_at DESC LIMIT 1";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, channelUrl);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return MessageFactory.createTextMessage (
+                        rs.getInt("message_id"),
+                        rs.getString("channel_url"),
+                        userDAO.getUserFromID(rs.getInt("sender_id")),
+                        userDAO.getUserFromID(rs.getInt("receiver_id")),
+                        rs.getString("status"),
+                        rs.getTimestamp("created_at"),
+                        rs.getString("content")
+                );
+            } else {
+                return null; // no messages found
+            }
+        }
+    }
+
+    public List<String> getChatURLsByUserId(int userId) throws SQLException {
+        String query = "SELECT channel_url FROM direct_chat_channel " +
+                "WHERE user1_id = ? OR user2_id = ?";
+
+        List<String> chatUrls = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(2, userId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                chatUrls.add(resultSet.getString("channel_url"));
+            }
+        }
+
+        return chatUrls;
     }
 }

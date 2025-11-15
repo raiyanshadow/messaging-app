@@ -1,36 +1,24 @@
 package entity;
 
+import java.util.ArrayList;
+import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import data_access.ChatChannelAccessObject;
-import data_access.DBChatChannelDataAccessObject;
-import data_access.DBConnectionFactory;
-
-import java.nio.channels.Channel;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 public class DirectChatChannel {
-    private Integer chatID;
     private String chatName;
-    private User user1;
-    private User user2;
+    private User sender;
+    private User receiver;
     private String chatURL;
+    private List<Message> messages;
 
-    public DirectChatChannel(Integer chatID, String chatName, String chatURL, User user1, User user2) {
-        this.chatID = chatID;
+    public DirectChatChannel(String chatName, User sender, User receiver, List<Message> messages) {
         this.chatName = chatName;
-        this.chatURL = chatURL;
-        this.user1 = user1;
-        this.user2 = user2;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.messages = messages;
+        this.chatURL = "";
     }
 
-    public Integer getChatID() {
-        return chatID;
-    }
-    public void setChatID(Integer chatID) {
-        this.chatID = chatID;
-    }
     public String getChatName() {
         return chatName;
     }
@@ -40,36 +28,43 @@ public class DirectChatChannel {
     }
 
     public User getUser1() {
-        return user1;
+        return sender;
     }
 
     public void setUser1(User user1) {
-        this.user1 = user1;
+        this.sender = user1;
     }
 
     public User getUser2() {
-        return user2;
+        return receiver;
     }
 
-    public void setUser2(User user2) {
-        this.user2 = user2;
+    public void setUser2(User receiver) {
+        this.receiver = receiver;
     }
 
     public String getChatURL() {
         return chatURL;
     }
 
-    public Channel CreateChannelURLBetween(User a, User b) throws SQLException {
-        // call Sendbird REST API:
-        String url = "jdbc:postgresql://db.egwwgffidqtyqxqiuocm.supabase.co:5432/postgres" + "/v3/group_channels";
-        // build JSON payload with userIds = [a.getUserID(), b.getUserID()]
-        // send POST, parse JSON, get channel_url
-        
-    }
-
     public void setChatURL(String chatURL) {
         this.chatURL = chatURL;
     }
 
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public List<Integer> getMessageIDs() {
+        List<Integer> messageIDs = new ArrayList<>();
+        for  (Message message : messages) {
+            messageIDs.add(message.getMessageID());
+        }
+        return messageIDs;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
 
 }

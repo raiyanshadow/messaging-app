@@ -1,17 +1,10 @@
 package interface_adapter.login;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import interface_adapter.ViewModel;
 
-public class LoginViewModel {
-    public LoginState getState() {
-        return null;
-    }
-
-    public void firePropertyChange() {
-    }
-
-    public String getViewName() {
-        return null;
+public class LoginViewModel extends ViewModel<LoginState> {
+    public LoginViewModel() {
+        super("login");
+        setState(new LoginState());
     }
 }

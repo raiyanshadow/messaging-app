@@ -1,4 +1,10 @@
 package interface_adapter.logout;
 
-public class LogoutViewModel {
+import interface_adapter.ViewModel;
+
+public class LogoutViewModel extends ViewModel<LogoutState> {
+    public LogoutViewModel() {
+        super("logout");
+        setState(new LogoutState());
+    }
 }

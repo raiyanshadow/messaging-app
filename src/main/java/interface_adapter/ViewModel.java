@@ -5,7 +5,7 @@ import java.beans.PropertyChangeSupport;
 
 public class ViewModel<A> {
     private final String viewName;
-    protected final PropertyChangeSupport support = new PropertyChangeSupport(this);
+    private final PropertyChangeSupport support = new PropertyChangeSupport(this);
     private A state;
 
     public ViewModel(String viewName) {

@@ -72,7 +72,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         send.addActionListener(
                 evt -> {
                     String message = content.getText();
-                    sendMessageController.sendTextMessage(message, chatURL, user1ID, user2ID);
+                    sendMessageController.execute(message, chatURL, user1ID, user2ID);
                     content.setText("");
                     try {
                         updateChatChannelController.execute(chatURL);

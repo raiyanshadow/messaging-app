@@ -174,13 +174,4 @@ public class SignupView extends JPanel implements PropertyChangeListener {
 
     public void setSignupController(SignupController controller) { this.signupController = controller; }
 
-    // ✦ Test half-screen layout
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Sign Up");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600); // half-screen
-        frame.setLocationRelativeTo(null);
-        frame.add(new SignupView(new SignupViewModel()));
-        frame.setVisible(true);
-    }
 }

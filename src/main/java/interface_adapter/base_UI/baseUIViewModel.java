@@ -1,36 +1,35 @@
 package interface_adapter.base_UI;
 
 import interface_adapter.ViewModel;
-import interface_adapter.add_chat_channel.AddChatChannelViewModel;
-import view.BaseUIView;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 public class baseUIViewModel extends ViewModel<baseUIState> {
-    private String message;
-    public final List<baseUIViewModel.ViewModelListener> listeners = new ArrayList<>();
+
+    private final PropertyChangeSupport support = new PropertyChangeSupport(this);
+    private baseUIState state = new baseUIState();
+    private final String viewName = "baseUIView";
 
     public baseUIViewModel(String viewName) {
         super(viewName);
     }
 
-    public interface ViewModelListener {
-        void onViewModelChange(baseUIViewModel viewModel);
+    public baseUIState getState() { return state; }
+
+    public void setState(baseUIState state) {
+        this.state = state;
     }
 
-    public String getMessage() {
-        return message;
-    }
-    public void setMessage(String message) {
-        this.message = message;
-        NotifyListeners();
+    public void firePropertyChange() {
+        support.firePropertyChange("state", null, this.state);
     }
 
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        support.addPropertyChangeListener(listener);
+    }
 
-    public void NotifyListeners(){
-        for(baseUIViewModel.ViewModelListener listener : listeners){
-            listener.onViewModelChange(this);
-        }
+    public String getViewName() {
+        return viewName;
     }
 }
+

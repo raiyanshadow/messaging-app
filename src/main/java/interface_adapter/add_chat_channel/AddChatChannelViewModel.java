@@ -21,6 +21,7 @@ public class AddChatChannelViewModel extends ViewModel<AddChatChannelState> {
     }
 
     public AddChatChannelViewModel(String message, String error) {
+        super("add_chat_channel");
         this.message = message;
         this.error = error;
     }

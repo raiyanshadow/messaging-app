@@ -1,6 +1,7 @@
 package entity;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -12,6 +13,6 @@ public class DirectChatChannelFactory {
         return new DirectChatChannel(chatName, user1, user2, messages);
     }
     public static DirectChatChannel createEmptyChatChannel() {
-        return new DirectChatChannel("", new User(-1, "", "", ""), new User(-1, "", "", ""), new ArrayList<>());
+        return new DirectChatChannel("", new User(-1, "","", ""), new User(-1, "","", ""), new ArrayList<>());
     }
 }

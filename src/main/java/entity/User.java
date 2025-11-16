@@ -1,5 +1,6 @@
 package entity;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 public class User {
@@ -10,6 +11,7 @@ public class User {
     private String password;
     private List<Contact> contacts;
     private List<String> userChats;
+    private Timestamp createdAt;
 //    private String loginToken;
 //    private String encryptionKey;
 

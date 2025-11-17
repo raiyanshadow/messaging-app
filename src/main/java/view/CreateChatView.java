@@ -2,8 +2,11 @@ package view;
 
 import entity.Contact;
 import entity.User;
+import interface_adapter.ViewManagerModel;
 import interface_adapter.add_chat_channel.AddChatChannelController;
 import interface_adapter.add_chat_channel.AddChatChannelState;
+import interface_adapter.base_UI.baseUIState;
+import interface_adapter.base_UI.baseUIViewModel;
 import interface_adapter.login.LoginState;
 import session.Session;
 import use_case.add_chat_channel.AddChatChannelInteractor;
@@ -21,11 +24,16 @@ public class CreateChatView extends JFrame implements PropertyChangeListener {
     private final Session sessionmanager;
     private final JButton createChatButton;
     private AddChatChannelController addChatChannelController = null;
+    private final baseUIViewModel baseUIViewModel;
+    private ViewManagerModel viewManagerModel;
 
-    public CreateChatView(Session sessionmanager, AddChatChannelController addChatChannelController) {
+    public CreateChatView(Session sessionmanager, AddChatChannelController addChatChannelController,
+                          baseUIViewModel baseUIViewModel,  ViewManagerModel viewManagerModel) {
         this.sessionmanager = sessionmanager;
         this.addChatChannelController = addChatChannelController;
+        this.baseUIViewModel = baseUIViewModel;
         final User currentUser = sessionmanager.getMainUser();
+        this.viewManagerModel = viewManagerModel;
 
         setTitle("Create Chat");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -35,6 +43,16 @@ public class CreateChatView extends JFrame implements PropertyChangeListener {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> {
+            baseUIViewModel.setState(new baseUIState());
+            viewManagerModel.setState(baseUIViewModel.getViewName());
+            viewManagerModel.firePropertyChange();
+        });
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(backButton, BorderLayout.EAST);
+        panel.add(topPanel, BorderLayout.NORTH);
 
         JLabel label = new JLabel("Select a user to start a chat with:");
         panel.add(label, BorderLayout.NORTH);
@@ -111,6 +129,14 @@ public class CreateChatView extends JFrame implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         final AddChatChannelState state = (AddChatChannelState) evt.getNewValue();
+        if (state.getErrorMessage() != null) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    state.getErrorMessage(),
+                    "Chat Warning",
+                    JOptionPane.WARNING_MESSAGE
+            );
+        }
     }
 
 

@@ -12,4 +12,6 @@ public interface AddContactOutputBoundary {
      * @param errorMessage the error message to display when failed to add contact
      */
     void prepareFailView(String errorMessage);
+
+    void switchToContactsView();
 }

@@ -43,7 +43,7 @@ public class SendMessageInteractor implements SendMessageInputBoundary {
 
 
     @Override
-    public void sendTextMessage(SendMessageInputData request) {
+    public void execute(SendMessageInputData request) {
         final User currentUser = sessionManager.getMainUser();
         Message<String> lastMessage;
         User receiver;

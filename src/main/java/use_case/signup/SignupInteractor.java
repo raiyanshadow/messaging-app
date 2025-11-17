@@ -1,15 +1,18 @@
 package use_case.signup;
 
+import data_access.UserDataAccessObject;
 import entity.User;
 import entity.UserFactory;
 
+import java.sql.SQLException;
+
 public class SignupInteractor implements SignupInputBoundary {
 
-    private final SignupUserDataAccessInterface userDataAccessObject;
+    private final UserDataAccessObject userDataAccessObject;
     private final SignupOutputBoundary userPresenter;
     private final UserFactory userFactory;
 
-    public SignupInteractor(SignupUserDataAccessInterface userDataAccessObject,
+    public SignupInteractor(UserDataAccessObject userDataAccessObject,
                             SignupOutputBoundary userPresenter,
                             UserFactory userFactory) {
         this.userDataAccessObject = userDataAccessObject;
@@ -18,13 +21,12 @@ public class SignupInteractor implements SignupInputBoundary {
     }
 
     @Override
-    public void execute(SignupInputData inputData) {
+    public void execute(SignupInputData inputData) throws SQLException {
         String username = inputData.getUsername();
         String password = inputData.getPassword();
         String repeatPassword = inputData.getRepeatPassword();
         String preferredLanguage = inputData.getPreferredLanguage();
 
-        // Validation using else-if structure
         if (username.isEmpty()) {
             userPresenter.prepareFailView("Username cannot be empty");
         } else if (password.isEmpty()) {
@@ -34,13 +36,8 @@ public class SignupInteractor implements SignupInputBoundary {
         } else if (userDataAccessObject.existsByName(username)) {
             userPresenter.prepareFailView("User already exists.");
         } else {
-            // Create the User
-            User user = userFactory.create(username, password, preferredLanguage);
-
-            // Persist the User
+            User user = new User(56, username, password, preferredLanguage);
             userDataAccessObject.save(user);
-
-            // Prepare output
             SignupOutputData outputData = new SignupOutputData(user.getUsername());
             userPresenter.prepareSuccessView(outputData);
         }

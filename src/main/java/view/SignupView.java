@@ -10,6 +10,7 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.sql.SQLException;
 
 public class SignupView extends JPanel implements PropertyChangeListener {
 
@@ -33,16 +34,16 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         signUp = new JButton(SignupViewModel.SIGNUP_BUTTON_LABEL);
         toLogin = new JButton(SignupViewModel.TO_LOGIN_BUTTON_LABEL);
 
-        // ✦ Panel setup
+        // Panel setup
         this.setLayout(new BorderLayout());
         this.setBackground(new Color(245, 248, 250));
         this.setBorder(BorderFactory.createEmptyBorder(40, 80, 40, 80));
 
-        // ✦ Title
+        // itle
         JLabel title = new JLabel(SignupViewModel.TITLE_LABEL, SwingConstants.CENTER);
         title.setFont(new Font("SansSerif", Font.BOLD, 28));
 
-        // ✦ Form panel
+        // Form panel
         JPanel formPanel = new JPanel(new GridLayout(4, 1, 15, 15));
         formPanel.setBackground(Color.WHITE);
         formPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -63,7 +64,7 @@ public class SignupView extends JPanel implements PropertyChangeListener {
             signupViewModel.firePropertyChange();
         });
 
-        // ✦ Button panel
+        // Button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttonPanel.setBackground(new Color(245, 248, 250));
 
@@ -84,25 +85,29 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         buttonPanel.add(toLogin);
         buttonPanel.add(signUp);
 
-        // ✦ Add panels to main
+        // Add panels to main
         this.add(title, BorderLayout.NORTH);
         this.add(formPanel, BorderLayout.CENTER);
         this.add(buttonPanel, BorderLayout.SOUTH);
 
-        // ✦ Action listeners
+        // Action listeners
         signUp.addActionListener(evt -> {
             SignupState state = signupViewModel.getState();
-            signupController.execute(
-                    state.getUsername(),
-                    state.getPassword(),
-                    state.getRepeatPassword(),
-                    (String) languageDropdown.getSelectedItem()
-            );
+            try {
+                signupController.execute(
+                        state.getUsername(),
+                        state.getPassword(),
+                        state.getRepeatPassword(),
+                        (String) languageDropdown.getSelectedItem()
+                );
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         toLogin.addActionListener(evt -> signupController.switchToLoginView());
 
-        // ✦ Input field listeners
+        // Input field listeners
         addUsernameListener();
         addPasswordListener();
         addRepeatPasswordListener();

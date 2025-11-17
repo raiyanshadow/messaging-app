@@ -2,25 +2,16 @@ package view;
 
 import interface_adapter.update_chat_channel.UpdateChatChannelState;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
-import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
-import interface_adapter.chat_channel.ChatChannelState;
-import interface_adapter.chat_channel.ChatChannelViewModel;
 import interface_adapter.chat_channel.SendMessageController;
 import interface_adapter.chat_channel.MessageViewModel;
-import interface_adapter.chat_channel.MessageState;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * View is for the user to see their chats.
@@ -38,15 +29,15 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private final JButton send;
 
     private final String chatURL;
-    private final Integer user1ID;
-    private final Integer user2ID;
+    private final Integer senderID;
+    private final Integer recieverID;
     public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel) {
         this.updateChatChannelViewModel = updateChatChannelViewModel;
         this.updateChatChannelViewModel.addPropertyChangeListener(this);
 
         this.chatURL = updateChatChannelViewModel.getState().getChatURL();
-        this.user1ID = updateChatChannelViewModel.getState().getUser1ID();
-        this.user2ID = updateChatChannelViewModel.getState().getUser2ID();
+        this.senderID = updateChatChannelViewModel.getState().getUser1ID();
+        this.recieverID = updateChatChannelViewModel.getState().getUser2ID();
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -72,7 +63,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         send.addActionListener(
                 evt -> {
                     String message = content.getText();
-                    sendMessageController.execute(message, chatURL, user1ID, user2ID);
+                    sendMessageController.execute(message, chatURL, senderID, recieverID);
                     content.setText("");
                     try {
                         updateChatChannelController.execute(chatURL);

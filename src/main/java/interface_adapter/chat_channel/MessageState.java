@@ -9,6 +9,8 @@ public class MessageState {
     private int senderID;
     private int receiverID;
     private String senderName;
+    private String error;
+    private boolean shouldGoHome;
 
     public String getContent() {
         return content;
@@ -49,5 +51,16 @@ public class MessageState {
     }
     public void setSenderName(String senderName) {
         this.senderName = senderName;
+    }
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public void setShouldGoHome(boolean b) {
+        this.shouldGoHome = b;
     }
 }

@@ -65,7 +65,7 @@ public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
         if (newChat) {
             //create direct channel entity
             DirectChatChannel newChannel = new DirectChatChannel(request.getChatName(),
-                    currentUser, toAdd, new ArrayList<>());
+                    currentUser, toAdd, "", new ArrayList<>());
 
             //add channel entity to db
             chatChannelDataAccess.addChat(newChannel);

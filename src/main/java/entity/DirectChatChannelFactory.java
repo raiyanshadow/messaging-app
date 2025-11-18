@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class DirectChatChannelFactory {
-    public static DirectChatChannel createDirectChatChannel(String chatName, User user1, User user2, String channelURL, List<Message> messages) {
+    public static DirectChatChannel createDirectChatChannel(String chatName, User user1, User user2, String chatURL, List<Message> messages) {
         if (user1 == null || user2 == null) {
             throw new IllegalArgumentException("Users must not be null");
         }
-        return new DirectChatChannel(chatName, user1, user2, messages);
+        return new DirectChatChannel(chatName, user1, user2, chatURL, messages);
     }
     public static DirectChatChannel createEmptyChatChannel() {
-        return new DirectChatChannel("", new User(-1, "","", ""), new User(-1, "","", ""), new ArrayList<>());
+        return new DirectChatChannel("", new User(-1, "","", ""), new User(-1, "","", ""), "", new ArrayList<>());
     }
 }

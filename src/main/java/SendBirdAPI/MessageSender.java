@@ -21,13 +21,13 @@ public class MessageSender {
         SendAMessageRequest request = new SendAMessageRequest();
         request.setMessage(message);
         request.setUserId(Integer.toString(sender.getUserID()));
+        request.setMessageType(SendAMessageRequest.MessageTypeEnum.MESG);
         String channelType = "group_channels";
         try {
             SendbirdMessageResponse response = messageApi.sendAMessage(channelType, channelUrl)
                     .apiToken(apiToken)
                     .sendAMessageRequest(request)
                     .execute();
-
         } catch (ApiException e) {
             return "fail";
         }

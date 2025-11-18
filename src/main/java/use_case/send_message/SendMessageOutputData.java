@@ -24,8 +24,8 @@ public class SendMessageOutputData {
         this.channelUrl = channelUrl;
     }
 
-    public List<Message> getMessage() { return messages; }
-    public List<Integer> getMessageID() { return messageIDs; }
+    public List<Message> getMessages() { return messages; }
+    public List<Integer> getMessageIDs() { return messageIDs; }
     public Integer getSenderID() { return senderID; }
     public Integer getReceiverID() { return receiverID; }
     public String getChannelUrl() { return channelUrl; }

@@ -1,5 +1,6 @@
 package view;
 
+import interface_adapter.chat_channel.MessageState;
 import interface_adapter.update_chat_channel.UpdateChatChannelState;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
@@ -21,6 +22,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private final UpdateChatChannelViewModel updateChatChannelViewModel;
     private UpdateChatChannelController updateChatChannelController = null;
     private SendMessageController sendMessageController = null;
+    private MessageViewModel messageViewModel;
 
     private final JLabel chatName;
     private final JPanel messageContainer;
@@ -28,16 +30,18 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private final JTextField content = new JTextField(15);
     private final JButton send;
 
-    private final String chatURL;
-    private final Integer senderID;
-    private final Integer recieverID;
+//    private final String chatURL;
+//    private final Integer senderID;
+//    private final Integer recieverID;
     public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel) {
         this.updateChatChannelViewModel = updateChatChannelViewModel;
         this.updateChatChannelViewModel.addPropertyChangeListener(this);
+        this.messageViewModel = new MessageViewModel();
+        this.messageViewModel.addPropertyChangeListener(this);
 
-        this.chatURL = updateChatChannelViewModel.getState().getChatURL();
-        this.senderID = updateChatChannelViewModel.getState().getUser1ID();
-        this.recieverID = updateChatChannelViewModel.getState().getUser2ID();
+//        this.chatURL = updateChatChannelViewModel.getState().getChatURL();
+//        this.senderID = updateChatChannelViewModel.getState().getUser1ID();
+//        this.recieverID = updateChatChannelViewModel.getState().getUser2ID();
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -63,10 +67,26 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         send.addActionListener(
                 evt -> {
                     String message = content.getText();
-                    sendMessageController.execute(message, chatURL, senderID, recieverID);
-                    content.setText("");
+                    UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
                     try {
-                        updateChatChannelController.execute(chatURL);
+                        updateChatChannelController.execute(updateChatChannelState.getChatURL());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    MessageState messageState = new MessageState();
+                    System.out.println("messages length:" + updateChatChannelState.getMessages().size());
+                    messageState.setSenderName(updateChatChannelState.getUser1Name());
+                    messageState.setSenderID(updateChatChannelState.getUser1ID());
+                    messageState.setReceiverID(updateChatChannelState.getUser2ID());
+                    messageState.setChannelURL(updateChatChannelState.getChatURL());
+                    messageState.setContent(message);
+                    messageViewModel.setState(messageState);
+                    sendMessageController.execute(message, messageState.getChannelURL(), messageState.getSenderID(), messageState.getReceiverID());
+                    content.setText("");
+                    System.out.println("message sent");
+                    System.out.println("messages length:" + updateChatChannelState.getMessages().size());
+                    try {
+                        updateChatChannelController.execute(updateChatChannelState.getChatURL());
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }

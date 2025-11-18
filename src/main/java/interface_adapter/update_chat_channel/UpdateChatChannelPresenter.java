@@ -30,6 +30,12 @@ public class UpdateChatChannelPresenter implements UpdateChatChannelOutputBounda
             messageViewModel.getState().setSenderName(message.getSender().getUsername());
             messageViewModels.add(messageViewModel);
         }
+        updateChatChannelState.setChatURL(outputData.getChatURL());
+        updateChatChannelState.setChatChannelName(outputData.getChatName());
+        updateChatChannelState.setUser1Name(outputData.getUser1().getUsername());
+        updateChatChannelState.setUser2Name(outputData.getUser2().getUsername());
+        updateChatChannelState.setUser1ID(outputData.getUser1().getUserID());
+        updateChatChannelState.setUser2ID(outputData.getUser2().getUserID());
         updateChatChannelState.setMessages(messageViewModels);
         updateChatChannelState.setError(null);
         updateChatChannelViewModel.firePropertyChange();

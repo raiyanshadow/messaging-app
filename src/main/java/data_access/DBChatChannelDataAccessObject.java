@@ -10,7 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DBChatChannelDataAccessObject implements UpdateChatChannelUserDataAccessInterface {
+public class DBChatChannelDataAccessObject implements UpdateChatChannelUserDataAccessInterface, ChatChannelDataAccessObject{
     private final Connection connection;
     private final int ERROR_CODE = -404;
     private final DBUserDataAccessObject userDAO;
@@ -78,7 +78,8 @@ public class DBChatChannelDataAccessObject implements UpdateChatChannelUserDataA
     }
 
     public Message getLastMessage(String channelUrl) throws SQLException {
-        String query = "SELECT * FROM text_message WHERE channel_url = ? ORDER BY created_at DESC LIMIT 1";
+        String query = "SELECT * FROM text_message WHERE channel_url = ? ORDER BY time_sent DESC LIMIT 1";
+        System.out.println("Querying last message for channel: '" + channelUrl + "'");
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setString(1, channelUrl);
             ResultSet rs = ps.executeQuery();
@@ -90,12 +91,16 @@ public class DBChatChannelDataAccessObject implements UpdateChatChannelUserDataA
                         userDAO.getUserFromID(rs.getInt("sender_id")),
                         userDAO.getUserFromID(rs.getInt("receiver_id")),
                         rs.getString("status"),
-                        rs.getTimestamp("created_at"),
+                        rs.getTimestamp("time_sent"),
                         rs.getString("content")
                 );
             } else {
                 return null; // no messages found
             }
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+            throw e;
         }
     }
 

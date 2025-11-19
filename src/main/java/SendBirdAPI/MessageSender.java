@@ -32,7 +32,6 @@ public class MessageSender {
                     .apiToken(apiToken)
                     .sendAMessageRequest(request)
                     .execute();
-
         } catch (ApiException e) {
             System.out.println("Status code: " + e.getCode());
             System.out.println("Body: " + e.getResponseBody());

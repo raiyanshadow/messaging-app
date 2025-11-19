@@ -28,7 +28,8 @@ public class SendMessageOutputData {
         this.content = (String) lastMessage.getContent();
     }
 
-    public List<Message> getMessage() { return messages; }
+    public List<Message> getMessages() { return messages; }
+    public List<Integer> getMessageIDs() { return messageIDs; }
     public Message lastMessage() {
         return messages.get(messages.size()-1);
     }

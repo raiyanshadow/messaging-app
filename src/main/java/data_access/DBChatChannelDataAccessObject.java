@@ -10,7 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DBChatChannelDataAccessObject implements UpdateChatChannelUserDataAccessInterface, ChatChannelDataAccessObject{
+public class DBChatChannelDataAccessObject implements UpdateChatChannelUserDataAccessInterface, ChatChannelDataAccessObject {
     private final Connection connection;
     private final int ERROR_CODE = -404;
     private final DBUserDataAccessObject userDAO;
@@ -42,19 +42,20 @@ public class DBChatChannelDataAccessObject implements UpdateChatChannelUserDataA
         }
     }
     public DirectChatChannel getDirectChatChannelByID(int channelID) throws SQLException{
-        String query = "SELECT * FROM chat_channel WHERE channel_id = ?";
+        String query = "SELECT * FROM chat_channel WHERE chat_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, channelID);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 String channelURL = resultSet.getString("channel_url");
-                return DirectChatChannelFactory.createDirectChatChannel(
+                DirectChatChannel chatChannel = DirectChatChannelFactory.createDirectChatChannel(
                         resultSet.getString("name"),
                         userDAO.getUserFromID(resultSet.getInt("user1_id")),
                         userDAO.getUserFromID(resultSet.getInt("user2_id")),
                         resultSet.getString("channel_url"),
-                        messageDAO.getMessagesFromChannelURL(channelURL)
-                );
+                        messageDAO.getMessagesFromChannelURL(channelURL));
+                chatChannel.setChatURL(channelURL);
+                return chatChannel;
             }
             else {
                 return DirectChatChannelFactory.createEmptyChatChannel();
@@ -79,7 +80,6 @@ public class DBChatChannelDataAccessObject implements UpdateChatChannelUserDataA
 
     public Message getLastMessage(String channelUrl) throws SQLException {
         String query = "SELECT * FROM text_message WHERE channel_url = ? ORDER BY time_sent DESC LIMIT 1";
-        System.out.println("Querying last message for channel: '" + channelUrl + "'");
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setString(1, channelUrl);
             ResultSet rs = ps.executeQuery();

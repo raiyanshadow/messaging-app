@@ -91,11 +91,16 @@ public class DBChatChannelDataAccessObject implements UpdateChatChannelUserDataA
                         userDAO.getUserFromID(rs.getInt("sender_id")),
                         userDAO.getUserFromID(rs.getInt("receiver_id")),
                         rs.getString("status"),
-                        rs.getTimestamp("created_at"),
-                        rs.getString("content"));
+                        rs.getTimestamp("time_sent"),
+                        rs.getString("content")
+                );
             } else {
                 return null; // no messages found
             }
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+            throw e;
         }
     }
 

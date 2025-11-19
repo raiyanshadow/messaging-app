@@ -9,4 +9,5 @@ public interface UserDataAccessObject {
     boolean existsByName(String username) throws SQLException;
     User getUserFromID(int UserID) throws SQLException;
     List<User> getAllUsers() throws SQLException;
+    public void save(User user) throws SQLException;
 }

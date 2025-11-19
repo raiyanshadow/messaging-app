@@ -57,6 +57,7 @@ public class SendMessageInteractor implements SendMessageInputBoundary {
             presenter.prepareSendMessageFailView("DB read fail");
             return;
         }
+        System.out.println(lastMessage.getContent());
 
         final Integer newID;
 
@@ -73,6 +74,10 @@ public class SendMessageInteractor implements SendMessageInputBoundary {
                 "pending",
                 Timestamp.valueOf(LocalDateTime.now()),
                 request.getMessage());
+
+        System.out.println(message.getContent());
+        System.out.println(request.getChannelUrl());
+        System.out.println(currentUser.getUsername());
 
         String status = messageSender.sendMessage(message.getContent(),
                 dotenv.get("MSG_TOKEN"),

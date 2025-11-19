@@ -7,8 +7,10 @@ public class ChatPreviewPanel extends JPanel {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(chatName);
         this.add(messages);
-        this.add(content);
-        this.add(send);
-
+        JPanel sendPanel = new JPanel();
+        sendPanel.setLayout(new BoxLayout(sendPanel, BoxLayout.X_AXIS));
+        sendPanel.add(content);
+        sendPanel.add(send);
+        this.add(sendPanel);
     }
 }

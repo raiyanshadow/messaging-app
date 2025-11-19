@@ -11,12 +11,12 @@ public class DirectChatChannel {
     private String chatURL;
     private List<Message> messages;
 
-    public DirectChatChannel(String chatName, User sender, User receiver, List<Message> messages) {
+    public DirectChatChannel(String chatName, User sender, User receiver, String chatURL, List<Message> messages) {
         this.chatName = chatName;
         this.sender = sender;
         this.receiver = receiver;
         this.messages = messages;
-        this.chatURL = "";
+        this.chatURL = chatURL;
     }
 
     public String getChatName() {

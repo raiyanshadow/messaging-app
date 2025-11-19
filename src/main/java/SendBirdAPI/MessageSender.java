@@ -18,6 +18,10 @@ public class MessageSender {
     }
 
     public String sendMessage(String message, String apiToken, String channelUrl, User sender) {
+        System.out.println("sender: " + sender.getUsername());
+        System.out.println("senderID: " + sender.getUserID());
+        System.out.println("channelUrl: " + channelUrl);
+        System.out.println("apiToken: " + apiToken);
         SendAMessageRequest request = new SendAMessageRequest();
         request.setMessage(message);
         request.setUserId(Integer.toString(sender.getUserID()));
@@ -29,6 +33,9 @@ public class MessageSender {
                     .sendAMessageRequest(request)
                     .execute();
         } catch (ApiException e) {
+            System.out.println("Status code: " + e.getCode());
+            System.out.println("Body: " + e.getResponseBody());
+            e.printStackTrace();
             return "fail";
         }
         return "success";

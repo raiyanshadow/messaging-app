@@ -5,8 +5,8 @@ import entity.User;
 public class AddContactState {
     private String usernameInput;
     private String addContactError;
-    private User user1;
-    private User user2;
+    private User sender;
+    private String receiver_username;
 
     public String getUsernameInput() {
         return usernameInput;
@@ -16,12 +16,12 @@ public class AddContactState {
         this.usernameInput = usernameInput;
     }
 
-    public User getUser1(User user1) {
-        return user1;
+    public User getSender() {
+        return sender;
     }
 
-    public User getUser2(User user2) {
-        return user2;
+    public String getReceiver_username() {
+        return receiver_username;
     }
 
     public String getAddContactError() {

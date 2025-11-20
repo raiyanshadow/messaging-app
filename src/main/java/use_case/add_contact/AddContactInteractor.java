@@ -2,6 +2,8 @@ package use_case.add_contact;
 
 import entity.User;
 
+import java.sql.SQLException;
+
 public class AddContactInteractor implements AddContactInputBoundary {
 
     private final AddContactUserDataAccessInterface userDataAccessObject;
@@ -14,20 +16,20 @@ public class AddContactInteractor implements AddContactInputBoundary {
     }
 
     @Override
-    public void execute(AddContactInputData addContactInputData) {
-        final User user1 = addContactInputData.getUser1();
-        final User user2 = addContactInputData.getUser2();
+    public void execute(AddContactInputData addContactInputData) throws SQLException {
+        final User sender = addContactInputData.getSender();
+        final String receiver_username = addContactInputData.getReceiverUsername();
         // user2 (user who should receive add contact request) does not exist
-        if (!userDataAccessObject.exists(user2)) {
+        if (!userDataAccessObject.existsByName(receiver_username)) {
             userPresenter.prepareFailView("The user you want to add does not exist");
         }
 
         else { // user2 does exist
 
             // user1 sends user2 a add contact request
-            userDataAccessObject.sendRequest(user1, user2);
+            userDataAccessObject.sendRequest(sender, receiver_username);
             // prepare output
-            final AddContactOutputData addContactOutputData = new AddContactOutputData(user1, user2);
+            final AddContactOutputData addContactOutputData = new AddContactOutputData(sender, receiver_username);
             userPresenter.prepareSuccessView(addContactOutputData);
         }
 

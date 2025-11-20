@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.sql.SQLException;
 
 public class AddContactView extends JPanel implements PropertyChangeListener {
 
@@ -31,60 +32,57 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
         // initialize back button and add button
         backButton = new JButton(addContactViewModel.BACK_BUTTON_LABEL);
         addButton = new JButton(addContactViewModel.ADD_CONTACT_BUTTON_LABEL);
+        final Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
+        backButton.setFont(buttonFont);
+        addButton.setFont(buttonFont);
 
+        // create title panel
         JLabel title = new JLabel(addContactViewModel.TITLE_LABEL, SwingConstants.CENTER);
         title.setFont(new Font("SansSerif", Font.BOLD, 28));
-
         JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         titlePanel.add(title);
+        titlePanel.setBackground(Color.WHITE);
 
+        // create add button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        buttonPanel.setBackground(new Color(245, 248, 250));
         buttonPanel.add(addButton);
+        buttonPanel.setBackground(Color.WHITE);
 
-
+        // create back button panel
         JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 10));
-        backPanel.setBackground(new Color(245, 248, 250));
         backPanel.add(backButton);
+        backPanel.setBackground(Color.WHITE);
 
-        // middle panel
-        JPanel midPanel = new JPanel(new GridLayout(4, 1, 15, 15));
-
-        JLabel userinput = new JLabel(addContactViewModel.USERNAME_LABEL, SwingConstants.CENTER);
+        // create middle panel
+        JPanel midPanel = new JPanel();
+        JLabel userinputLabel = new JLabel(addContactViewModel.USERNAME_LABEL, SwingConstants.CENTER);
+        userinputLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         title.setFont(new Font("SansSerif", Font.BOLD, 12));
-
-        midPanel.add(userinput);
+        midPanel.setLayout(new BoxLayout(midPanel, BoxLayout.Y_AXIS));
+        midPanel.add(userinputLabel);
         midPanel.setBackground(Color.WHITE);
-        midPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(220, 220, 220)),
-                BorderFactory.createEmptyBorder(30, 50, 30, 50)
-        ));
-
+        midPanel.add(Box.createVerticalStrut(20));
         midPanel.add(addContactViewModel.USERNAME_LABEL, usernameField);
-        backButton.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        if (evt.getSource().equals(backButton)) {
-                            System.out.println("Back button pressed -> change back to contacts view");
-                            // switch to contacts view
-                            // addContactController.switchToContactsView();
-                        }
-                    }
-                }
-        );
+        midPanel.add(Box.createVerticalStrut(50));
 
-        addButton.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        if (evt.getSource().equals(addButton)) {
-                            //final AddContactState currentState = AddContactViewModel.getState();
-                            System.out.println("add button pressed -> stay on current page (friend request sent!)");
-                            // sends out add contact request
-                            //addContactController.execute(currentState.getUser1, currentState.getUser2);
-                        }
-                    }
-                }
-        );
+
+        // back button action listener
+        backButton.addActionListener(evt -> addContactController.switchToContactsView());
+
+
+        // add button action listener
+        addButton.addActionListener(evt -> {
+            AddContactState state = addContactViewModel.getState();
+            try {
+                addContactController.execute(
+                        state.getSender(),
+                        state.getReceiver_username()
+                );
+            }
+            catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

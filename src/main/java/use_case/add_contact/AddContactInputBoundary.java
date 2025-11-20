@@ -9,5 +9,4 @@ public interface AddContactInputBoundary {
      */
     void execute(AddContactInputData addContactInputData) throws SQLException;
 
-    void switchToContactsView();
 }

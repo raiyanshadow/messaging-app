@@ -1,8 +1,11 @@
 package interface_adapter.add_contact;
 
 import interface_adapter.ViewManagerModel;
+import interface_adapter.base_UI.baseUIState;
+import interface_adapter.base_UI.baseUIViewModel;
 import use_case.add_contact.AddContactOutputBoundary;
 import use_case.add_contact.AddContactOutputData;
+import view.BaseUIView;
 
 public class AddContactPresenter implements AddContactOutputBoundary{
     private final AddContactViewModel addContactViewModel;
@@ -11,7 +14,6 @@ public class AddContactPresenter implements AddContactOutputBoundary{
     public AddContactPresenter(AddContactViewModel addContactViewModel, ViewManagerModel viewManagerModel) {
         this.addContactViewModel = addContactViewModel;
         this.viewManagerModel = viewManagerModel;
-
     }
 
     /**
@@ -31,9 +33,4 @@ public class AddContactPresenter implements AddContactOutputBoundary{
         addContactViewModel.firePropertyChange();
     }
 
-    @Override
-    public void switchToContactsView() {
-        viewManagerModel.setState(addContactViewModel.getViewName());
-        viewManagerModel.firePropertyChange();
-    }
 }

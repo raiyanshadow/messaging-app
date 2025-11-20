@@ -6,4 +6,6 @@ public interface FriendRequestInputBoundary {
      * @param friendRequestInputData the input data from the ui
      */
     void execute(FriendRequestInputData friendRequestInputData);
+
+    void switchToContactsView();
 }

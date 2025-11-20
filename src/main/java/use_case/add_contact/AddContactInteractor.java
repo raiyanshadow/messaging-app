@@ -34,8 +34,5 @@ public class AddContactInteractor implements AddContactInputBoundary {
         }
 
     }
-    @Override
-    public void switchToContactsView() {
-        userPresenter.switchToContactsView();
-    }
+
 }

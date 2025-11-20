@@ -5,17 +5,17 @@ import entity.User;
 public interface FriendRequestUserDataAccessInterface {
 
     /**
-     * accepts the request and both users are added to each other's contact lists
-     * @param user1 user who sent out request
-     * @param user2 user who received request
+     *
+     * @param acceptee person who is accepting the request
+     * @param accepted_username person who got accepted
      */
-    void acceptRequest(User user1, User user2);
+    void acceptRequest(User acceptee, String accepted_username);
 
     /**
-     * declines the request and the request is removed from both users' lists
-     * @param user1 user who sent out request
-     * @param user2 user who received request
+     *
+     * @param acceptee person who is declining request
+     * @param accepted_username person whose request got declined
      */
-    void deleteRequest(User user1, User user2);
+    void deleteRequest(User acceptee, String accepted_username);
 
 }

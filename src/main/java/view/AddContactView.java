@@ -3,6 +3,11 @@ package view;
 import interface_adapter.add_contact.AddContactController;
 import interface_adapter.add_contact.AddContactState;
 import interface_adapter.add_contact.AddContactViewModel;
+import interface_adapter.base_UI.baseUIState;
+import interface_adapter.base_UI.baseUIViewModel;
+import interface_adapter.ViewManagerModel;
+import interface_adapter.signup.SignupState;
+import interface_adapter.signup.SignupViewModel;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -20,21 +25,22 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
     private final AddContactViewModel addContactViewModel;
     private final JTextField usernameField =  new JTextField(20);
     private AddContactController addContactController = null;
-
-    private final JButton backButton;
-    private final JButton addButton;
+    private final ViewManagerModel viewManagerModel;
 
 
-    public AddContactView(AddContactViewModel addContactViewModel) {
+    public AddContactView(AddContactViewModel addContactViewModel, baseUIViewModel baseUIViewModel, ViewManagerModel viewManagerModel) {
         this.addContactViewModel = addContactViewModel;
+        this.viewManagerModel = viewManagerModel;
         addContactViewModel.addPropertyChangeListener(this);
+        viewManagerModel.addPropertyChangeListener(this);
 
         // initialize back button and add button
-        backButton = new JButton(addContactViewModel.BACK_BUTTON_LABEL);
-        addButton = new JButton(addContactViewModel.ADD_CONTACT_BUTTON_LABEL);
+        JButton backButton = new JButton(addContactViewModel.BACK_BUTTON_LABEL);
+        JButton addButton = new JButton(addContactViewModel.ADD_CONTACT_BUTTON_LABEL);
         final Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
         backButton.setFont(buttonFont);
         addButton.setFont(buttonFont);
+
 
         // create title panel
         JLabel title = new JLabel(addContactViewModel.TITLE_LABEL, SwingConstants.CENTER);
@@ -43,32 +49,43 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
         titlePanel.add(title);
         titlePanel.setBackground(Color.WHITE);
 
-        // create add button panel
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        buttonPanel.add(addButton);
-        buttonPanel.setBackground(Color.WHITE);
-
         // create back button panel
         JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 10));
         backPanel.add(backButton);
         backPanel.setBackground(Color.WHITE);
 
+
+        // create top panel
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(titlePanel, BorderLayout.CENTER);
+        topPanel.add(backPanel, BorderLayout.EAST);
+
+        // create add button panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        buttonPanel.add(addButton);
+        buttonPanel.setBackground(Color.WHITE);
+
+
+
         // create middle panel
         JPanel midPanel = new JPanel();
-        JLabel userinputLabel = new JLabel(addContactViewModel.USERNAME_LABEL, SwingConstants.CENTER);
+        JLabel userinputLabel = new JLabel(AddContactViewModel.USERNAME_LABEL, SwingConstants.CENTER);
         userinputLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         title.setFont(new Font("SansSerif", Font.BOLD, 12));
         midPanel.setLayout(new BoxLayout(midPanel, BoxLayout.Y_AXIS));
         midPanel.add(userinputLabel);
         midPanel.setBackground(Color.WHITE);
         midPanel.add(Box.createVerticalStrut(20));
-        midPanel.add(addContactViewModel.USERNAME_LABEL, usernameField);
+        midPanel.add(AddContactViewModel.USERNAME_LABEL, usernameField);
         midPanel.add(Box.createVerticalStrut(50));
 
 
         // back button action listener
-        backButton.addActionListener(evt -> addContactController.switchToContactsView());
-
+        backButton.addActionListener(e -> {
+            baseUIViewModel.setState(new baseUIState());
+            viewManagerModel.setState(baseUIViewModel.getViewName());
+            viewManagerModel.firePropertyChange();
+        });
 
         // add button action listener
         addButton.addActionListener(evt -> {
@@ -85,9 +102,9 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
         });
 
 
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.add(titlePanel, BorderLayout.NORTH);
-        this.add(backPanel, BorderLayout.EAST);
+        this.setLayout(new BorderLayout());
+        this.add(topPanel, BorderLayout.NORTH);
+        // this.add(backPanel, BorderLayout.EAST);
         this.add(midPanel, BorderLayout.CENTER);
         this.add(buttonPanel, BorderLayout.SOUTH);
 

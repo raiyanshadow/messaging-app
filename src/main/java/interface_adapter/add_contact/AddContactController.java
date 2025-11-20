@@ -18,7 +18,4 @@ public class AddContactController {
         addContactUseCaseInteractor.execute(addContactInputData);
     }
 
-    public void switchToContactsView() {
-        addContactUseCaseInteractor.switchToContactsView();
-    }
 }

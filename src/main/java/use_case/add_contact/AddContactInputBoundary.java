@@ -6,4 +6,6 @@ public interface AddContactInputBoundary {
      * @param addContactInputData the input data from ui
      */
     void execute(AddContactInputData addContactInputData);
+
+    void switchToContactsView();
 }

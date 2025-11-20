@@ -1,8 +1,0 @@
-# Default ignored files
-.idea/*
-!.idea/
-!.idea/.gitignore
-target/
-assets/
-# Editor-based HTTP Client requests
-/httpRequests/

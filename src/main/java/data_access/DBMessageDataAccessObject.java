@@ -24,7 +24,8 @@ public class DBMessageDataAccessObject implements MessageDataAccessObject {
             List<Message> messages = new ArrayList<>();
             while (resultSet.next()) {
                 messages.add(MessageFactory.createTextMessage(
-                        resultSet.getInt("message_id"),
+                        resultSet.getLong("message_id"),
+                        resultSet.getLong("replying_to"),
                         resultSet.getString("channel_url"),
                         userDAO.getUserFromID(resultSet.getInt("sender_id")),
                         userDAO.getUserFromID(resultSet.getInt("receiver_id")),
@@ -38,14 +39,15 @@ public class DBMessageDataAccessObject implements MessageDataAccessObject {
 
     }
 
-    public Message getMessageFromID(int messageID) throws SQLException {
+    public Message getMessageFromID(Long messageID) throws SQLException {
         String query = "SELECT * FROM text_message WHERE message_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, messageID);
+            statement.setLong(1, messageID);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return MessageFactory.createTextMessage(
                         messageID,
+                        resultSet.getLong("replying_to"),
                         resultSet.getString("channel_url"),
                         userDAO.getUserFromID(resultSet.getInt("sender_id")),
                         userDAO.getUserFromID(resultSet.getInt("receiver_id")),
@@ -59,26 +61,72 @@ public class DBMessageDataAccessObject implements MessageDataAccessObject {
         }
     }
 
-    public <T> int addMessage(Message<T> message) throws SQLException {
+    public <T> Long addMessage(Message<T> message) throws SQLException {
         if (message.getType().equals("text"))
         {
-            String query = "INSERT INTO text_message (channel_url, sender_id, receiver_id, time_sent, status, content) " +
-                    "VALUES (?, ?, ?, ?, 'sent', ?) RETURNING message_id";
+            String query = "INSERT INTO text_message (message_id, channel_url, replying_to, sender_id, receiver_id, time_sent, status, content) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, 'sent', ?) RETURNING message_id";
 
             try (PreparedStatement statement = connection.prepareStatement(query)) {
-                statement.setString(1, message.getChannelURL());
-                statement.setInt(2, message.getSender().getUserID());
-                statement.setInt(3, message.getReceiver().getUserID());
-                statement.setTimestamp(4, message.getTimestamp());
-                statement.setString(5, (String) message.getContent());
+                statement.setLong(1, message.getMessageID());
+                statement.setString(2, message.getChannelURL());
+                if (message.getParentMessageID() == null) {
+                    statement.setNull(3, Types.NULL);
+                } else {
+                    statement.setLong(3, message.getParentMessageID());
+                }
+                statement.setInt(4, message.getSender().getUserID());
+                statement.setInt(5, message.getReceiver().getUserID());
+                statement.setTimestamp(6, message.getTimestamp());
+                statement.setString(7, (String) message.getContent());
 
                 ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {
-                    return resultSet.getInt("message_id");
+                    return resultSet.getLong("message_id");
                 }
             }
             throw new SQLException("Could not add message");
         }
-        return ERROR;
+        return null;
+    }
+
+    public void deleteMessage(Long messageId, String channelUrl) throws SQLException {
+        String query = "DELETE FROM text_message WHERE message_id = ? AND channel_url = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setLong(1, messageId);
+            statement.setString(2, channelUrl);
+
+            statement.executeQuery();
+        }
+    }
+
+    public Timestamp editMessage(String newMessage, String channelUrl, Long messageId) throws SQLException {
+        String timestampQuery = "SELECT time_sent FROM text_message WHERE message_id = ? AND channel_url = ?";
+        String updateMessageQuery = "UPDATE text_message SET content = ? AND time_sent = ? WHERE message_id = ? and channel_url = ?";
+        Timestamp oldTimestamp = null;
+
+        try (PreparedStatement statement =  connection.prepareStatement(timestampQuery)) {
+            statement.setLong(1, messageId);
+            statement.setString(2, channelUrl);
+
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                oldTimestamp = resultSet.getTimestamp("time_sent");
+            }
+        }
+
+        try (PreparedStatement statement = connection.prepareStatement(updateMessageQuery)) {
+            statement.setString(1, newMessage);
+            statement.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+            statement.setLong(3, messageId);
+            statement.setString(4, channelUrl);
+
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return oldTimestamp;
+            }
+        }
+        return null;
     }
 }

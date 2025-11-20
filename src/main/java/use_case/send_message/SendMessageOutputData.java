@@ -1,50 +1,42 @@
 package use_case.send_message;
 
-import entity.Message;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Timestamp;
 
 public class SendMessageOutputData {
-    private final List<Message> messages;
-    private List<Integer> messageIDs;
+    private Long messageId;
     private Integer senderID;
     private Integer receiverID;
     private String channelUrl;
-    private Message lastMessage;
     private String content;
+    private Timestamp timestamp;
 
-    public SendMessageOutputData(List<Message> messages,
-                                 List<Integer> messageIDs,
+    public SendMessageOutputData(Long messageId,
                                  Integer senderID,
                                  Integer receiverID,
-                                 String channelUrl) {
-        this.messages = new ArrayList<>(messages);
-        this.messageIDs = messageIDs;
+                                 String channelUrl,
+                                 String content,
+                                 Timestamp timestamp) {
+        this.messageId = messageId;
         this.senderID = senderID;
         this.receiverID = receiverID;
         this.channelUrl = channelUrl;
-        this.lastMessage = messages.get(messages.size() - 1);
-        this.content = (String) lastMessage.getContent();
+        this.content = content;
+        this.timestamp = timestamp;
     }
 
-    public List<Message> getMessages() { return messages; }
-    public List<Integer> getMessageIDs() { return messageIDs; }
-    public Message lastMessage() {
-        return messages.get(messages.size()-1);
-    }
-    public List<Integer> getMessageID() { return messageIDs; }
+    public Long getMessageId() { return messageId; }
     public Integer getSenderID() { return senderID; }
     public Integer getReceiverID() { return receiverID; }
     public String getChannelUrl() { return channelUrl; }
     public String getContent() { return content; }
+    public Timestamp getTimestamp() { return timestamp; }
 
+    public void setMessageId(Long messageId) { this.messageId = messageId; }
     public void setContent(String content) {
         this.content = content;
     }
-    public void setMessageID(List<Integer> messageIDs) { this.messageIDs = messageIDs; }
     public void setSenderID(Integer senderID) { this.senderID = senderID; }
     public void setReceiverID(Integer receiverID) { this.receiverID = receiverID; }
     public void setChannelUrl(String channelUrl) { this.channelUrl = channelUrl; }
-
+    public void setTimestamp(Timestamp timestamp) { this.timestamp = timestamp; }
 }

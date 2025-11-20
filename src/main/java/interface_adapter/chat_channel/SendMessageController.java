@@ -1,7 +1,7 @@
 package interface_adapter.chat_channel;
 
-import use_case.send_message.SendMessageInputData;
 import use_case.send_message.SendMessageInputBoundary;
+import use_case.send_message.SendMessageInputData;
 
 public class SendMessageController {
     private final SendMessageInputBoundary sendMessageUseCaseInteractor;
@@ -16,5 +16,4 @@ public class SendMessageController {
 
         sendMessageUseCaseInteractor.execute(sendMessageInputData);
     }
-
 }

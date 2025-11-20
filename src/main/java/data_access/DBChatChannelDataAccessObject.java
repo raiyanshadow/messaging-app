@@ -86,7 +86,8 @@ public class DBChatChannelDataAccessObject implements UpdateChatChannelUserDataA
 
             if (rs.next()) {
                 return MessageFactory.createTextMessage (
-                        rs.getInt("message_id"),
+                        rs.getLong("message_id"),
+                        rs.getLong("replying_to"),
                         rs.getString("channel_url"),
                         userDAO.getUserFromID(rs.getInt("sender_id")),
                         userDAO.getUserFromID(rs.getInt("receiver_id")),

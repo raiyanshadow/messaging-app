@@ -35,7 +35,11 @@ public class FriendRequestViewTest {
         DBContactDataAccessObject dummyDAO = new DBContactDataAccessObject(conn);
         DBUserDataAccessObject dummyDAO2 = new DBUserDataAccessObject(conn);
 
-        // dummyDAO.acceptRequest(dummyDAO2.getUserFromID(1), "Bob");
+
+        // testing that the methods in DBContactDAO work
+        // dummyDAO.acceptRequest(dummyDAO2.getUserFromName("Alice"), "ss");
+
+        // testing if it's possible to get all of userid#1's contacts
         User temp = dummyDAO2.getUserFromID(1);
         dummyDAO.updateUserContacts(temp, temp.getContacts());
         for (Contact contact: temp.getContacts()) {

@@ -7,6 +7,7 @@ public class AddContactState {
     private String addContactError;
     private User sender;
     private String receiver_username;
+    private String success_message;
 
     public String getUsernameInput() {
         return usernameInput;
@@ -27,6 +28,10 @@ public class AddContactState {
     public String getAddContactError() {
         return addContactError;
     }
+
+    public void setSuccess_message(String success_message) { this.success_message = success_message; }
+
+    public String getSuccess_message() { return success_message; }
 
     public void setAddContactError(String addContactError) {
         this.addContactError = addContactError;

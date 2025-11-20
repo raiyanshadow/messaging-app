@@ -93,22 +93,20 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
             try {
                 addContactController.execute(
                         state.getSender(),
-                        state.getReceiver_username()
+                        state.getUsernameInput()
                 );
-                System.out.println(usernameField.getText() + " is the username we want to add");
             }
             catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         });
 
-
         this.setLayout(new BorderLayout());
         this.add(topPanel, BorderLayout.NORTH);
         // this.add(backPanel, BorderLayout.EAST);
         this.add(midPanel, BorderLayout.CENTER);
         this.add(buttonPanel, BorderLayout.SOUTH);
-
+        this.addUsernameListener();
 
     }
 
@@ -126,12 +124,10 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
             public void insertUpdate(DocumentEvent e) {
                 updateState();
             }
-
             @Override
             public void removeUpdate(DocumentEvent e) {
                 updateState();
             }
-
             @Override
             public void changedUpdate(DocumentEvent e) {
                 updateState();
@@ -147,7 +143,13 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-
+        AddContactState state = (AddContactState) evt.getNewValue();
+        if (state.getAddContactError() != null) {
+            JOptionPane.showMessageDialog(this, state.getAddContactError());
+        }
+        if (state.getSuccess_message() != null) {
+            JOptionPane.showMessageDialog(this, state.getSuccess_message());
+        }
     }
 
 

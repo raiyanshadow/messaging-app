@@ -60,6 +60,8 @@ public class DBContactDataAccessObject implements ContactDataAccessObject, Frien
 
     @Override
     public void deleteRequest(User acceptee, String accepted_username) {
+        // maybe need a DBFriendRequestDAO that is similar to DBContactDAO (?)
+        // that stores all the friend requests in the same way (?)
         System.out.println("deleting request...");
     }
 }

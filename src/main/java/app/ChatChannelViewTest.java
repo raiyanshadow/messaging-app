@@ -267,7 +267,7 @@ public class ChatChannelViewTest {
 
         // 4. Interactor
         UpdateChatChannelInputBoundary interactor = new UpdateChatChannelInteractor(chatDAO, presenter);
-        SendMessageInputBoundary messageInteractor = new SendMessageInteractor(presenter2, userDAO, chatDAO, messageDAO, sessionManager, messageSender);
+        SendMessageInputBoundary messageInteractor = new SendMessageInteractor(presenter2, userDAO, messageDAO, sessionManager, messageSender);
 
         // 5. Controller
         UpdateChatChannelController controller = new UpdateChatChannelController(interactor);

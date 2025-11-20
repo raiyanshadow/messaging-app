@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatChannelState {
-    private List<Message> messages = new ArrayList<>();
+    private List<String> messages = new ArrayList<>();
     private List<Integer> messageIDs = new ArrayList<>();
     private String channelUrl;
     private User sender;
@@ -15,7 +15,7 @@ public class ChatChannelState {
     private String chatName;
     private boolean shouldGoHome = false;
 
-    public List<Message> getMessages() { return messages; }
+    public List<String> getMessages() { return messages; }
     public List<Integer> getMessageIDs() { return messageIDs; }
     public String getChannelUrl() { return channelUrl; }
     public User getSender() { return sender; }
@@ -24,7 +24,7 @@ public class ChatChannelState {
     public boolean getShouldGoHome() { return shouldGoHome; }
     public String  getChatName() { return chatName; }
 
-    public void setMessages(List<Message> messages) { this.messages = new ArrayList<>(messages); }
+    public void setMessages(List<String> messages) { this.messages = new ArrayList<>(messages); }
     public void setMessageIDs(List<Integer> messageIDs) { this.messageIDs = new ArrayList<>(messageIDs); }
     public void setChannelUrl(String channelUrl) { this.channelUrl = channelUrl; }
     public void setSender(User sender) { this.sender = sender; }

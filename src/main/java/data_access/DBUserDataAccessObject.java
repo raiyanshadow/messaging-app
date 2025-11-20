@@ -102,4 +102,17 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
         return null; // no user found
     }
 
+    public int getIDFromName(String username) throws SQLException {
+        String query = "SELECT * FROM \"user\" WHERE username = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, username); // use String for name
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        }
+        // no user found so no userID
+        return 0;
+    }
 }

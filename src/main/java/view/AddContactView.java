@@ -6,8 +6,6 @@ import interface_adapter.add_contact.AddContactViewModel;
 import interface_adapter.base_UI.baseUIState;
 import interface_adapter.base_UI.baseUIViewModel;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.signup.SignupState;
-import interface_adapter.signup.SignupViewModel;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -35,15 +33,15 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
         viewManagerModel.addPropertyChangeListener(this);
 
         // initialize back button and add button
-        JButton backButton = new JButton(addContactViewModel.BACK_BUTTON_LABEL);
-        JButton addButton = new JButton(addContactViewModel.ADD_CONTACT_BUTTON_LABEL);
+        JButton backButton = new JButton(AddContactViewModel.BACK_BUTTON_LABEL);
+        JButton addButton = new JButton(AddContactViewModel.ADD_CONTACT_BUTTON_LABEL);
         final Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
         backButton.setFont(buttonFont);
         addButton.setFont(buttonFont);
 
 
         // create title panel
-        JLabel title = new JLabel(addContactViewModel.TITLE_LABEL, SwingConstants.CENTER);
+        JLabel title = new JLabel(labelName, SwingConstants.CENTER);
         title.setFont(new Font("SansSerif", Font.BOLD, 28));
         JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         titlePanel.add(title);
@@ -82,6 +80,8 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
 
         // back button action listener
         backButton.addActionListener(e -> {
+            // heading back to baseUI view
+            System.out.println("Back button pressed -> head back to base UI view");
             baseUIViewModel.setState(new baseUIState());
             viewManagerModel.setState(baseUIViewModel.getViewName());
             viewManagerModel.firePropertyChange();
@@ -95,6 +95,7 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
                         state.getSender(),
                         state.getReceiver_username()
                 );
+                System.out.println(usernameField.getText() + " is the username we want to add");
             }
             catch (SQLException e) {
                 throw new RuntimeException(e);

@@ -15,6 +15,7 @@ import use_case.add_contact.*;
 import use_case.signup.SignupOutputBoundary;
 import use_case.signup.SignupOutputData;
 import view.AddContactView;
+import view.BaseUIView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,20 +31,7 @@ public class AddContactViewTest {
         Connection conn = DBConnectionFactory.createConnection();
         DBUserDataAccessObject dummyDAO = new DBUserDataAccessObject(conn);
 
-        /*
-        AddContactOutputBoundary dummyPresenter = new AddContactOutputBoundary(){
-            @Override
-            public void prepareFailView(String message) {
-                JOptionPane.showMessageDialog(frame, message, "add contact Failed", JOptionPane.ERROR_MESSAGE);
-            }
 
-
-            @Override
-            public void prepareSuccessView(AddContactOutputData outputData) {
-                JOptionPane.showMessageDialog(frame, "add contact successful");
-            }
-        };
-        */
         AddContactViewModel viewModel = new AddContactViewModel();
         ViewManagerModel viewManager = new ViewManagerModel();
 

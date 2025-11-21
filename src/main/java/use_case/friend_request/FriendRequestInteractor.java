@@ -17,19 +17,24 @@ public class FriendRequestInteractor implements FriendRequestInputBoundary {
 
     @Override
     public void execute(FriendRequestInputData friendRequestInputData) {
-        final User user1 = friendRequestInputData.getUser1();
-        final User user2 = friendRequestInputData.getUser2();
+        final User acceptee = friendRequestInputData.getAcceptee();
+        final String accepted_username = friendRequestInputData.getAccepted_username();
 
         // decline friend request -> delete for both users
         if (!friendRequestInputData.getAccept()){
-            userDataAccessObject.deleteRequest(user1, user2);
+            userDataAccessObject.deleteRequest(acceptee, accepted_username);
             userPresenter.prepareFailView("you have declined the friend request");
         }
         // accept friend request -> add both users to each other's contacts
         else {
-            userDataAccessObject.acceptRequest(user1, user2);
-            final FriendRequestOutputData friendRequestOutputData = new FriendRequestOutputData(user1, user2);
+            userDataAccessObject.acceptRequest(acceptee, accepted_username);
+            final FriendRequestOutputData friendRequestOutputData = new FriendRequestOutputData(acceptee, accepted_username);
             userPresenter.prepareSuccessView(friendRequestOutputData);
         }
+    }
+
+    @Override
+    public void switchToContactsView() {
+        userPresenter.switchToContactsView();
     }
 }

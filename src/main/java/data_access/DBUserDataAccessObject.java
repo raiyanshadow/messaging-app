@@ -1,11 +1,13 @@
 package data_access;
 
 import entity.User;
+import use_case.add_contact.AddContactUserDataAccessInterface;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DBUserDataAccessObject implements UserDataAccessObject {
+public class DBUserDataAccessObject implements UserDataAccessObject, AddContactUserDataAccessInterface {
 
     private final Connection connection;
 
@@ -39,6 +41,11 @@ public class DBUserDataAccessObject implements UserDataAccessObject {
             ResultSet rs = statement.executeQuery();
             return rs.next();
         }
+    }
+
+    @Override
+    public void sendRequest(User sender, String receiver_username) {
+
     }
 
     // Get a user by ID
@@ -95,4 +102,17 @@ public class DBUserDataAccessObject implements UserDataAccessObject {
         return null; // no user found
     }
 
+    public int getIDFromName(String username) throws SQLException {
+        String query = "SELECT * FROM \"user\" WHERE username = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, username); // use String for name
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        }
+        // no user found so no userID
+        return 0;
+    }
 }

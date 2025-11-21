@@ -55,8 +55,8 @@ public class DirectChatChannel {
         return messages;
     }
 
-    public List<Integer> getMessageIDs() {
-        List<Integer> messageIDs = new ArrayList<>();
+    public List<Long> getMessageIDs() {
+        List<Long> messageIDs = new ArrayList<>();
         for  (Message message : messages) {
             messageIDs.add(message.getMessageID());
         }

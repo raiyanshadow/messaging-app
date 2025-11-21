@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 public class SendMessageInteractor implements SendMessageInputBoundary {
     private SendMessageOutputBoundary presenter;
     private UserDataAccessObject userDataAccessObject;
-    private ChatChannelDataAccessObject chatChannelDataAccessObject;
     private MessageDataAccessObject messageDataAccessObject;
     private Session sessionManager;
     private MessageSender messageSender;
@@ -29,13 +28,11 @@ public class SendMessageInteractor implements SendMessageInputBoundary {
 
     public SendMessageInteractor(SendMessageOutputBoundary presenter,
                                  UserDataAccessObject userDataAccessObject,
-                                 ChatChannelDataAccessObject chatChannelDataAccessObject,
                                  MessageDataAccessObject messageDataAccessObject,
                                  Session sessionManager,
                                  MessageSender messageSender) {
         this.presenter = presenter;
         this.userDataAccessObject = userDataAccessObject;
-        this.chatChannelDataAccessObject = chatChannelDataAccessObject;
         this.messageDataAccessObject = messageDataAccessObject;
         this.sessionManager = sessionManager;
         this.messageSender = messageSender;
@@ -45,29 +42,21 @@ public class SendMessageInteractor implements SendMessageInputBoundary {
     @Override
     public void execute(SendMessageInputData request) {
         final User currentUser = sessionManager.getMainUser();
-        Message lastMessage;
         User receiver;
-        DirectChatChannel chatChannel;
+
         try {
             receiver = userDataAccessObject.getUserFromID(request.getReceiverID());
-            chatChannel = chatChannelDataAccessObject.getDirectChatChannelByURL(
-                    request.getChannelUrl());
-            lastMessage = chatChannelDataAccessObject.getLastMessage(chatChannel.getChatURL());
         } catch (SQLException e) {
             presenter.prepareSendMessageFailView("DB read fail");
             return;
         }
-        System.out.println(lastMessage.getContent());
 
-        final Integer newID;
+        Long messageId = messageSender.sendMessage(request.getMessage(),
+                dotenv.get("MSG_TOKEN"),
+                request.getChannelUrl(),
+                currentUser.getUserID());
 
-        if (lastMessage != null) {
-            newID = lastMessage.getMessageID() + 1;
-        } else {
-            newID = 0;
-        }
-
-        Message<String> message = MessageFactory.createTextMessage(newID,
+        Message<String> message = MessageFactory.createTextMessage(messageId,
                 request.getChannelUrl(),
                 currentUser,
                 receiver,
@@ -75,16 +64,7 @@ public class SendMessageInteractor implements SendMessageInputBoundary {
                 Timestamp.valueOf(LocalDateTime.now()),
                 request.getMessage());
 
-        System.out.println(message.getContent());
-        System.out.println(request.getChannelUrl());
-        System.out.println(currentUser.getUsername());
-
-        String status = messageSender.sendMessage(message.getContent(),
-                dotenv.get("MSG_TOKEN"),
-                request.getChannelUrl(),
-                currentUser);
-
-        if (status.equals("fail")) {
+        if (messageId == null) {
             presenter.prepareSendMessageFailView("sendbird write fail");
             return;
         }
@@ -96,19 +76,13 @@ public class SendMessageInteractor implements SendMessageInputBoundary {
             return;
         }
 
-        try {
-            chatChannel = chatChannelDataAccessObject.getDirectChatChannelByURL(request.getChannelUrl());
-        } catch (SQLException e) {
-            presenter.prepareSendMessageFailView("DB read fail");
-            return;
-        }
-
         SendMessageOutputData response = new SendMessageOutputData(
-                chatChannel.getMessages(),
-                chatChannel.getMessageIDs(),
+                messageId,
                 currentUser.getUserID(),
                 receiver.getUserID(),
-                request.getChannelUrl()
+                request.getChannelUrl(),
+                request.getMessage(),
+                message.getTimestamp()
         );
 
         presenter.prepareSendMessageSuccessView(response);

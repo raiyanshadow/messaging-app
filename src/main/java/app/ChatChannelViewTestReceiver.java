@@ -4,40 +4,35 @@ package app;
  * This is just to test the view. will delete after
  */
 
-import javax.swing.*;
-
-import SendBirdAPI.ChannelCreator;
 import SendBirdAPI.MessageSender;
-import data_access.*;
+import data_access.DBChatChannelDataAccessObject;
+import data_access.DBMessageDataAccessObject;
+import data_access.DBUserDataAccessObject;
+import data_access.UserDataAccessObject;
 import entity.DirectChatChannel;
-import entity.Message;
-import entity.MessageFactory;
 import entity.User;
-import interface_adapter.chat_channel.*;
+import interface_adapter.chat_channel.ChatChannelPresenter;
+import interface_adapter.chat_channel.MessageViewModel;
+import interface_adapter.chat_channel.SendMessageController;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
 import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
-import interface_adapter.update_chat_channel.UpdateChatChannelState;
 import io.github.cdimascio.dotenv.Dotenv;
 import session.Session;
 import session.SessionManager;
 import use_case.send_message.SendMessageInputBoundary;
-import use_case.send_message.SendMessageInputData;
 import use_case.send_message.SendMessageInteractor;
-import use_case.send_message.SendMessageOutputData;
 import use_case.update_chat_channel.UpdateChatChannelInputBoundary;
-import use_case.update_chat_channel.UpdateChatChannelInputData;
 import use_case.update_chat_channel.UpdateChatChannelInteractor;
-import data_access.DBChatChannelDataAccessObject;
-import use_case.update_chat_channel.UpdateChatChannelOutputData;
 import view.ChatChannelView;
 
-import java.sql.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import javax.swing.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
-public class ChatChannelViewTest {
+public class ChatChannelViewTestReceiver {
     public static <DBessageDataAccessObject> void main(String[] args) throws SQLException {
 
 //        // 1. Create ViewModel
@@ -179,8 +174,8 @@ public class ChatChannelViewTest {
         String appId = dotenv.get("MSG_APP_ID");
         String apiToken = dotenv.get("MSG_TOKEN");
 
-        User user1 = new User(1, "Alice", "abc", "English");
-        User user2 = new User(2, "Bob", "def", "English");
+        User user1 = new User(2, "Bob", "def", "English");
+        User user2 = new User(1, "Alice", "abc", "English");
 
         // Insert users if they don't exist
         String insertUserSQL = "INSERT INTO \"user\" (id, username, created_at, preferred_language, password) " +
@@ -210,8 +205,7 @@ public class ChatChannelViewTest {
         // Insert chat channel
         String insertChatSQL = "INSERT INTO chat_channel (user1_id, user2_id, channel_url, name) " +
                 "VALUES (?, ?, ?, ?) " +
-                "ON CONFLICT (user1_id, user2_id) DO UPDATE " +
-                "SET channel_url = EXCLUDED.channel_url, name = EXCLUDED.name";
+                "ON CONFLICT (channel_url) DO NOTHING";
 
         try (PreparedStatement ps = connection.prepareStatement(insertChatSQL)) {
             ps.setInt(1, user1.getUserID());

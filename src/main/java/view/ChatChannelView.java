@@ -38,11 +38,15 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private boolean pending;
 
 //    private List<MessageViewModel> messagesToDisplay;
-    public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel) {
+    public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel, Integer senderID, Integer receiverID, String senderUsername, String chatURL) {
         this.updateChatChannelViewModel = updateChatChannelViewModel;
         this.updateChatChannelViewModel.addPropertyChangeListener(this);
         this.messageViewModel = new MessageViewModel();
         this.messageViewModel.addPropertyChangeListener(this);
+        this.senderID = senderID;
+        this.receiverID = receiverID;
+        this.senderUsername = senderUsername;
+        this.chatURL = chatURL;
 
 //        this.chatURL = updateChatChannelViewModel.getState().getChatURL();
 //        this.senderID = updateChatChannelViewModel.getState().getUser1ID();
@@ -87,7 +91,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
                     messageState.setContent(message);
                     messageViewModel.setState(messageState);
                     // Display message instantly (overcomes lag)
-                    MessagePanel instantMessagePanel = new MessagePanel(new JLabel(messageState.getSenderName()), new JLabel(messageState.getContent()),
+                    MessagePanel instantMessagePanel = new MessagePanel(new JLabel(senderUsername), new JLabel(messageState.getContent()),
                             new JLabel(LocalDateTime.now().toString()));
                     instantMessagePanel.setLayout(new BoxLayout(instantMessagePanel, BoxLayout.Y_AXIS));
                     instantMessagePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -118,13 +122,12 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("state")) {
             final UpdateChatChannelState state = (UpdateChatChannelState) evt.getNewValue();
-            if (chatURL == null) {
-                chatURL = state.getChatURL();
-                senderID = state.getUser1ID();
-                receiverID = state.getUser2ID();
-                senderUsername = state.getUser1Name();
-//                messagesToDisplay = state.getMessages();
-            }
+//            if (chatURL == null) {
+//                chatURL = state.getChatURL();
+//                senderID = state.getUser1ID();
+//                receiverID = state.getUser2ID();
+//                senderUsername = state.getUser1Name();
+//            }
             chatName.setText(state.getChatChannelName());
             updateMessage(state.getMessages());
         }
@@ -135,13 +138,6 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
             while (true) {
                 try {
                     UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
-//                    UpdateChatChannelState newState = new UpdateChatChannelState();
-//                    newState.setChatChannelName(updateChatChannelState.getChatChannelName());
-//                    newState.setChatURL(updateChatChannelState.getChatURL());
-//                    newState.setUser1ID(updateChatChannelState.getUser1ID());
-//                    newState.setUser2ID(updateChatChannelState.getUser2ID());
-//                    newState.setMessages(updateChatChannelState.getMessages());
-//                    updateChatChannelViewModel.setState(newState);
                     updateChatChannelController.execute(updateChatChannelState.getChatURL());
                     pending = false; // temporary message stored to database, safe to redraw
                     Thread.sleep(200);
@@ -175,6 +171,10 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
             }
             messageContainer.revalidate();
             messageContainer.repaint();
+            SwingUtilities.invokeLater(() -> { // TODO: Fix scrolling after
+                JScrollBar vertical = scrollPane.getVerticalScrollBar();
+                vertical.setValue(vertical.getMaximum());
+            });
         }
 
 //        scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());

@@ -26,7 +26,7 @@ public class FriendRequestPresenter implements FriendRequestOutputBoundary {
     public void prepareFailView(String errorMessage) {
         final FriendRequestState state = friendRequestViewModel.getState();
         state.setSuccess_message(null);
-        state.setFriendRequestError("declined " + state.getAccepted_username() + " as a contact");
+        state.setFriendRequestError(errorMessage);
         friendRequestViewModel.firePropertyChange();
 
     }

@@ -49,9 +49,10 @@ public class FriendRequestViewTest {
         FriendRequestViewModel viewModel = new FriendRequestViewModel();
         ViewManagerModel viewManager = new ViewManagerModel();
 
-        FriendRequestPresenter presenter = new FriendRequestPresenter(viewModel, viewManager);
-        ViewManagerModel viewManagerModel = new ViewManagerModel();
         baseUIViewModel baseUIViewModel = new baseUIViewModel("baseUIView");
+        FriendRequestPresenter presenter = new FriendRequestPresenter(viewModel, viewManager, baseUIViewModel);
+        ViewManagerModel viewManagerModel = new ViewManagerModel();
+
 
         SessionManager sessionManager = new SessionManager(temp, true);
         FriendRequestView view = new FriendRequestView(viewModel, baseUIViewModel, viewManagerModel, sessionManager);

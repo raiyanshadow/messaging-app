@@ -19,12 +19,19 @@ public class AddContactInteractor implements AddContactInputBoundary {
     public void execute(AddContactInputData addContactInputData) throws SQLException {
         final User sender = addContactInputData.getSender();
         final String receiver_username = addContactInputData.getReceiverUsername();
+
+        // did not enter a username
+        if (receiver_username == null){
+            userPresenter.prepareFailView("Please enter in a username");
+        }
+
         // user2 (user who should receive add contact request) does not exist
-        if (!userDataAccessObject.existsByName(receiver_username)) {
+        else if (!userDataAccessObject.existsByName(receiver_username)) {
 
             System.out.println("The user: " + receiver_username +  " u want to add does not exist");
             userPresenter.prepareFailView("The user you want to add does not exist");
         }
+
 
         else { // user2 does exist
 

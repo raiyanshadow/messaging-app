@@ -101,9 +101,6 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
         backButton.addActionListener(e -> {
             // heading back to baseUI view
             System.out.println("Back button pressed -> head back to base UI view");
-            baseUIViewModel.setState(new baseUIState());
-            viewManagerModel.setState(baseUIViewModel.getViewName());
-            viewManagerModel.firePropertyChange();
         });
 
 

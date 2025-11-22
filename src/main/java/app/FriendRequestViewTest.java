@@ -14,6 +14,7 @@ import interface_adapter.friend_request.FriendRequestController;
 import interface_adapter.friend_request.FriendRequestPresenter;
 import interface_adapter.friend_request.FriendRequestViewModel;
 import io.github.cdimascio.dotenv.Dotenv;
+import session.SessionManager;
 import use_case.add_contact.AddContactInputBoundary;
 import use_case.add_contact.AddContactInteractor;
 import use_case.friend_request.FriendRequestInputBoundary;
@@ -42,6 +43,8 @@ public class FriendRequestViewTest {
         // testing if it's possible to get all of userid#1's contacts
         User temp = dummyDAO2.getUserFromID(1);
         dummyDAO.updateUserContacts(temp, temp.getContacts());
+        dummyDAO.updateUserFriendRequests(temp, temp.getFriendRequests());
+        System.out.println(temp.getUsername());
         for (Contact contact: temp.getContacts()) {
             System.out.println(contact.getContact().getUserID());
         }
@@ -53,7 +56,9 @@ public class FriendRequestViewTest {
         FriendRequestPresenter presenter = new FriendRequestPresenter(viewModel, viewManager);
         ViewManagerModel viewManagerModel = new ViewManagerModel();
         baseUIViewModel baseUIViewModel = new baseUIViewModel("baseUIView");
-        FriendRequestView view = new FriendRequestView(viewModel, baseUIViewModel, viewManagerModel);
+
+        SessionManager sessionManager = new SessionManager(temp, true);
+        FriendRequestView view = new FriendRequestView(viewModel, baseUIViewModel, viewManagerModel, sessionManager);
 
         FriendRequestInputBoundary interactor = new FriendRequestInteractor(dummyDAO, presenter);
         FriendRequestController controller = new FriendRequestController(interactor);

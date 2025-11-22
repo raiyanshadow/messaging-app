@@ -11,6 +11,7 @@ public class User {
     private String password;
     private List<Contact> contacts;
     private List<String> userChats;
+    private List<String> friendRequests;
     private Timestamp createdAt;
 //    private String loginToken;
 //    private String encryptionKey;
@@ -28,6 +29,7 @@ public class User {
         this.password = password;
         this.preferredLanguage = preferredLanguage; // preferred language will default to English
         this.contacts = new ArrayList<>();
+        this.friendRequests = new ArrayList<>();
     }
 
     public void addContact(User user) {
@@ -90,4 +92,7 @@ public class User {
     public List<String> returnChats(){
         return this.userChats;
     }
+    public List<String> getFriendRequests(){ return this.friendRequests; }
+    public void setFriendRequests(List<String> friendRequests) { this.friendRequests = friendRequests; }
+
 }

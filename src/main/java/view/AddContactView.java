@@ -6,6 +6,7 @@ import interface_adapter.add_contact.AddContactViewModel;
 import interface_adapter.base_UI.baseUIState;
 import interface_adapter.base_UI.baseUIViewModel;
 import interface_adapter.ViewManagerModel;
+import session.Session;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -24,13 +25,17 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
     private final JTextField usernameField =  new JTextField(20);
     private AddContactController addContactController = null;
     private final ViewManagerModel viewManagerModel;
+    private final Session sessionmanager;
 
 
-    public AddContactView(AddContactViewModel addContactViewModel, baseUIViewModel baseUIViewModel, ViewManagerModel viewManagerModel) {
+    public AddContactView(AddContactViewModel addContactViewModel, baseUIViewModel baseUIViewModel, ViewManagerModel viewManagerModel, Session sessionmanager) {
         this.addContactViewModel = addContactViewModel;
         this.viewManagerModel = viewManagerModel;
+        this.sessionmanager = sessionmanager;
         addContactViewModel.addPropertyChangeListener(this);
         viewManagerModel.addPropertyChangeListener(this);
+
+
 
         // initialize back button and add button
         JButton backButton = new JButton(AddContactViewModel.BACK_BUTTON_LABEL);
@@ -136,6 +141,7 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
             private void updateState() {
                 AddContactState state = addContactViewModel.getState();
                 state.setUsername(usernameField.getText());
+                state.setSender(sessionmanager.getMainUser());
                 addContactViewModel.setState(state);
             }
         });

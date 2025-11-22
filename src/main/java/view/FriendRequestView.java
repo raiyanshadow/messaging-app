@@ -1,15 +1,20 @@
 package view;
 
+import entity.Contact;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.add_contact.AddContactState;
 import interface_adapter.base_UI.baseUIState;
 import interface_adapter.base_UI.baseUIViewModel;
 import interface_adapter.friend_request.FriendRequestController;
+import interface_adapter.friend_request.FriendRequestState;
 import interface_adapter.friend_request.FriendRequestViewModel;
+import session.Session;
 
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.sql.SQLException;
 
 public class FriendRequestView extends JPanel implements PropertyChangeListener {
 
@@ -17,12 +22,16 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
     private final FriendRequestViewModel friendRequestViewModel;
     private FriendRequestController friendRequestController = null;
     private final ViewManagerModel viewManagerModel;
+    private final Session sessionmanager;
 
-    public FriendRequestView(FriendRequestViewModel friendRequestViewModel, baseUIViewModel baseUIViewModel, ViewManagerModel viewManagerModel) {
+    public FriendRequestView(FriendRequestViewModel friendRequestViewModel, baseUIViewModel baseUIViewModel, ViewManagerModel viewManagerModel, Session sessionmanager) {
         this.friendRequestViewModel = friendRequestViewModel;
         this.viewManagerModel = viewManagerModel;
+        this.sessionmanager = sessionmanager;
 
 
+
+        FriendRequestState state = friendRequestViewModel.getState();
         // initialize back button
         JButton backButton = new JButton("Back");
         final Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
@@ -66,20 +75,9 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
         // Create a data model for the list
         DefaultListModel<String> listModel = new DefaultListModel<>();
 
-        // Add some dummy data
-        listModel.addElement("Friend1");
-        listModel.addElement("Friend2");
-        listModel.addElement("Friend3");
-        listModel.addElement("Friend4");
-        listModel.addElement("Friend5");
-        listModel.addElement("Friend6");
-        listModel.addElement("Friend7");
-        listModel.addElement("Friend8");
-        listModel.addElement("Friend9");
-        listModel.addElement("Friend10");
-        listModel.addElement("Friend11");
-        listModel.addElement("Friend12");
-        listModel.addElement("Friend999");
+        for (String friendRequest : sessionmanager.getMainUser().getFriendRequests()) {
+            listModel.addElement(friendRequest);
+        }
 
         // Create the JList using the model
         JList<String> scrollableList = new JList<>(listModel);
@@ -109,7 +107,30 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
             viewManagerModel.setState(baseUIViewModel.getViewName());
             viewManagerModel.firePropertyChange();
         });
+
+
+        acceptButton.addActionListener(evt -> {
+
+            state.setAcceptee(sessionmanager.getMainUser());
+            try {
+                friendRequestController.execute(
+                        state.getAcceptee(),
+                        state.getAccepted_username(),
+                        true
+                );
+            }
+            catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+
+        scrollableList.addListSelectionListener(e -> {
+            System.out.println(scrollableList.getSelectedValue());
+            state.setAccepted_username(scrollableList.getSelectedValue());
+        });
     }
+
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {

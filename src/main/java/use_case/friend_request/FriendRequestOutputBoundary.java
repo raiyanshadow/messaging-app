@@ -14,4 +14,5 @@ public interface FriendRequestOutputBoundary {
      * @param errorMessage the message to display
      */
     void prepareFailView(String errorMessage);
+    void switchToContactsView();
 }

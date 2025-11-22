@@ -4,23 +4,19 @@ import entity.User;
 
 public class FriendRequestInputData {
     // user1 is the user who sends out add contact request
-    private final User user1;
+    private final User acceptee;
     // user2 is the user who receives add contact request
-    private final User user2;
+    private final String accepted_username;
     // true if user2 accepts the request
     private final boolean accept;
 
-    public FriendRequestInputData(User user1, User user2, boolean accept) {
-        this.user1 = user1;
-        this.user2 = user2;
+    public FriendRequestInputData(User acceptee, String accepted_username, boolean accept) {
+        this.acceptee = acceptee;
+        this.accepted_username = accepted_username;
         this.accept = accept;
     }
 
-    User getUser1() {
-        return user1;
-    }
-    User getUser2() {
-        return user2;
-    }
+    User getAcceptee() { return acceptee; }
+    String getAccepted_username() { return accepted_username; }
     boolean getAccept() { return accept; }
 }

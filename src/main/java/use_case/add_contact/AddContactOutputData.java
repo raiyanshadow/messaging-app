@@ -5,20 +5,20 @@ import entity.User;
 
 public class AddContactOutputData {
     // user1 is the user who sends out add contact request
-    private final User user1;
+    private final User sender;
     // user2 is the user who receives add contact request
-    private final User user2;
+    private final String receiver_username;
 
-    public AddContactOutputData(User user1, User user2) {
-        this.user1 = user1;
-        this.user2 = user2;
+    public AddContactOutputData(User sender, String receiver_username) {
+        this.sender = sender;
+        this.receiver_username = receiver_username;
     }
 
-    User getUser1() {
-        return user1;
+    User getSender() {
+        return sender;
     }
-    User getUser2() {
-        return user2;
+    String getReceiverUsername() {
+        return receiver_username;
     }
 
 }

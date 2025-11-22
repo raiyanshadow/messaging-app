@@ -44,6 +44,7 @@ public class AddContactViewTest {
         AddContactPresenter presenter = new AddContactPresenter(viewModel, viewManager);
         ViewManagerModel viewManagerModel = new ViewManagerModel();
         baseUIViewModel baseUIViewModel = new baseUIViewModel("baseUIView");
+        BaseUIView baseUIView = new BaseUIView(baseUIViewModel);
 
         SessionManager sessionManager = new SessionManager(temp, true);
         AddContactView view = new AddContactView(viewModel, baseUIViewModel, viewManagerModel, sessionManager);
@@ -51,6 +52,8 @@ public class AddContactViewTest {
         AddContactInputBoundary interactor = new AddContactInteractor(dummyDAO, presenter);
         AddContactController controller = new AddContactController(interactor);
         view.setAddContactController(controller);
+
+
 
         frame.add(view, BorderLayout.CENTER);
         frame.pack();

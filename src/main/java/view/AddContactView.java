@@ -34,9 +34,8 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
         this.viewManagerModel = viewManagerModel;
         this.sessionmanager = sessionmanager;
         this.baseUIViewModel = baseUIViewModel;
-        addContactViewModel.addPropertyChangeListener(this);
-        viewManagerModel.addPropertyChangeListener(this);
 
+        addContactViewModel.addPropertyChangeListener(this);
 
 
         // initialize back button and add button
@@ -88,11 +87,18 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
         // back button action listener
         backButton.addActionListener(e -> {
             // heading back to baseUI view
-            System.out.println("Back button pressed -> head back to base UI view");
+            System.out.println("Back button pressed");
+            baseUIViewModel.setState(new baseUIState());
+            System.out.println(baseUIViewModel.getViewName());
+
+            this.viewManagerModel.setState(baseUIViewModel.getViewName());
+            System.out.println(this.viewManagerModel.getState());
+            this.viewManagerModel.firePropertyChange();
 
         });
 
         // add button action listener
+
         addButton.addActionListener(evt -> {
             AddContactState state = addContactViewModel.getState();
             try {

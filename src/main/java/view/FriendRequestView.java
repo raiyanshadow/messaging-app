@@ -30,7 +30,9 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
         this.sessionmanager = sessionmanager;
 
         friendRequestViewModel.addPropertyChangeListener(this);
-        viewManagerModel.addPropertyChangeListener(this);
+        BaseUIView baseUIView = new BaseUIView(baseUIViewModel);
+        baseUIViewModel.addPropertyChangeListener(baseUIView);
+        // viewManagerModel.addPropertyChangeListener(this);
 
 
         FriendRequestState state = friendRequestViewModel.getState();
@@ -99,8 +101,10 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
 
         // back button action listener
         backButton.addActionListener(e -> {
-            // heading back to baseUI view
-            System.out.println("Back button pressed -> head back to base UI view");
+            System.out.println("Back button pressed");
+            baseUIViewModel.setState(new baseUIState());
+            this.viewManagerModel.setState(baseUIViewModel.getViewName());
+            this.viewManagerModel.firePropertyChange();
         });
 
 

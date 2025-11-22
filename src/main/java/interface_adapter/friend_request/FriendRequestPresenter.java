@@ -16,13 +16,17 @@ public class FriendRequestPresenter implements FriendRequestOutputBoundary {
 
     @Override
     public void prepareSuccessView(FriendRequestOutputData friendRequestOutputData) {
-        final FriendRequestState friendRequestState = friendRequestViewModel.getState();
+        final FriendRequestState state = friendRequestViewModel.getState();
+        state.setFriendRequestError(null);
+        state.setSuccess_message("accepted " + state.getAccepted_username() + " as a contact");
+        friendRequestViewModel.firePropertyChange();
     }
 
     @Override
     public void prepareFailView(String errorMessage) {
-        final FriendRequestState friendRequestState = friendRequestViewModel.getState();
-        friendRequestState.setFriendRequestError(errorMessage);
+        final FriendRequestState state = friendRequestViewModel.getState();
+        state.setSuccess_message(null);
+        state.setFriendRequestError("declined " + state.getAccepted_username() + " as a contact");
         friendRequestViewModel.firePropertyChange();
 
     }

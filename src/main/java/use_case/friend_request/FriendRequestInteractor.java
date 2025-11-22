@@ -27,6 +27,7 @@ public class FriendRequestInteractor implements FriendRequestInputBoundary {
         }
         // accept friend request -> add both users to each other's contacts
         else {
+            System.out.println("acceptinggggggg............");
             userDataAccessObject.acceptRequest(acceptee, accepted_username);
             final FriendRequestOutputData friendRequestOutputData = new FriendRequestOutputData(acceptee, accepted_username);
             userPresenter.prepareSuccessView(friendRequestOutputData);

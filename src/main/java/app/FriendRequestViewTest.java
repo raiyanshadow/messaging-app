@@ -45,10 +45,6 @@ public class FriendRequestViewTest {
         dummyDAO.updateUserContacts(temp, temp.getContacts());
         dummyDAO.updateUserFriendRequests(temp, temp.getFriendRequests());
         System.out.println(temp.getUsername());
-        for (Contact contact: temp.getContacts()) {
-            System.out.println(contact.getContact().getUserID());
-        }
-
 
         FriendRequestViewModel viewModel = new FriendRequestViewModel();
         ViewManagerModel viewManager = new ViewManagerModel();

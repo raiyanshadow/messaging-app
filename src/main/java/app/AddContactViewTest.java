@@ -35,7 +35,7 @@ public class AddContactViewTest {
 
         // testing if actually able to send request
         // dummyDAO.sendRequest(dummyDAO.getUserFromName("a"), "Bob");
-        User temp = dummyDAO.getUserFromID(1);
+        User temp = dummyDAO.getUserFromID(15);
         System.out.println(temp.getUsername());
 
         AddContactViewModel viewModel = new AddContactViewModel();

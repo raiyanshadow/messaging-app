@@ -7,6 +7,7 @@ public class FriendRequestState {
     private User acceptee;
     private String accepted_username;
     private Boolean acceptornot;
+    private String success_message;
 
     public String getFriendRequestError() {
         return friendRequestError;
@@ -38,5 +39,13 @@ public class FriendRequestState {
 
     public void setAcceptornot(Boolean acceptornot) {
         this.acceptornot = acceptornot;
+    }
+
+    public String getSuccess_message() {
+        return success_message;
+    }
+
+    public void setSuccess_message(String success_message) {
+        this.success_message = success_message;
     }
 }

@@ -29,6 +29,8 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
         this.viewManagerModel = viewManagerModel;
         this.sessionmanager = sessionmanager;
 
+        friendRequestViewModel.addPropertyChangeListener(this);
+        viewManagerModel.addPropertyChangeListener(this);
 
 
         FriendRequestState state = friendRequestViewModel.getState();
@@ -94,10 +96,6 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
         this.add(topPanel, BorderLayout.NORTH);
         this.add(midPanel, BorderLayout.CENTER);
 
-        // scrollable list listener
-        scrollableList.addListSelectionListener(e -> {
-            System.out.println(scrollableList.getSelectedValue());
-        });
 
         // back button action listener
         backButton.addActionListener(e -> {
@@ -113,11 +111,36 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
 
             state.setAcceptee(sessionmanager.getMainUser());
             try {
+                System.out.println(state.getAcceptee().getUsername());
+                System.out.println(state.getAccepted_username());
+
                 friendRequestController.execute(
                         state.getAcceptee(),
                         state.getAccepted_username(),
                         true
                 );
+                listModel.removeElement(state.getAccepted_username());
+
+            }
+            catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        declineButton.addActionListener(evt -> {
+
+            state.setAcceptee(sessionmanager.getMainUser());
+            try {
+                System.out.println(state.getAcceptee().getUsername());
+                System.out.println(state.getAccepted_username());
+
+                friendRequestController.execute(
+                        state.getAcceptee(),
+                        state.getAccepted_username(),
+                        false
+                );
+                listModel.removeElement(state.getAccepted_username());
+
             }
             catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -126,7 +149,7 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
 
 
         scrollableList.addListSelectionListener(e -> {
-            System.out.println(scrollableList.getSelectedValue());
+            // System.out.println(scrollableList.getSelectedValue());
             state.setAccepted_username(scrollableList.getSelectedValue());
         });
     }
@@ -134,7 +157,13 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-
+        FriendRequestState state = (FriendRequestState) evt.getNewValue();
+        if (state.getFriendRequestError() != null) {
+            JOptionPane.showMessageDialog(this, state.getFriendRequestError());
+        }
+        if (state.getSuccess_message() != null) {
+            JOptionPane.showMessageDialog(this, state.getSuccess_message());
+        }
     }
 
     public void setFriendRequestController(FriendRequestController friendRequestController) {

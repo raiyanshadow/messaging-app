@@ -23,4 +23,9 @@ public class baseUIController {
         BaseUIInteractor.displayAddChat(request);
     }
 
+    public void switchToFriendRequestView(){
+        BaseUIInputData request = new BaseUIInputData();
+        BaseUIInteractor.switchToFriendRequestView();
+    }
+
 }

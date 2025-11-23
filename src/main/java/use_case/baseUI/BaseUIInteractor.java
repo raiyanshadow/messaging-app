@@ -47,4 +47,9 @@ public class BaseUIInteractor implements BaseUIInputBoundary{
         presenter.DisplayAddChat(response);
     }
 
+    @Override
+    public void switchToFriendRequestView() {
+        BaseUIOutputData response = new BaseUIOutputData();
+        presenter.DisplayFriends(response);
+    }
 }

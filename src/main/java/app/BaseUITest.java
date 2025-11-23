@@ -12,6 +12,7 @@ import interface_adapter.base_UI.baseUIController;
 import interface_adapter.base_UI.baseUIPresenter;
 import interface_adapter.base_UI.baseUIViewModel;
 import interface_adapter.chat_channel.ChatChannelViewModel;
+import interface_adapter.friend_request.FriendRequestViewModel;
 import session.SessionManager;
 import use_case.add_chat_channel.AddChatChannelInteractor;
 import use_case.baseUI.BaseUIInteractor;
@@ -60,12 +61,13 @@ public class BaseUITest {
         DBChatChannelDataAccessObject dbChatChannelDataAccessObject = new DBChatChannelDataAccessObject(conn);
         DBUserDataAccessObject dbUserDataAccessObject = new DBUserDataAccessObject(conn);
 
-        // dbUserDataAccessObject.save(testuser);
+        dbUserDataAccessObject.save(testuser);
 
         //create needed dependencies
         AddChatChannelPresenter addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel,
                 addChatChannelViewModel, viewManagerModel);
-        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel);
+        FriendRequestViewModel friendRequestViewModel = new FriendRequestViewModel();
+        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel);
 
         AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter,
                 dbChatChannelDataAccessObject, dbUserDataAccessObject, sessionManager);

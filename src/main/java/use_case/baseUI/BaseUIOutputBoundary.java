@@ -7,4 +7,5 @@ import java.util.List;
 public interface BaseUIOutputBoundary {
     void DisplayUI(BaseUIOutputData response);
     void DisplayAddChat(BaseUIOutputData response);
+    void DisplayFriends(BaseUIOutputData response);
 }

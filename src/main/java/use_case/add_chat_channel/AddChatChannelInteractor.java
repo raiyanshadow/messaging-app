@@ -21,14 +21,12 @@ public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
     AddChatChannelOutputBoundary presenter;
     ChatChannelDataAccessObject chatChannelDataAccess;
     UserDataAccessObject userDataAccess;
-    ContactDataAccessObject contactDataAccess;
     Session sessionManager;
 
-    AddChatChannelInteractor(AddChatChannelOutputBoundary presenter,
-                             ChatChannelDataAccessObject chatChannelAccessObject,
-                             UserDataAccessObject userDataAccess,
-                             ContactDataAccessObject contactDataAccess,
-                             Session sessionManager) {
+    public AddChatChannelInteractor(AddChatChannelOutputBoundary presenter,
+                                    ChatChannelDataAccessObject chatChannelAccessObject,
+                                    UserDataAccessObject userDataAccess,
+                                    Session sessionManager) {
         this.presenter = presenter;
         this.chatChannelDataAccess = chatChannelDataAccess;
         this.userDataAccess = userDataAccess;

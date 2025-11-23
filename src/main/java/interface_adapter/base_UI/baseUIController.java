@@ -14,9 +14,13 @@ public class baseUIController {
     }
 
     public void displayUI() throws SQLException {
-
         BaseUIInputData request = new BaseUIInputData();
         BaseUIInteractor.GetUserChats(request);
+    }
+
+    public void newChat() throws SQLException {
+        BaseUIInputData request = new BaseUIInputData();
+        BaseUIInteractor.displayAddChat(request);
     }
 
 }

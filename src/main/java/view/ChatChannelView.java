@@ -19,26 +19,30 @@ import java.util.List;
  * View is for the user to see their chats.
  */
 public class ChatChannelView extends JPanel implements PropertyChangeListener {
+    // Variables required for view
     private final String viewName = "update chat channel";
     private final UpdateChatChannelViewModel updateChatChannelViewModel;
     private UpdateChatChannelController updateChatChannelController = null;
     private SendMessageController sendMessageController = null;
     private MessageViewModel messageViewModel;
 
+    // GUI components
     private final JLabel chatName;
     private final JPanel messageContainer;
     private final JScrollPane scrollPane;
     private final JTextField content = new JTextField(15);
     private final JButton send;
+    private final JButton back;
 
+    // Variables to call interactors
     private String chatURL;
     private Integer senderID;
     private Integer receiverID;
     private String senderUsername;
     private boolean pending;
 
-//    private List<MessageViewModel> messagesToDisplay;
     public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel, Integer senderID, Integer receiverID, String senderUsername, String chatURL) {
+        // Initialize variables
         this.updateChatChannelViewModel = updateChatChannelViewModel;
         this.updateChatChannelViewModel.addPropertyChangeListener(this);
         this.messageViewModel = new MessageViewModel();
@@ -52,12 +56,13 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
 //        this.senderID = updateChatChannelViewModel.getState().getUser1ID();
 //        this.recieverID = updateChatChannelViewModel.getState().getUser2ID();
 
+        // Set layout
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         // Title of screen
-        final JLabel title = new JLabel("Chat Display"); // TODO: Get it to show with the name
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        this.add(title);
+//        final JLabel title = new JLabel("Chat Display");
+//        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+//        this.add(title);
 
         // Chat Preview Panel
         chatName = new JLabel("");
@@ -69,12 +74,15 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setPreferredSize(new Dimension(400, 200));
         send = new JButton("Send");
-        ChatPreviewPanel chatPreview = new ChatPreviewPanel(chatName, scrollPane, content, send);
+        back = new JButton("Back");
+        ChatPreviewPanel chatPreview = new ChatPreviewPanel(chatName, scrollPane, content, send, back);
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(chatPreview);
 
+        // Send button
         send.addActionListener(
                 evt -> {
+                    // Set new message state
                     String message = content.getText();
 //                    UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
 //                    try {
@@ -100,7 +108,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
                     messageContainer.revalidate();
                     messageContainer.repaint();
                     pending = true; // This prevents the updateMessage from redrawing and creating a lag
-                    // executes the controller to send
+                    // Execute the controller to send
                     sendMessageController.execute(message, messageState.getChannelURL(), messageState.getSenderID(), messageState.getReceiverID());
                     content.setText("");
                     System.out.println("message sent");
@@ -133,6 +141,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         }
     }
 
+    // Ensures receiver can see new message
     private void startThread() {
         Thread thread = new Thread(() -> {
             while (true) {
@@ -151,6 +160,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         thread.start();
     }
 
+    // Redraw messages
     private void updateMessage(List<MessageViewModel> messages) {
         System.out.println("entered updateMessage");
         if (messages == null || messages.isEmpty()) {

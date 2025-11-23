@@ -3,6 +3,7 @@ package interface_adapter.base_UI;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.add_chat_channel.AddChatChannelState;
 import interface_adapter.add_chat_channel.AddChatChannelViewModel;
+import interface_adapter.friend_request.FriendRequestViewModel;
 import use_case.baseUI.BaseUIOutputBoundary;
 import use_case.baseUI.BaseUIOutputData;
 
@@ -10,12 +11,14 @@ public class baseUIPresenter implements BaseUIOutputBoundary {
     private final baseUIViewModel viewModelbase;
     private final ViewManagerModel viewManagerModel;
     private final AddChatChannelViewModel addChatChannelViewModel;
+    private final FriendRequestViewModel friendRequestViewModel;
 
     public baseUIPresenter(baseUIViewModel viewmodel, ViewManagerModel viewManagerModel,
-                           AddChatChannelViewModel addChatChannelViewModel) {
+                           AddChatChannelViewModel addChatChannelViewModel, FriendRequestViewModel friendRequestViewModel) {
         this.viewModelbase = viewmodel;
         this.viewManagerModel = viewManagerModel;
         this.addChatChannelViewModel = addChatChannelViewModel;
+        this.friendRequestViewModel = friendRequestViewModel;
     }
 
     @Override
@@ -36,7 +39,12 @@ public class baseUIPresenter implements BaseUIOutputBoundary {
         addChatChannelViewModel.firePropertyChange();
         viewManagerModel.setState(addChatChannelViewModel.getViewName());
         viewManagerModel.firePropertyChange();
+    }
 
-
+    @Override
+    public void DisplayFriends(BaseUIOutputData response) {
+        friendRequestViewModel.firePropertyChange();
+        viewManagerModel.setState(viewModelbase.getViewName());
+        viewManagerModel.firePropertyChange();
     }
 }

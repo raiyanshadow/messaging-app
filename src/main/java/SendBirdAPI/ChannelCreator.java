@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class ChannelCreator {
 
-    GroupChannelApi groupChannelApi;
+    private GroupChannelApi groupChannelApi;
     public String SendbirdChannelCreator(String apiToken, String channelName, User user1, User user2) {
         CreateAGroupChannelRequest createChannelRequest = new CreateAGroupChannelRequest(); // The exact class name might be different
         createChannelRequest.setName(channelName);

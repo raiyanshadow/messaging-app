@@ -18,4 +18,9 @@
   - Login API
     - API Link: https://cloud.google.com/compute/docs/oslogin/rest?_gl=1*vvmtxa*_up*MQ..&gclid=23104574fb7b15528f0f2d8b598f36e6&gclsrc=3p.ds
     - Service Provided: This API provides easy Google login for users and provides an API token to access their authorized and needed information. This will be used to create the login interface in the code.
+  - Supabase PostgreSQL Database API
+    - API Link: https://supabase.com/docs
+    - Service Provided: This API allows for the storage of data in various formats (text, integer) in a relational database for the entities we use in this program. A username and password is needed to access the REST API       endpoint for putting in data and receiving data.
 - Current Functionality
+- Additional Notes
+  - #### IMPORTANT: User must be using IPv6 internet, as the Supabase PostgreSQL Database API cannot handle IPv4 internet (this includes the UofT wifi). Best to use home wifi or hotspot.

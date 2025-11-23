@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import session.Session;
 import session.SessionManager;
 import io.github.cdimascio.dotenv.Dotenv;
-import use_case.*;
 
 import java.sql.*;
 import java.util.List;
@@ -46,9 +45,9 @@ class SendMessageInteractorTest {
             public void prepareSendMessageSuccessView(SendMessageOutputData outputData) {
                 assertEquals(outputData.getSenderID(), senderId);
                 assertEquals(outputData.getReceiverID(), receiverId);
-                final List<Message> messages = outputData.getMessages();
-                final Message lastMessage =  messages.get(messages.size() - 1);
-                assertEquals(lastMessage.getContent(), inputData.getMessage());
+                final List<Message> messages = chatChannel.getMessages();
+                final String message = messages.get(messages.size() - 1).getContent().toString();
+                assertEquals(message, inputData.getMessage());
                 assertEquals(outputData.getChannelUrl(), chatChannel.getChatURL());
             }
 
@@ -67,7 +66,7 @@ class SendMessageInteractorTest {
 
         MessageSender messageSender = new MessageSender(dotenv.get("MSG_APP_ID"));
 
-        SendMessageInputBoundary interactor = new SendMessageInteractor(successPresenter, userDAO, chatChannelDAO,
+        SendMessageInputBoundary interactor = new SendMessageInteractor(successPresenter, userDAO,
                 messageDAO, session, messageSender);
         interactor.execute(inputData);
     }

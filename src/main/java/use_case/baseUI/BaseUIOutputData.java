@@ -13,6 +13,8 @@ public class BaseUIOutputData  {
         this.directChatChannels = directChatChannels;
     }
 
+    public BaseUIOutputData(){};
+
     public List<String> getChatNames() {
         return chatNames;
     }

@@ -25,6 +25,7 @@ public class BaseUIInteractor implements BaseUIInputBoundary{
         this.sessionManager = sessionManager;
     }
 
+    @Override
     public void GetUserChats(BaseUIInputData request) throws SQLException {
 
         User mainUser = sessionManager.getMainUser();
@@ -38,6 +39,12 @@ public class BaseUIInteractor implements BaseUIInputBoundary{
         }
         BaseUIOutputData response = new BaseUIOutputData(chatnames, chatEntities);
         presenter.DisplayUI(response);
+    }
+
+    @Override
+    public void displayAddChat(BaseUIInputData request) {
+        BaseUIOutputData response = new BaseUIOutputData();
+        presenter.DisplayAddChat(response);
     }
 
 }

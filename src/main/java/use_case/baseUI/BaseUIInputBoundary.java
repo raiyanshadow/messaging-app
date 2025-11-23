@@ -5,5 +5,6 @@ import java.sql.SQLException;
 public interface BaseUIInputBoundary {
     void GetUserChats(BaseUIInputData request) throws SQLException;
     void displayAddChat(BaseUIInputData request);
-    void switchToFriendRequestView();
+    void switchToFriendRequestView(BaseUIInputData request) throws SQLException;
+    void switchToAddContact(BaseUIInputData request) throws SQLException;
 }

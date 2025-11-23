@@ -18,7 +18,8 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
     private FriendRequestController friendRequestController = null;
     private final ViewManagerModel viewManagerModel;
 
-    public FriendRequestView(FriendRequestViewModel friendRequestViewModel, baseUIViewModel baseUIViewModel, ViewManagerModel viewManagerModel) {
+    public FriendRequestView(FriendRequestViewModel friendRequestViewModel,
+                             baseUIViewModel baseUIViewModel, ViewManagerModel viewManagerModel) {
         this.friendRequestViewModel = friendRequestViewModel;
         this.viewManagerModel = viewManagerModel;
 

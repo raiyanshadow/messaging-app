@@ -100,6 +100,7 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
 
         addButton.addActionListener(evt -> {
             AddContactState state = addContactViewModel.getState();
+            state.setSender(sessionmanager.getMainUser());
             try {
                 addContactController.execute(
                         state.getSender(),
@@ -146,7 +147,6 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
             private void updateState() {
                 AddContactState state = addContactViewModel.getState();
                 state.setUsername(usernameField.getText());
-                state.setSender(sessionmanager.getMainUser());
                 addContactViewModel.setState(state);
             }
         });

@@ -31,7 +31,7 @@ public class AddContactInteractor implements AddContactInputBoundary {
 
         contactDataAccessObject.updateUserContacts(sender, sender.getContacts());
         contactDataAccessObject.updateUserFriendRequests(sender, sender.getFriendRequests());
-        contactDataAccessObject.updateUserFriendRequests(receiver, receiver.getFriendRequests());
+
 
         for (Contact contact: sender.getContacts()) {
             if (contact.getContact().getUsername().equals(receiver_username)) {
@@ -41,18 +41,23 @@ public class AddContactInteractor implements AddContactInputBoundary {
             }
         }
 
-        for (String friend_request: receiver.getFriendRequests()) {
-            if (friend_request.equals(sender.getUsername())) {
-                sent_request = true;
-                break;
-            }
-        }
+
 
         for (String friend_request: sender.getFriendRequests()) {
             System.out.println(friend_request);
             if (friend_request.equals(receiver_username)) {
                 received_request = true;
                 break;
+            }
+        }
+
+        if (receiver_username != null) {
+            contactDataAccessObject.updateUserFriendRequests(receiver, receiver.getFriendRequests());
+            for (String friend_request : receiver.getFriendRequests()) {
+                if (friend_request.equals(sender.getUsername())) {
+                    sent_request = true;
+                    break;
+                }
             }
         }
 

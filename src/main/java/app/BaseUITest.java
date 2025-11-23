@@ -60,7 +60,7 @@ public class BaseUITest {
         DBChatChannelDataAccessObject dbChatChannelDataAccessObject = new DBChatChannelDataAccessObject(conn);
         DBUserDataAccessObject dbUserDataAccessObject = new DBUserDataAccessObject(conn);
 
-        dbUserDataAccessObject.save(testuser);
+        // dbUserDataAccessObject.save(testuser);
 
         //create needed dependencies
         AddChatChannelPresenter addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel,

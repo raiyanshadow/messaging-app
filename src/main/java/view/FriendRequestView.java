@@ -3,6 +3,7 @@ package view;
 import entity.Contact;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.add_contact.AddContactState;
+import interface_adapter.base_UI.baseUIController;
 import interface_adapter.base_UI.baseUIState;
 import interface_adapter.base_UI.baseUIViewModel;
 import interface_adapter.friend_request.FriendRequestController;
@@ -23,16 +24,15 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
     private FriendRequestController friendRequestController = null;
     private final ViewManagerModel viewManagerModel;
     private final Session sessionmanager;
+    private final baseUIController baseUIController;
 
-    public FriendRequestView(FriendRequestViewModel friendRequestViewModel, baseUIViewModel baseUIViewModel, ViewManagerModel viewManagerModel, Session sessionmanager) {
+    public FriendRequestView(FriendRequestViewModel friendRequestViewModel, ViewManagerModel viewManagerModel, Session sessionmanager, baseUIController baseUIController) {
         this.friendRequestViewModel = friendRequestViewModel;
         this.viewManagerModel = viewManagerModel;
         this.sessionmanager = sessionmanager;
+        this.baseUIController = baseUIController;
 
         friendRequestViewModel.addPropertyChangeListener(this);
-        BaseUIView baseUIView = new BaseUIView(baseUIViewModel);
-        baseUIViewModel.addPropertyChangeListener(baseUIView);
-        // viewManagerModel.addPropertyChangeListener(this);
 
 
         FriendRequestState state = friendRequestViewModel.getState();
@@ -102,6 +102,11 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
         // back button action listener
         backButton.addActionListener(e -> {
             System.out.println("Back button pressed");
+            try {
+                baseUIController.displayUI(); // triggers presenter → viewmanager switching
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
 

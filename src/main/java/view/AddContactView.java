@@ -3,6 +3,7 @@ package view;
 import interface_adapter.add_contact.AddContactController;
 import interface_adapter.add_contact.AddContactState;
 import interface_adapter.add_contact.AddContactViewModel;
+import interface_adapter.base_UI.baseUIController;
 import interface_adapter.base_UI.baseUIState;
 import interface_adapter.base_UI.baseUIViewModel;
 import interface_adapter.ViewManagerModel;
@@ -25,15 +26,15 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
     private final JTextField usernameField =  new JTextField(20);
     private AddContactController addContactController = null;
     private final ViewManagerModel viewManagerModel;
-    private final baseUIViewModel baseUIViewModel;
     private final Session sessionmanager;
+    private final baseUIController baseUIController;
 
 
-    public AddContactView(AddContactViewModel addContactViewModel, baseUIViewModel baseUIViewModel, ViewManagerModel viewManagerModel, Session sessionmanager) {
+    public AddContactView(AddContactViewModel addContactViewModel, ViewManagerModel viewManagerModel, Session sessionmanager, baseUIController baseUIController) {
         this.addContactViewModel = addContactViewModel;
         this.viewManagerModel = viewManagerModel;
         this.sessionmanager = sessionmanager;
-        this.baseUIViewModel = baseUIViewModel;
+        this.baseUIController = baseUIController;
 
         addContactViewModel.addPropertyChangeListener(this);
 
@@ -88,6 +89,11 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
         backButton.addActionListener(e -> {
             // heading back to baseUI view
             System.out.println("Back button pressed");
+            try {
+                baseUIController.displayUI(); // triggers presenter → viewmanager switching
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         // add button action listener

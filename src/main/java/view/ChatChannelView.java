@@ -1,5 +1,7 @@
 package view;
 
+import interface_adapter.base_UI.baseUIController;
+import interface_adapter.base_UI.baseUIViewModel;
 import interface_adapter.chat_channel.MessageState;
 import interface_adapter.update_chat_channel.UpdateChatChannelState;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
@@ -25,6 +27,8 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private UpdateChatChannelController updateChatChannelController = null;
     private SendMessageController sendMessageController = null;
     private MessageViewModel messageViewModel;
+    private baseUIViewModel baseUIViewModel;
+    private baseUIController baseUIController = null;
 
     // GUI components
     private final JLabel chatName;
@@ -79,50 +83,61 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(chatPreview);
 
+        // Back button
+        back.addActionListener(event -> {
+            try {
+                baseUIController.displayUI();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         // Send button
-        send.addActionListener(
-                evt -> {
-                    // Set new message state
-                    String message = content.getText();
+        send.addActionListener(evt -> {
+            // Set new message state
+            String message = content.getText();
 //                    UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
 //                    try {
 //                        updateChatChannelController.execute(updateChatChannelState.getChatURL());
 //                    } catch (SQLException e) {
 //                        throw new RuntimeException(e);
 //                    }
-                    MessageState messageState = new MessageState();
+            MessageState messageState = new MessageState();
 //                    System.out.println("messages length:" + updateChatChannelState.getMessages().size());
 //                    messageState.setSenderName(updateChatChannelState.getUser1Name());
-                    messageState.setSenderID(senderID);
-                    messageState.setReceiverID(receiverID);
-                    messageState.setChannelURL(chatURL);
-                    messageState.setContent(message);
-                    messageViewModel.setState(messageState);
-                    // Display message instantly (overcomes lag)
-                    MessagePanel instantMessagePanel = new MessagePanel(new JLabel(senderUsername), new JLabel(messageState.getContent()),
-                            new JLabel(LocalDateTime.now().toString()));
-                    instantMessagePanel.setLayout(new BoxLayout(instantMessagePanel, BoxLayout.Y_AXIS));
-                    instantMessagePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    instantMessagePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-                    messageContainer.add(instantMessagePanel);
-                    messageContainer.revalidate();
-                    messageContainer.repaint();
-                    pending = true; // This prevents the updateMessage from redrawing and creating a lag
-                    // Execute the controller to send
-                    sendMessageController.execute(message, messageState.getChannelURL(), messageState.getSenderID(), messageState.getReceiverID());
-                    content.setText("");
-                    System.out.println("message sent");
-                    SwingUtilities.invokeLater(() -> {
-                        JScrollBar vertical = scrollPane.getVerticalScrollBar();
-                        vertical.setValue(vertical.getMaximum());
-                    }); // TODO: Fix where scrolling occurs
+            messageState.setSenderID(senderID);
+            messageState.setReceiverID(receiverID);
+            messageState.setChannelURL(chatURL);
+            messageState.setContent(message);
+            messageViewModel.setState(messageState);
+
+            // Display message instantly (overcomes lag)
+            MessagePanel instantMessagePanel = new MessagePanel(new JLabel(senderUsername), new JLabel(messageState.getContent()),
+                    new JLabel(LocalDateTime.now().toString()));
+            instantMessagePanel.setLayout(new BoxLayout(instantMessagePanel, BoxLayout.Y_AXIS));
+            instantMessagePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            instantMessagePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            messageContainer.add(instantMessagePanel);
+            messageContainer.revalidate();
+            messageContainer.repaint();
+            pending = true; // This prevents the updateMessage from redrawing and creating a lag
+
+            // Execute the controller to send
+            sendMessageController.execute(message, messageState.getChannelURL(), messageState.getSenderID(), messageState.getReceiverID());
+            content.setText("");
+            System.out.println("message sent");
+            SwingUtilities.invokeLater(() -> {
+                JScrollBar vertical = scrollPane.getVerticalScrollBar();
+                vertical.setValue(vertical.getMaximum());
+            }); // TODO: Fix where scrolling occurs
+
 //                    System.out.println("messages length:" + updateChatChannelState.getMessages().size());
 //                    try {
 //                        updateChatChannelController.execute(updateChatChannelState.getChatURL());
 //                    } catch (SQLException e) {
 //                        throw new RuntimeException(e);
 //                    }
-                });
+        });
         startThread();
     }
 
@@ -190,6 +205,10 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
 //        scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
 //        scrollPane.revalidate();
 //        scrollPane.repaint();
+    }
+
+    public void setBaseUIController(baseUIController baseUIController) {
+        this.baseUIController = baseUIController;
     }
 
     public void setUpdateChatChannelController(UpdateChatChannelController updateChatChannelController) {

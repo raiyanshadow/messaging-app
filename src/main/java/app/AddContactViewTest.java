@@ -14,6 +14,7 @@ import interface_adapter.base_UI.baseUIPresenter;
 import interface_adapter.base_UI.baseUIViewModel;
 
 import interface_adapter.chat_channel.ChatChannelViewModel;
+import interface_adapter.friend_request.FriendRequestViewModel;
 import io.github.cdimascio.dotenv.Dotenv;
 import session.SessionManager;
 import use_case.add_chat_channel.AddChatChannelInteractor;
@@ -59,7 +60,8 @@ public class AddContactViewTest {
         ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("chatChannelViewModel");
         AddChatChannelViewModel addChatChannelViewModel = new AddChatChannelViewModel("addChatChannelViewModel");
         AddChatChannelPresenter addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel, addChatChannelViewModel, viewManagerModel);
-        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel);
+        FriendRequestViewModel friendRequestViewModel = new FriendRequestViewModel();
+        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel);
 
         AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager);
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager);

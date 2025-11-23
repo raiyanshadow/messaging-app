@@ -5,12 +5,14 @@ import data_access.*;
 import entity.DirectChatChannel;
 import entity.Message;
 import entity.User;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.junit.jupiter.api.Test;
 import session.Session;
 import session.SessionManager;
-import io.github.cdimascio.dotenv.Dotenv;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

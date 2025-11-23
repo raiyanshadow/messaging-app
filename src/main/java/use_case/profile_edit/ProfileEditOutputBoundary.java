@@ -6,4 +6,9 @@ public interface ProfileEditOutputBoundary {
      * @param signupOutputData the data to present to the user
      */
     void prepareSuccessView(ProfileEditOutputData signupOutputData);
+
+    /**
+     * Switches the view to the home page.
+     */
+    void switchToHomePageView();
 }

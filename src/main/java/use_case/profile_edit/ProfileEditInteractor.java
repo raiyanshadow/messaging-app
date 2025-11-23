@@ -1,5 +1,7 @@
 package use_case.profile_edit;
 
+import entity.User;
+
 public class ProfileEditInteractor implements ProfileEditInputBoundary {
     private final ProfileEditUserDataAccessInterface userDataAccessObject;
     private final ProfileEditOutputBoundary userPresenter;
@@ -29,7 +31,8 @@ public class ProfileEditInteractor implements ProfileEditInputBoundary {
             userDataAccessObject.updatePreferredLanguage(userId, preferredLanguage);
         }
 
-        ProfileEditOutputData outputData = new ProfileEditOutputData(userId);
+        User user = userDataAccessObject.getUserFromID(userId);
+        ProfileEditOutputData outputData = new ProfileEditOutputData(user);
         userPresenter.prepareSuccessView(outputData);
     }
 }

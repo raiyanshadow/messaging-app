@@ -1,13 +1,15 @@
 package use_case.profile_edit;
 
-public class ProfileEditOutputData {
-    private final int userId;
+import entity.User;
 
-    public ProfileEditOutputData(int userId) {
-        this.userId = userId;
+public class ProfileEditOutputData {
+    private final User user;
+
+    public ProfileEditOutputData(User user) {
+        this.user = user;
     }
 
-    public String getUserId() {
-        return String.valueOf(userId);
+    public User getUser() {
+        return user;
     }
 }

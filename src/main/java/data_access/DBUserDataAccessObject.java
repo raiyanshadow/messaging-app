@@ -45,7 +45,16 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
 
     @Override
     public void sendRequest(User sender, String receiver_username) {
+        String query = "INSERT INTO \"contact\" (user_id, contact_id, is_friend_request, created_at) VALUES (?, ?, ?, NOW())";
+        try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setInt(1, this.getIDFromName(sender.getUsername()));
+            statement.setInt(2, this.getIDFromName(receiver_username));
+            statement.setBoolean(3, true);
+            statement.executeUpdate();
 
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // Get a user by ID
@@ -114,5 +123,19 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
         }
         // no user found so no userID
         return 0;
+    }
+
+    public String getNameFromID(int id) throws SQLException {
+        String query = "SELECT * FROM \"user\" WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id); // use String for name
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("username");
+            }
+        }
+        // no user found so no username
+        return null;
     }
 }

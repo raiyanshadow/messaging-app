@@ -7,5 +7,4 @@ public interface FriendRequestInputBoundary {
      */
     void execute(FriendRequestInputData friendRequestInputData);
 
-    void switchToContactsView();
 }

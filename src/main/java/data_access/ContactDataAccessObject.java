@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface ContactDataAccessObject {
     public void updateUserContacts(User user, List<Contact> contacts);
+    public void updateUserFriendRequests(User user, List<String> friendRequests);
 }

@@ -18,7 +18,4 @@ public class FriendRequestController {
         friendRequestInteractor.execute(friendRequestInputData);
     }
 
-    public void switchToContactsView() {
-        friendRequestInteractor.switchToContactsView();
-    }
 }

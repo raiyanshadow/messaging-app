@@ -51,7 +51,7 @@ public class AddContactInteractor implements AddContactInputBoundary {
             }
         }
 
-        if (receiver_username != null) {
+        if (receiver_username != null && userDataAccessObject.existsByName(receiver_username)) {
             contactDataAccessObject.updateUserFriendRequests(receiver, receiver.getFriendRequests());
             for (String friend_request : receiver.getFriendRequests()) {
                 if (friend_request.equals(sender.getUsername())) {
@@ -69,25 +69,25 @@ public class AddContactInteractor implements AddContactInputBoundary {
         // user2 (user who should receive add contact request) does not exist
         else if (!userDataAccessObject.existsByName(receiver_username)) {
 
-            System.out.println("The user: " + receiver_username +  " u want to add does not exist");
+            // System.out.println("The user: " + receiver_username +  " u want to add does not exist");
             userPresenter.prepareFailView("The user you want to add does not exist");
         }
 
         // receiver_username is already a contact
         else if (in_contacts) {
-            System.out.println("The user: " + receiver_username + " is already in your contacts");
+            // System.out.println("The user: " + receiver_username + " is already in your contacts");
             userPresenter.prepareFailView("This user is already a contact");
         }
 
         // sender has already sent a friend request
         else if (sent_request) {
-            System.out.println("You have already sent " + receiver_username + " a friend request");
+            // System.out.println("You have already sent " + receiver_username + " a friend request");
             userPresenter.prepareFailView("You have already sent " + receiver_username + " a friend request");
         }
 
         // receiver has already sent sender a friend request
         else if (received_request) {
-            System.out.println(receiver_username + " has sent you a friend request, plz go and accept to add as a contact");
+            // System.out.println(receiver_username + " has sent you a friend request, plz go and accept to add as a contact");
             userPresenter.prepareFailView(receiver_username + " has sent you a friend request, please go and accept their friend request to add them as a contact");
         }
 
@@ -95,8 +95,8 @@ public class AddContactInteractor implements AddContactInputBoundary {
         else { // user2 does exist
 
             // user1 sends user2 a add contact request
-            System.out.println("The user: " + receiver_username +  " u want to add exists");
-            System.out.println("sending request...");
+            // System.out.println("The user: " + receiver_username +  " u want to add exists");
+            // System.out.println("sending request...");
             userDataAccessObject.sendRequest(sender, receiver_username);
             // prepare output
             final AddContactOutputData addContactOutputData = new AddContactOutputData(sender, receiver_username);

@@ -25,7 +25,7 @@ public class AddContactPresenter implements AddContactOutputBoundary{
     public void prepareSuccessView(AddContactOutputData response) {
         final AddContactState state = addContactViewModel.getState();
         state.setAddContactError(null);
-        state.setSuccess_message("sending request to " + state.getUsernameInput() + "...");
+        state.setSuccess_message("sending request to " + response.getReceiverUsername() + "...");
         addContactViewModel.firePropertyChange();
     }
 

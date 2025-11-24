@@ -34,9 +34,4 @@ public class FriendRequestPresenter implements FriendRequestOutputBoundary {
 
     }
 
-    @Override
-    public void switchToContactsView() {
-        viewManagerModel.setState(baseUIViewModel.getViewName());
-        viewManagerModel.firePropertyChange();
-    }
 }

@@ -42,8 +42,4 @@ public class FriendRequestInteractor implements FriendRequestInputBoundary {
         }
     }
 
-    @Override
-    public void switchToContactsView() {
-        userPresenter.switchToContactsView();
-    }
 }

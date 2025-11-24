@@ -23,9 +23,14 @@ public class baseUIController {
         BaseUIInteractor.displayAddChat(request);
     }
 
-    public void switchToFriendRequestView(){
+    public void switchToFriendRequestView() throws SQLException {
         BaseUIInputData request = new BaseUIInputData();
-        BaseUIInteractor.switchToFriendRequestView();
+        BaseUIInteractor.switchToFriendRequestView(request);
+    }
+
+    public void switchToAddContact() throws SQLException {
+        BaseUIInputData request = new BaseUIInputData();
+        BaseUIInteractor.switchToAddContact(request);
     }
 
 }

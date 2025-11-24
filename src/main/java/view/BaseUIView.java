@@ -19,8 +19,8 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
     private final JList<String> chatList;
 
     private final JButton createChatButton = new JButton("Create Chat");
-    private final JButton addContactButton = new JButton("Add Contact");
     private final JButton friendRequestsButton = new JButton("Friend Requests");
+    private final JButton addFriendButton = new JButton("Add Friend");
     private final JButton logoutButton = new JButton("Logout");
 
     public BaseUIView(baseUIViewModel viewModel, baseUIController controller) {
@@ -31,9 +31,9 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
         // Main layout styling
         this.setLayout(new BorderLayout());
         this.setBackground(new Color(245, 248, 250));
-        this.setBorder(BorderFactory.createEmptyBorder(40, 80, 40, 80));
+        this.setBorder(BorderFactory.createEmptyBorder(50, 80, 50, 80));
 
-        // Title with spacing
+        // Title
         JPanel titlePanel = new JPanel(new BorderLayout());
         titlePanel.setBackground(new Color(245, 248, 250));
         titlePanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 25, 0));
@@ -44,7 +44,7 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
 
         this.add(titlePanel, BorderLayout.NORTH);
 
-        // Chat list styled container
+        // Chat List Area
         JPanel listPanel = new JPanel(new BorderLayout());
         listPanel.setBackground(Color.WHITE);
         listPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -60,25 +60,30 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
         listPanel.add(new JScrollPane(chatList), BorderLayout.CENTER);
         this.add(listPanel, BorderLayout.CENTER);
 
-        // Buttons panel
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        // Buttons Panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
         buttonPanel.setBackground(new Color(245, 248, 250));
 
         Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
 
         styleRoundedButton(createChatButton, new Color(70, 130, 180), Color.WHITE, buttonFont);
-        styleRoundedButton(addContactButton, new Color(96, 179, 120), Color.WHITE, buttonFont);
-        styleRoundedButton(friendRequestsButton, new Color(255, 165, 0), Color.WHITE, buttonFont);
+
+        // Same styling for friend buttons
+        Color friendButtonColor = new Color(255, 165, 0);
+        styleRoundedButton(friendRequestsButton, friendButtonColor, Color.WHITE, buttonFont);
+        styleRoundedButton(addFriendButton, friendButtonColor, Color.WHITE, buttonFont);
+
         styleRoundedButton(logoutButton, new Color(240, 240, 240), Color.BLACK, buttonFont);
 
-        buttonPanel.add(addContactButton);
+        // Add in button order
         buttonPanel.add(createChatButton);
+        buttonPanel.add(addFriendButton);
         buttonPanel.add(friendRequestsButton);
         buttonPanel.add(logoutButton);
 
         this.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Action listeners
+        // Action Listeners
         createChatButton.addActionListener(e -> {
             try {
                 controller.newChat();
@@ -88,7 +93,19 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
         });
 
         friendRequestsButton.addActionListener(e -> {
-            controller.switchToFriendRequestView();
+            try {
+                controller.switchToFriendRequestView();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        addFriendButton.addActionListener(e -> {
+            try {
+                controller.switchToAddContact();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         });
     }
 
@@ -97,9 +114,17 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
         button.setBackground(bg);
         button.setForeground(fg);
         button.setFocusPainted(false);
-        button.setPreferredSize(new Dimension(140, 42));
-        button.setBorder(BorderFactory.createLineBorder(bg, 1, true));
+
+        button.setOpaque(true);
+        button.setContentAreaFilled(true); // allow background repaint
+        button.setPreferredSize(new Dimension(145, 45));
+
+        button.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(bg, 2, true),
+                BorderFactory.createEmptyBorder(8, 16, 8, 16)
+        ));
     }
+
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
@@ -110,9 +135,9 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
         }
     }
 
-    public JButton getCreateChatButton() { return createChatButton; }
-    public JButton getAddContactButton() { return addContactButton; }
+    public JButton getAddFriendButton() { return addFriendButton; }
     public JButton getFriendRequestsButton() { return friendRequestsButton; }
+    public JButton getCreateChatButton() { return createChatButton; }
     public JButton getLogoutButton() { return logoutButton; }
     public JList<String> getChatList() { return chatList; }
 }

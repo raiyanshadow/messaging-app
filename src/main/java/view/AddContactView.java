@@ -172,6 +172,10 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        if (!(evt.getNewValue() instanceof AddContactState)) {
+            return;
+        }
+
         AddContactState state = (AddContactState) evt.getNewValue();
         if (state.getAddContactError() != null) {
             JOptionPane.showMessageDialog(this, state.getAddContactError());
@@ -180,6 +184,7 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
             JOptionPane.showMessageDialog(this, state.getSuccess_message());
         }
     }
+
 
 
     public void setAddContactController(AddContactController addContactController) {

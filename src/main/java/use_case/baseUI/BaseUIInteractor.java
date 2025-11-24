@@ -48,8 +48,14 @@ public class BaseUIInteractor implements BaseUIInputBoundary{
     }
 
     @Override
-    public void switchToFriendRequestView() {
+    public void switchToFriendRequestView(BaseUIInputData request) throws SQLException {
         BaseUIOutputData response = new BaseUIOutputData();
         presenter.DisplayFriends(response);
+    }
+
+    @Override
+    public void switchToAddContact(BaseUIInputData request) throws SQLException {
+        BaseUIOutputData response = new BaseUIOutputData();
+        presenter.DisplayAddContact(response);
     }
 }

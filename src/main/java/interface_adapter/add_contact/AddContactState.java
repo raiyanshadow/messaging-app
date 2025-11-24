@@ -21,6 +21,8 @@ public class AddContactState {
         return sender;
     }
 
+    public void setSender(User sender) { this.sender = sender; }
+
     public String getReceiver_username() {
         return receiver_username;
     }

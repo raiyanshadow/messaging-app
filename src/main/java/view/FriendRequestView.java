@@ -19,7 +19,7 @@ import java.sql.SQLException;
 
 public class FriendRequestView extends JPanel implements PropertyChangeListener {
 
-    private final String labelName = "Friend Request";
+    private final String labelName = "Friend Requests";
     private final FriendRequestViewModel friendRequestViewModel;
     private FriendRequestController friendRequestController = null;
     private final ViewManagerModel viewManagerModel;
@@ -40,12 +40,17 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
         JButton backButton = new JButton("Back");
         final Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
         backButton.setFont(buttonFont);
+        backButton.setBackground(new Color(96, 179, 120));
+        backButton.setForeground(Color.WHITE);
+        backButton.setPreferredSize(new Dimension(140, 42));
+        backButton.setBorder(BorderFactory.createLineBorder(new Color(96, 179, 120), 1, true));
 
-        JLabel title = new JLabel(FriendRequestViewModel.TITLE_LABEL, SwingConstants.CENTER);
-        title.setFont(new Font("SansSerif", Font.BOLD, 14));
-        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        titlePanel.add(title);
+        // create title panel
+        JPanel titlePanel = new JPanel(new BorderLayout());
         titlePanel.setBackground(Color.WHITE);
+        JLabel title = new JLabel(labelName, SwingConstants.CENTER);
+        title.setFont(new Font("SansSerif", Font.BOLD, 20));
+        titlePanel.add(title, BorderLayout.CENTER);
 
         // create back button panel
         JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 10));
@@ -55,26 +60,44 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
 
         // create top panel
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.add(titlePanel, BorderLayout.CENTER);
-        topPanel.add(backPanel, BorderLayout.EAST);
+        titlePanel.setPreferredSize(new Dimension(300, 40));
+        topPanel.add(titlePanel, BorderLayout.NORTH);
+        topPanel.add(backPanel, BorderLayout.SOUTH);
 
 
 
         // create mid panel
-        JPanel midPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        JPanel midPanel = new JPanel(new GridLayout(1, 3, 20, 20));
 
+        midPanel.setBackground(new Color(245, 248, 250));
+        midPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(220, 220, 220)),
+                BorderFactory.createEmptyBorder(30, 40, 30, 40)
+        ));
+        // midPanel.setBackground(Color.WHITE);
         // create accept and decline buttons
         JButton acceptButton = new JButton("Accept");
         JButton declineButton = new JButton("Decline");
         acceptButton.setFont(buttonFont);
+        acceptButton.setBackground(new Color(70, 130, 180));
+        acceptButton.setForeground(Color.WHITE);
+        acceptButton.setPreferredSize(new Dimension(140, 42));
+        acceptButton.setBorder(BorderFactory.createLineBorder(new Color(70, 130, 180), 1, true));
+
         declineButton.setFont(buttonFont);
+        declineButton.setBackground(new Color(255, 165, 0));
+        declineButton.setForeground(Color.WHITE);
+        declineButton.setPreferredSize(new Dimension(140, 42));
+        declineButton.setBorder(BorderFactory.createLineBorder(new Color(255, 165, 0), 1, true));
 
         // create accept or decline panel
-        JPanel accept_or_declinePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 10));
-        accept_or_declinePanel.setLayout(new BoxLayout(accept_or_declinePanel, BoxLayout.Y_AXIS));
+        JPanel accept_or_declinePanel = new JPanel( new GridLayout(4, 1, 20, 20));
+        accept_or_declinePanel.setBackground(new Color(245, 248, 250));
+        accept_or_declinePanel.add(new JLabel());
         accept_or_declinePanel.add(acceptButton);
-        accept_or_declinePanel.add(Box.createVerticalStrut(10));
         accept_or_declinePanel.add(declineButton);
+        accept_or_declinePanel.add(new JLabel());
+
 
         // Create a data model for the list
         DefaultListModel<String> listModel = new DefaultListModel<>();
@@ -87,11 +110,17 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
         JList<String> scrollableList = new JList<>(listModel);
         scrollableList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(scrollableList);
-        // Manually set a preferred size for the scroll pane
+        scrollPane.setBorder(BorderFactory.createCompoundBorder(
+
+                BorderFactory.createEmptyBorder(30, 30, 30, 30),
+                BorderFactory.createLineBorder(Color.BLACK)
+        ));
+
         scrollPane.setPreferredSize(new Dimension(150, 100));
 
-        midPanel.add(scrollPane, BorderLayout.CENTER);
-        midPanel.add(accept_or_declinePanel, BorderLayout.EAST);
+        midPanel.add(new JLabel());
+        midPanel.add(scrollPane);
+        midPanel.add(accept_or_declinePanel);
 
 
         this.setLayout(new BorderLayout());

@@ -43,16 +43,26 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
         JButton backButton = new JButton(AddContactViewModel.BACK_BUTTON_LABEL);
         JButton addButton = new JButton(AddContactViewModel.ADD_CONTACT_BUTTON_LABEL);
         final Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
+
         backButton.setFont(buttonFont);
+        backButton.setBackground(new Color(96, 179, 120));
+        backButton.setForeground(Color.WHITE);
+        backButton.setPreferredSize(new Dimension(140, 42));
+        backButton.setBorder(BorderFactory.createLineBorder(new Color(96, 179, 120), 1, true));
+
         addButton.setFont(buttonFont);
+        addButton.setBackground(new Color(70, 130, 180));
+        addButton.setForeground(Color.WHITE);
+        addButton.setPreferredSize(new Dimension(300, 42));
+        addButton.setBorder(BorderFactory.createLineBorder(new Color(70, 130, 180), 1, true));
 
 
         // create title panel
-        JLabel title = new JLabel(labelName, SwingConstants.CENTER);
-        title.setFont(new Font("SansSerif", Font.BOLD, 28));
-        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        titlePanel.add(title);
+        JPanel titlePanel = new JPanel(new BorderLayout());
         titlePanel.setBackground(Color.WHITE);
+        JLabel title = new JLabel(labelName, SwingConstants.CENTER);
+        title.setFont(new Font("SansSerif", Font.BOLD, 14));
+        titlePanel.add(title, BorderLayout.CENTER);
 
         // create back button panel
         JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 10));
@@ -62,8 +72,9 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
 
         // create top panel
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.add(titlePanel, BorderLayout.CENTER);
-        topPanel.add(backPanel, BorderLayout.EAST);
+        titlePanel.setPreferredSize(new Dimension(300, 40));
+        // topPanel.add(titlePanel, BorderLayout.NORTH);
+        topPanel.add(backPanel, BorderLayout.SOUTH);
 
         // create add button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
@@ -74,15 +85,22 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
 
         // create middle panel
         JPanel midPanel = new JPanel();
+        midPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(220, 220, 220)),
+                BorderFactory.createEmptyBorder(30, 40, 30, 40)
+        ));
+
         JLabel userinputLabel = new JLabel(AddContactViewModel.USERNAME_LABEL, SwingConstants.CENTER);
+        userinputLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
         userinputLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        title.setFont(new Font("SansSerif", Font.BOLD, 12));
         midPanel.setLayout(new BoxLayout(midPanel, BoxLayout.Y_AXIS));
+        midPanel.add(Box.createVerticalStrut(100));
         midPanel.add(userinputLabel);
+        midPanel.add(Box.createVerticalStrut(30));
         midPanel.setBackground(Color.WHITE);
-        midPanel.add(Box.createVerticalStrut(20));
-        midPanel.add(AddContactViewModel.USERNAME_LABEL, usernameField);
-        midPanel.add(Box.createVerticalStrut(50));
+        usernameField.setPreferredSize(new Dimension(100, 30));
+        midPanel.add(usernameField);
+        midPanel.add(Box.createVerticalStrut(100));
 
 
         // back button action listener

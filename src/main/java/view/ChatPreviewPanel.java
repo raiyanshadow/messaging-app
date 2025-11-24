@@ -11,12 +11,16 @@ public class ChatPreviewPanel extends JPanel {
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new BorderLayout());
         chatName.setHorizontalAlignment(JLabel.CENTER);
+        chatName.setFont(new Font("Arial", Font.BOLD, 18));
         back.setHorizontalAlignment(JLabel.RIGHT);
         titlePanel.add(chatName, BorderLayout.CENTER);
         titlePanel.add(back, BorderLayout.EAST);
+        titlePanel.setSize(new Dimension());
+        titlePanel.setBackground(new Color(224, 224, 224));
         this.add(titlePanel);
 
         // Messages
+        messages.setBackground(new Color(255, 255, 255));
         this.add(messages);
 
         // Send panel
@@ -24,6 +28,7 @@ public class ChatPreviewPanel extends JPanel {
         sendPanel.setLayout(new BoxLayout(sendPanel, BoxLayout.X_AXIS));
         sendPanel.add(content);
         sendPanel.add(send);
+        sendPanel.setBackground(new Color(224, 224, 224));
         this.add(sendPanel);
     }
 }

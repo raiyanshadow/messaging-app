@@ -39,6 +39,7 @@ import data_access.DBChatChannelDataAccessObject;
 import use_case.update_chat_channel.UpdateChatChannelOutputData;
 import view.BaseUIView;
 import view.ChatChannelView;
+import view.ViewManager;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -289,19 +290,26 @@ public class ChatChannelViewTest {
         baseUIController baseUIController = new baseUIController(baseUIInteractor); // TODO: Fix naming
 
         // 6. View
-        ChatChannelView view = new ChatChannelView(vm, user1.getUserID(), user2.getUserID(), user1.getUsername(), channelUrl);
-//        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController);
+        ChatChannelView view = new ChatChannelView(vm, user1.getUserID(), user2.getUserID(), user1.getUsername(), user2.getUsername(), channelUrl);
+        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController);
         view.setUpdateChatChannelController(controller);
         view.setSendMessageController(sendMessageController);
         view.setBaseUIController(baseUIController);
 
+        // View Manager model
+        ViewManager viewManager = new ViewManager(viewManagerModel);
+        viewManager.addView(view, "update chat channel");
+        viewManager.addView(baseUIView, "baseUIView");
+
         // 7. Execute
         controller.execute(channelUrl);
-//        baseUIController.execute(channelUrl);
+//        baseUIController.displayUI();
 
         // 8. Create Window
         JFrame frame = new JFrame("TEST CHAT VIEW");
-        frame.setContentPane(view);
+        System.out.println(frame.getSize());
+//        frame.setContentPane(view);
+        frame.setContentPane(viewManager);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);

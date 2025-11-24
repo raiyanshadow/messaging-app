@@ -43,9 +43,10 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private Integer senderID;
     private Integer receiverID;
     private String senderUsername;
+    private String receiverUsername;
     private boolean pending;
 
-    public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel, Integer senderID, Integer receiverID, String senderUsername, String chatURL) {
+    public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel, Integer senderID, Integer receiverID, String senderUsername, String receiverUsername, String chatURL) {
         // Initialize variables
         this.updateChatChannelViewModel = updateChatChannelViewModel;
         this.updateChatChannelViewModel.addPropertyChangeListener(this);
@@ -54,6 +55,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         this.senderID = senderID;
         this.receiverID = receiverID;
         this.senderUsername = senderUsername;
+        this.receiverUsername = receiverUsername;
         this.chatURL = chatURL;
 
 //        this.chatURL = updateChatChannelViewModel.getState().getChatURL();
@@ -76,7 +78,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         messageContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
         scrollPane = new JScrollPane(messageContainer);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setPreferredSize(new Dimension(400, 200));
+        scrollPane.setPreferredSize(new Dimension(400, 350));
         send = new JButton("Send");
         back = new JButton("Back");
         ChatPreviewPanel chatPreview = new ChatPreviewPanel(chatName, scrollPane, content, send, back);
@@ -151,7 +153,8 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
 //                receiverID = state.getUser2ID();
 //                senderUsername = state.getUser1Name();
 //            }
-            chatName.setText(state.getChatChannelName());
+            chatName.setText(receiverUsername);
+//            chatName.setText(state.getChatChannelName());
             updateMessage(state.getMessages());
         }
     }
@@ -161,9 +164,11 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         Thread thread = new Thread(() -> {
             while (true) {
                 try {
-                    UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
-                    updateChatChannelController.execute(updateChatChannelState.getChatURL());
-                    pending = false; // temporary message stored to database, safe to redraw
+                    if (updateChatChannelController != null) {
+                        UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
+                        updateChatChannelController.execute(updateChatChannelState.getChatURL());
+                        pending = false; // temporary message stored to database, safe to redraw
+                    }
                     Thread.sleep(200);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

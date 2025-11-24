@@ -31,7 +31,9 @@ import use_case.send_message.SendMessageInputBoundary;
 import use_case.send_message.SendMessageInteractor;
 import use_case.update_chat_channel.UpdateChatChannelInputBoundary;
 import use_case.update_chat_channel.UpdateChatChannelInteractor;
+import view.BaseUIView;
 import view.ChatChannelView;
+import view.ViewManager;
 
 import javax.swing.*;
 import java.sql.Connection;
@@ -283,18 +285,24 @@ public class ChatChannelViewTestReceiver {
         baseUIController baseUIController = new baseUIController(baseUIInteractor); // TODO: Fix naming
 
         // 6. View
-        ChatChannelView view = new ChatChannelView(vm, user1.getUserID(), user2.getUserID(), user1.getUsername(), channelUrl);
+        ChatChannelView view = new ChatChannelView(vm, user1.getUserID(), user2.getUserID(), user1.getUsername(), user2.getUsername(), channelUrl);
+        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController);
         view.setUpdateChatChannelController(controller);
         view.setSendMessageController(sendMessageController);
         view.setBaseUIController(baseUIController);
 
+        // View Manager model
+        ViewManager viewManager = new ViewManager(viewManagerModel);
+        viewManager.addView(view, "update chat channel");
+        viewManager.addView(baseUIView, "baseUIView");
 
         // 7. Execute
         controller.execute(channelUrl);
 
         // 8. Create Window
         JFrame frame = new JFrame("TEST CHAT VIEW");
-        frame.setContentPane(view);   // Your view MUST extend JPanel
+//        frame.setContentPane(view);
+        frame.setContentPane(viewManager);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);

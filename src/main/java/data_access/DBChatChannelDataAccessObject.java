@@ -63,8 +63,8 @@ public class DBChatChannelDataAccessObject implements UpdateChatChannelUserDataA
         }
     }
     public int addChat(DirectChatChannel chat) throws SQLException {
-        String query = "INSERT INTO chat_channel (user1_id, user2_id, channel_url) " +
-                "VALUES (?, ?, ?) RETURNING chat_id";
+        String query = "INSERT INTO chat_channel (user1_id, user2_id, channel_url, name) " +
+                "VALUES (?, ?, ?, ?) RETURNING chat_id";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, chat.getUser1().getUserID()); // user 1
             preparedStatement.setInt(2, chat.getUser2().getUserID()); // user 2
@@ -106,8 +106,8 @@ public class DBChatChannelDataAccessObject implements UpdateChatChannelUserDataA
     }
 
     public List<String> getChatURLsByUserId(int userId) throws SQLException {
-        String query = "SELECT channel_url FROM direct_chat_channel " +
-                "WHERE user1_id = ? OR user2_id = ?";
+        String query = "SELECT channel_url FROM chat_channel WHERE user1_id = ? OR user2_id = ?";
+
 
         List<String> chatUrls = new ArrayList<>();
 

@@ -37,7 +37,7 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
     private final JButton initiateChatButton = new JButton("Initiate Chat");
 
     public BaseUIView(baseUIViewModel viewModel, baseUIController controller,
-                      UpdateChatChannelViewModel updateChatChannelViewModel, ChatChannelViewModel chatChannelViewModel, ViewManagerModel viewManagerModel, SessionManager sessionManager) {
+                      UpdateChatChannelViewModel updateChatChannelViewModel, ChatChannelViewModel chatChannelViewModel, ViewManagerModel viewManagerModel, SessionManager sessionManager) throws SQLException {
         this.viewModel = viewModel;
         this.controller = controller;
         this.updateChatChannelViewModel = updateChatChannelViewModel;
@@ -45,6 +45,8 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
         this.viewManagerModel = viewManagerModel;
         this.sessionManager = sessionManager;
         this.viewModel.addPropertyChangeListener(this);
+
+
 
         // Main layout styling
         this.setLayout(new BorderLayout());
@@ -70,20 +72,18 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
                 BorderFactory.createEmptyBorder(30, 40, 30, 40)
         ));
 
+
         baseUIState state = viewModel.getState();
         java.util.List<String> chatnames = state.getChatnames();
         java.util.List<DirectChatChannel> chatEntities = state.getChatEntities();
 
         // Initialize list model and UI component
+        System.out.println(chatnames);
         chatListModel = new DefaultListModel<>();
         chatList = new JList<>(chatListModel);
         chatList.setFont(new Font("SansSerif", Font.PLAIN, 16));
         chatList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        // Populate chat list with names
-        for (String name : chatnames) {
-            chatListModel.addElement(name);
-        }
 
         listPanel.add(new JScrollPane(chatList), BorderLayout.CENTER);
         this.add(listPanel, BorderLayout.CENTER);
@@ -159,19 +159,20 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
             if (sessionManager.getMainUser().getUserID() == chat.getUser1().getUserID()) {
                 ChatChannelView chatChanneView = new ChatChannelView(updateChatChannelViewModel,
                         chat.getUser1().getUserID(), chat.getUser2().getUserID(), chat.getUser1().getUsername(),
-                        chat.getChatURL());
+                        chat.getUser2().getUsername(), chat.getChatURL());
                 this.chatChannelView = chatChanneView;
-
             }
             else{
                 ChatChannelView chatChanneView = new ChatChannelView(updateChatChannelViewModel,
                         chat.getUser2().getUserID(), chat.getUser1().getUserID(), chat.getUser2().getUsername(),
-                        chat.getChatURL());
+                        chat.getUser1().getUsername(), chat.getChatURL());
                 this.chatChannelView = chatChanneView;
             }
 
             this.switchView(this.viewManagerModel, this.chatChannelViewModel);
         });
+
+        controller.displayUI();
     }
 
     private void styleRoundedButton(JButton button, Color bg, Color fg, Font font) {

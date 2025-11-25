@@ -1,5 +1,6 @@
 package app;
 
+import SendBirdAPI.ChannelCreator;
 import data_access.DBChatChannelDataAccessObject;
 import data_access.DBConnectionFactory;
 import data_access.DBUserDataAccessObject;
@@ -56,16 +57,17 @@ public class BaseUITest {
 
     public static void main(String[] args) throws SQLException {
         //create fake user for login
-        User testuser = new User(24, "Koorosh","paassy","English");
-        User testuser2 = new User(233, "salam", "pass", "English");
-        testuser.addContact(testuser2);
+        User testuser1 = new User(2, "Bob", "def", "English");
+        User testuser2 = new User(1, "Alice", "abc", "English");
+        testuser1.addContact(testuser2);
+        SessionManager sessionManager = new SessionManager(testuser1, true);
 
-        SessionManager sessionManager = new SessionManager(testuser, true);
+        ChannelCreator channelCreator = new ChannelCreator("F0DD09FE-824B-4435-A8D0-8CDD577C4A4F");
 
         //create needed instances
         baseUIViewModel baseUIViewModel = new baseUIViewModel("baseUIView");
-        UpdateChatChannelViewModel updateChatChannelViewModel = new UpdateChatChannelViewModel();
         FriendRequestViewModel friendRequestViewModel = new FriendRequestViewModel();
+        UpdateChatChannelViewModel updateChatChannelViewModel = new UpdateChatChannelViewModel();
         ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("chatChannelViewModel");
         AddChatChannelViewModel addChatChannelViewModel = new AddChatChannelViewModel("addChatChannelViewModel");
         AddContactViewModel addContactViewModel = new AddContactViewModel();
@@ -78,37 +80,43 @@ public class BaseUITest {
         //create needed dependencies
         AddContactPresenter addContactPresenter = new AddContactPresenter(addContactViewModel, viewManagerModel);
         FriendRequestPresenter friendRequestPresenter = new FriendRequestPresenter(friendRequestViewModel,
-                viewManagerModel);
-        AddChatChannelPresenter addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel,
-                addChatChannelViewModel, viewManagerModel);
+                viewManagerModel, baseUIViewModel);
+
         baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel,
                 friendRequestViewModel, addContactViewModel);
 
-        AddContactInteractor addContactInteractor = new AddContactInteractor(dbUserDataAccessObject, addContactPresenter);
-        AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter,
-                dbChatChannelDataAccessObject, dbUserDataAccessObject, sessionManager);
+        AddContactInteractor addContactInteractor = new AddContactInteractor(dbUserDataAccessObject,
+                dbContactDataAccessObject ,addContactPresenter);
+
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject,
                 dbUserDataAccessObject, sessionManager);
         FriendRequestInteractor friendRequestInteractor = new FriendRequestInteractor(dbContactDataAccessObject,
                 friendRequestPresenter);
 
-        AddContactController addContactController = new AddContactController(addContactInteractor);
-        AddChatChannelController addChatChannelController = new AddChatChannelController(addChatChannelInteractor);
+
         baseUIController baseUIController = new baseUIController(baseUIInteractor);
         FriendRequestController friendRequestController = new FriendRequestController(friendRequestInteractor);
 
+
+        AddChatChannelPresenter addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel,
+                addChatChannelViewModel, viewManagerModel, baseUIController);
+        AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter,
+                dbChatChannelDataAccessObject, dbUserDataAccessObject, sessionManager, channelCreator);
+        AddContactController addContactController = new AddContactController(addContactInteractor);
+        AddChatChannelController addChatChannelController = new AddChatChannelController(addChatChannelInteractor);
         ViewManager viewManager = new ViewManager(viewManagerModel);
 
         // Create actual base view and register it
-        AddContactView addContactView = new AddContactView(addContactViewModel, baseUIViewModel, viewManagerModel);
+        AddContactView addContactView = new AddContactView(addContactViewModel, viewManagerModel, sessionManager,
+                baseUIController);
         addContactView.setAddContactController(addContactController);
-        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
+        BaseUIView baseUIView = new BaseUIView(baseUIViewModel,baseUIController, updateChatChannelViewModel,
                 chatChannelViewModel, viewManagerModel, sessionManager);
-        FriendRequestView friendRequestView = new FriendRequestView(friendRequestViewModel, baseUIViewModel,
-                viewManagerModel);
+        FriendRequestView friendRequestView = new FriendRequestView(friendRequestViewModel,viewManagerModel,
+                sessionManager, baseUIController);
         friendRequestView.setFriendRequestController(friendRequestController);
         CreateChatView addChatChannelView = new CreateChatView(sessionManager, addChatChannelController,
-                baseUIViewModel, baseUIController);
+                baseUIViewModel, baseUIController, addChatChannelViewModel);
 
 
         viewManager.addView(baseUIView, baseUIViewModel.getViewName());

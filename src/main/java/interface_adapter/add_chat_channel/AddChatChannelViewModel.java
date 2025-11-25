@@ -9,11 +9,21 @@ public class AddChatChannelViewModel extends ViewModel<AddChatChannelState> {
     private String message;
     private String error;
     private Boolean HasError;
+    private AddChatChannelState addChatChannelState;
+
 
     public final List<ViewModelListener> listeners = new ArrayList<>();
 
     public AddChatChannelViewModel(String viewName) {
         super(viewName);
+        this.addChatChannelState = new AddChatChannelState();
+    }
+
+    public AddChatChannelState getState() {
+        return addChatChannelState;
+    }
+    public void setState(AddChatChannelState state) {
+        this.addChatChannelState = state;
     }
 
     public boolean getHasError() {

@@ -27,24 +27,34 @@ public class baseUIPresenter implements BaseUIOutputBoundary {
 
     @Override
     public void DisplayUI(BaseUIOutputData response) {
-        final baseUIState baseUIState = viewModelbase.getState();
-        if (response.getDirectChatChannels() != null){
-            baseUIState.setChatEntities(response.getDirectChatChannels());}
-        baseUIState.setChatnames(response.getChatNames());
-        this.viewModelbase.firePropertyChange();
+        baseUIState newState = new baseUIState();
 
-        this.viewManagerModel.setState(viewModelbase.getViewName());
-        this.viewManagerModel.firePropertyChange();
+        newState.setChatEntities(response.getDirectChatChannels());
+        newState.setChatnames(response.getChatNames());
+
+        System.out.println(response.getChatNames());
+        viewModelbase.setState(newState); // replace whole object
+        viewModelbase.firePropertyChange();   // newValue != oldValue
+        viewManagerModel.setState(viewModelbase.getViewName());
+        viewManagerModel.firePropertyChange();
     }
+
 
     @Override
     public void DisplayAddChat(BaseUIOutputData response) {
 
-        AddChatChannelState state = addChatChannelViewModel.getState();
-        addChatChannelViewModel.firePropertyChange();
+        AddChatChannelState newState = new AddChatChannelState();
+
+        // example: maybe include error message if needed
+        newState.setErrorMessage("You already have a chat with this person");
+
+        addChatChannelViewModel.setState(newState);
+        addChatChannelViewModel.firePropertyChange();  // now has real state
+
         viewManagerModel.setState(addChatChannelViewModel.getViewName());
         viewManagerModel.firePropertyChange();
     }
+
 
     @Override
     public void DisplayFriends(BaseUIOutputData response) {

@@ -13,10 +13,12 @@ import entity.DirectChatChannel;
 import entity.User;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.add_chat_channel.AddChatChannelViewModel;
+import interface_adapter.add_contact.AddContactViewModel;
 import interface_adapter.base_UI.baseUIController;
 import interface_adapter.base_UI.baseUIPresenter;
 import interface_adapter.base_UI.baseUIViewModel;
 import interface_adapter.chat_channel.ChatChannelPresenter;
+import interface_adapter.chat_channel.ChatChannelViewModel;
 import interface_adapter.chat_channel.MessageViewModel;
 import interface_adapter.chat_channel.SendMessageController;
 import interface_adapter.friend_request.FriendRequestViewModel;
@@ -252,7 +254,7 @@ public class ChatChannelViewTestReceiver {
         System.out.println("User1: " + chat.getUser1().getUsername() + ", User2: " + chat.getUser2().getUsername());
         System.out.println("url: " + chat.getChatURL());
 
-
+        SessionManager session = new SessionManager(user1, true);
         // 1. ViewModel
         UpdateChatChannelViewModel vm = new UpdateChatChannelViewModel();
         MessageViewModel messageViewModel = new MessageViewModel();
@@ -260,11 +262,14 @@ public class ChatChannelViewTestReceiver {
         ViewManagerModel viewManagerModel = new ViewManagerModel();
         FriendRequestViewModel friendRequestViewModel = new FriendRequestViewModel();
         AddChatChannelViewModel addChatChannelViewModel = new AddChatChannelViewModel("Add Chat Channel"); // TODO: Should this have a string as an argument?
-
+        AddContactViewModel addContactViewModel = new AddContactViewModel();
+        UpdateChatChannelViewModel updateChatChannelViewModel = new UpdateChatChannelViewModel();
+        ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("chatChannelView");
         // 2. Presenter
         UpdateChatChannelPresenter presenter = new UpdateChatChannelPresenter(vm);
         ChatChannelPresenter presenter2 = new ChatChannelPresenter(messageViewModel);
-        baseUIPresenter presenter3 = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel);
+        baseUIPresenter presenter3 = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel,
+                friendRequestViewModel, addContactViewModel );
 
         // 2. DAOs and other variables
 //        DBChatChannelDataAccessObject chatDAO = new DBChatChannelDataAccessObject(connection);
@@ -286,7 +291,9 @@ public class ChatChannelViewTestReceiver {
 
         // 6. View
         ChatChannelView view = new ChatChannelView(vm, user1.getUserID(), user2.getUserID(), user1.getUsername(), user2.getUsername(), channelUrl);
-        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController);
+        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
+                chatChannelViewModel, viewManagerModel, session);
+
         view.setUpdateChatChannelController(controller);
         view.setSendMessageController(sendMessageController);
         view.setBaseUIController(baseUIController);

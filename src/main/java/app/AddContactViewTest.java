@@ -35,59 +35,59 @@ import java.sql.SQLException;
 
 public class AddContactViewTest {
     public static void main(String[] args) throws SQLException {
-        JFrame frame = new JFrame("add contact testing");
-
-        // DAO
-        Connection conn = DBConnectionFactory.createConnection();
-        DBUserDataAccessObject dummyUserDAO = new DBUserDataAccessObject(conn);
-        DBContactDataAccessObject dummyContactDAO = new DBContactDataAccessObject(conn);
-        DBChatChannelDataAccessObject dbChatChannelDataAccessObject = new DBChatChannelDataAccessObject(conn);
-
-
-        // testing if actually able to send request
-        // dummyDAO.sendRequest(dummyDAO.getUserFromName("a"), "Bob");
-        User temp = dummyUserDAO.getUserFromID(1);
-        dummyContactDAO.updateUserContacts(temp, temp.getContacts());
-
-        System.out.println(temp.getUsername());
-
-        AddContactViewModel addContactViewModel = new AddContactViewModel();
-        ViewManagerModel viewManagerModel = new ViewManagerModel();
-        AddContactPresenter presenter = new AddContactPresenter(addContactViewModel, viewManagerModel);
-        SessionManager sessionManager = new SessionManager(temp, true);
-
-        baseUIViewModel baseUIViewModel = new baseUIViewModel("baseUIView");
-        ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("chatChannelViewModel");
-        AddChatChannelViewModel addChatChannelViewModel = new AddChatChannelViewModel("addChatChannelViewModel");
-        AddChatChannelPresenter addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel, addChatChannelViewModel, viewManagerModel);
-        FriendRequestViewModel friendRequestViewModel = new FriendRequestViewModel();
-        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel);
-
-        AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager);
-        BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager);
-
-        AddChatChannelController addChatChannelController = new AddChatChannelController(addChatChannelInteractor);
-        baseUIController baseUIController = new baseUIController(baseUIInteractor);
-        ViewManager viewManager = new ViewManager(viewManagerModel);
-
-
-        // Create actual base view and register it
-        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController);
-        CreateChatView addChatChannelView = new CreateChatView(sessionManager, addChatChannelController, baseUIViewModel, baseUIController);
-        AddContactView addContactview = new AddContactView(addContactViewModel, viewManagerModel, sessionManager, baseUIController);
-
-        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, presenter);
-        AddContactController controller = new AddContactController(interactor);
-        addContactview.setAddContactController(controller);
-
-
-        viewManager.addView(addContactview, addChatChannelViewModel.getViewName());
-        viewManager.addView(baseUIView, baseUIViewModel.getViewName());
-        viewManager.addView(addChatChannelView, addChatChannelViewModel.getViewName());
-
-        frame.add(viewManager);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
+//        JFrame frame = new JFrame("add contact testing");
+//
+//        // DAO
+//        Connection conn = DBConnectionFactory.createConnection();
+//        DBUserDataAccessObject dummyUserDAO = new DBUserDataAccessObject(conn);
+//        DBContactDataAccessObject dummyContactDAO = new DBContactDataAccessObject(conn);
+//        DBChatChannelDataAccessObject dbChatChannelDataAccessObject = new DBChatChannelDataAccessObject(conn);
+//
+//
+//        // testing if actually able to send request
+//        // dummyDAO.sendRequest(dummyDAO.getUserFromName("a"), "Bob");
+//        User temp = dummyUserDAO.getUserFromID(1);
+//        dummyContactDAO.updateUserContacts(temp, temp.getContacts());
+//
+//        System.out.println(temp.getUsername());
+//
+//        AddContactViewModel addContactViewModel = new AddContactViewModel();
+//        ViewManagerModel viewManagerModel = new ViewManagerModel();
+//        AddContactPresenter presenter = new AddContactPresenter(addContactViewModel, viewManagerModel);
+//        SessionManager sessionManager = new SessionManager(temp, true);
+//
+//        baseUIViewModel baseUIViewModel = new baseUIViewModel("baseUIView");
+//        ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("chatChannelViewModel");
+//        AddChatChannelViewModel addChatChannelViewModel = new AddChatChannelViewModel("addChatChannelViewModel");
+//        AddChatChannelPresenter addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel, addChatChannelViewModel, viewManagerModel);
+//        FriendRequestViewModel friendRequestViewModel = new FriendRequestViewModel();
+//        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel);
+//
+//        AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager);
+//        BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager);
+//
+//        AddChatChannelController addChatChannelController = new AddChatChannelController(addChatChannelInteractor);
+//        baseUIController baseUIController = new baseUIController(baseUIInteractor);
+//        ViewManager viewManager = new ViewManager(viewManagerModel);
+//
+//
+//        // Create actual base view and register it
+//        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController);
+//        CreateChatView addChatChannelView = new CreateChatView(sessionManager, addChatChannelController, baseUIViewModel, baseUIController);
+//        AddContactView addContactview = new AddContactView(addContactViewModel, viewManagerModel, sessionManager, baseUIController);
+//
+//        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, presenter);
+//        AddContactController controller = new AddContactController(interactor);
+//        addContactview.setAddContactController(controller);
+//
+//
+//        viewManager.addView(addContactview, addChatChannelViewModel.getViewName());
+//        viewManager.addView(baseUIView, baseUIViewModel.getViewName());
+//        viewManager.addView(addChatChannelView, addChatChannelViewModel.getViewName());
+//
+//        frame.add(viewManager);
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.pack();
+//        frame.setVisible(true);
     }
 }

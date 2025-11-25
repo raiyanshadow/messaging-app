@@ -26,6 +26,7 @@ public class AddChatChannelOutputData {
     public Integer getSenderID() { return senderID; }
     public Integer getReceiverID() { return receiverID; }
     public List<Integer> getContactIDs() { return contactIDs; }
+    public boolean getNewChat() { return newChat; }
     public boolean isNewChat() { return newChat; }
 
     public void setChatName(String chatName) { this.chatName = chatName; }

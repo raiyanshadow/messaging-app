@@ -11,6 +11,8 @@ import interface_adapter.chat_channel.MessageViewModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
@@ -58,17 +60,8 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         this.receiverUsername = receiverUsername;
         this.chatURL = chatURL;
 
-//        this.chatURL = updateChatChannelViewModel.getState().getChatURL();
-//        this.senderID = updateChatChannelViewModel.getState().getUser1ID();
-//        this.recieverID = updateChatChannelViewModel.getState().getUser2ID();
-
         // Set layout
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-        // Title of screen
-//        final JLabel title = new JLabel("Chat Display");
-//        title.setAlignmentX(Component.CENTER_ALIGNMENT);
-//        this.add(title);
 
         // Chat Preview Panel
         chatName = new JLabel("");
@@ -98,15 +91,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         send.addActionListener(evt -> {
             // Set new message state
             String message = content.getText();
-//                    UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
-//                    try {
-//                        updateChatChannelController.execute(updateChatChannelState.getChatURL());
-//                    } catch (SQLException e) {
-//                        throw new RuntimeException(e);
-//                    }
             MessageState messageState = new MessageState();
-//                    System.out.println("messages length:" + updateChatChannelState.getMessages().size());
-//                    messageState.setSenderName(updateChatChannelState.getUser1Name());
             messageState.setSenderID(senderID);
             messageState.setReceiverID(receiverID);
             messageState.setChannelURL(chatURL);
@@ -132,13 +117,6 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
                 JScrollBar vertical = scrollPane.getVerticalScrollBar();
                 vertical.setValue(vertical.getMaximum());
             }); // TODO: Fix where scrolling occurs
-
-//                    System.out.println("messages length:" + updateChatChannelState.getMessages().size());
-//                    try {
-//                        updateChatChannelController.execute(updateChatChannelState.getChatURL());
-//                    } catch (SQLException e) {
-//                        throw new RuntimeException(e);
-//                    }
         });
         startThread();
     }
@@ -147,14 +125,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("state")) {
             final UpdateChatChannelState state = (UpdateChatChannelState) evt.getNewValue();
-//            if (chatURL == null) {
-//                chatURL = state.getChatURL();
-//                senderID = state.getUser1ID();
-//                receiverID = state.getUser2ID();
-//                senderUsername = state.getUser1Name();
-//            }
             chatName.setText(receiverUsername);
-//            chatName.setText(state.getChatChannelName());
             updateMessage(state.getMessages());
         }
     }
@@ -190,7 +161,6 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         }
         if (!pending) { // Draw only after temporary message updates in database
             messageContainer.removeAll();
-//        List<MessageViewModel> messages = updateChatChannelViewModel.getState().getMessages();
             for (MessageViewModel message : messages) {
                 MessagePanel messagePanel = new MessagePanel(new JLabel(message.getState().getSenderName()), new JLabel(message.getState().getContent()),
                         new JLabel(message.getState().getTimestamp().toString()));
@@ -201,15 +171,11 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
             }
             messageContainer.revalidate();
             messageContainer.repaint();
-            SwingUtilities.invokeLater(() -> { // TODO: Fix scrolling after
+            SwingUtilities.invokeLater(() -> { // TODO: Start screen at the bottom
                 JScrollBar vertical = scrollPane.getVerticalScrollBar();
                 vertical.setValue(vertical.getMaximum());
             });
         }
-
-//        scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
-//        scrollPane.revalidate();
-//        scrollPane.repaint();
     }
 
     public void setBaseUIController(baseUIController baseUIController) {

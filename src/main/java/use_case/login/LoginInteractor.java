@@ -27,4 +27,9 @@ public class LoginInteractor implements LoginInputBoundary {
             userPresenter.prepareFailureView("Invalid username or password.");
         }
     }
+
+    @Override
+    public void switchToSignupView() {
+        userPresenter.switchToSignUpView();
+    }
 }

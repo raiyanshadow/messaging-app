@@ -4,12 +4,14 @@ import entity.User;
 
 public class LoginState {
     private String username;
+    private String password;
     private String errorMessage;
     private boolean isSuccessful;
 
     public LoginState(){
+        this.password = "";
         this.username = "";
-        this.errorMessage = "";
+        this.errorMessage = null;
         this.isSuccessful = false;
     }
 
@@ -19,6 +21,14 @@ public class LoginState {
 
     public String getUsername() {
         return username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setErrorMessage(String errorMessage) {

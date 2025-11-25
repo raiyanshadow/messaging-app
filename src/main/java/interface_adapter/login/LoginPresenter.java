@@ -4,6 +4,7 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.home_page.HomePageState;
 import interface_adapter.home_page.HomePageViewModel;
 import interface_adapter.signup.SignupState;
+import interface_adapter.signup.SignupViewModel;
 import use_case.login.LoginOutputBoundary;
 import use_case.login.LoginOutputData;
 
@@ -11,13 +12,15 @@ public class LoginPresenter implements LoginOutputBoundary {
     private final LoginViewModel loginViewModel;
     private final ViewManagerModel viewManagerModel;
     private final HomePageViewModel homePageViewModel;
+    private final SignupViewModel signupViewModel;
 
     public LoginPresenter(ViewManagerModel viewManagerModel,
                           LoginViewModel loginViewModel,
-                          HomePageViewModel homePageViewModel) {
+                          HomePageViewModel homePageViewModel, SignupViewModel signupViewModel) {
         this.viewManagerModel = viewManagerModel;
         this.loginViewModel = loginViewModel;
         this.homePageViewModel = homePageViewModel;
+        this.signupViewModel = signupViewModel;
     }
 
     @Override
@@ -43,6 +46,12 @@ public class LoginPresenter implements LoginOutputBoundary {
     @Override
     public void switchToHomePageView() {
         viewManagerModel.setState(homePageViewModel.getViewName());
+        viewManagerModel.firePropertyChange();
+    }
+
+    @Override
+    public void switchToSignUpView() {
+        viewManagerModel.setState(signupViewModel.getViewName());
         viewManagerModel.firePropertyChange();
     }
 }

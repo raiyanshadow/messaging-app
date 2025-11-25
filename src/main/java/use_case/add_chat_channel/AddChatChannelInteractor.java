@@ -60,6 +60,7 @@ public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
                 }
             }
         }
+
         if (newChat) {
             //create direct channel entity
             DirectChatChannel newChannel = new DirectChatChannel(request.getChatName(),

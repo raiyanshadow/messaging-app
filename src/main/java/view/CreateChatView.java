@@ -59,19 +59,20 @@ public class CreateChatView extends JPanel implements PropertyChangeListener {
         add(topPanel, BorderLayout.NORTH);
 
         // LIST MODELS
-        DefaultListModel<Object> model = new DefaultListModel<>();
-        JList<Object> userList = new JList<>(model);
-
+        DefaultListModel<Object> model1 = new DefaultListModel<>();
         DefaultListModel<String> model2 = new DefaultListModel<>();
-        JList<String> userListnames = new JList<>(model2);
+
 
         for (Contact contact : currentUser.getContacts()) {
-            model.addElement(contact.getContact().getUsername());
-            model.addElement(contact.getUser());
+            model1.addElement(contact.getContact().getUsername());
+            model1.addElement(contact.getUser());
             model2.addElement(contact.getUser().getUsername());
         }
 
-        userListnames.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JList<String> userListnames = new JList<>(model2);
+        JList<Object> userList = new JList<>(model1);
+        System.out.println(userList.getSelectedValuesList());
+        userList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(userList);
         add(scrollPane, BorderLayout.CENTER);
 
@@ -93,9 +94,9 @@ public class CreateChatView extends JPanel implements PropertyChangeListener {
             if (selectedUser != null) {
                 User contactUser = null;
 
-                for (int i = 0; i < model.size(); i++) {
-                    if (model.getElementAt(i).equals(selectedUser)) {
-                        contactUser = (User) model.getElementAt(i + 1);
+                for (int i = 0; i < model1.size(); i++) {
+                    if (model1.getElementAt(i).equals(selectedUser)) {
+                        contactUser = (User) model1.getElementAt(i + 1);
                         break;
                     }
                 }
@@ -114,10 +115,7 @@ public class CreateChatView extends JPanel implements PropertyChangeListener {
         });
 
         userListnames.addListSelectionListener(e -> {
-            createChatButton.setEnabled(
-                    !chatname.getText().trim().isEmpty() &&
-                            userListnames.getSelectedIndex() != -1
-            );
+            createChatButton.setEnabled(true);
         });
 
         JPanel buttonPanel = new JPanel();

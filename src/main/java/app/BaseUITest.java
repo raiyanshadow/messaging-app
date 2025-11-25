@@ -18,6 +18,7 @@ import interface_adapter.chat_channel.ChatChannelViewModel;
 import interface_adapter.friend_request.FriendRequestController;
 import interface_adapter.friend_request.FriendRequestPresenter;
 import interface_adapter.friend_request.FriendRequestViewModel;
+import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
 import session.SessionManager;
 import use_case.add_chat_channel.AddChatChannelInteractor;
 import use_case.add_contact.AddContactInteractor;
@@ -56,10 +57,14 @@ public class BaseUITest {
     public static void main(String[] args) throws SQLException {
         //create fake user for login
         User testuser = new User(24, "Koorosh","paassy","English");
+        User testuser2 = new User(233, "salam", "pass", "English");
+        testuser.addContact(testuser2);
+
         SessionManager sessionManager = new SessionManager(testuser, true);
 
         //create needed instances
         baseUIViewModel baseUIViewModel = new baseUIViewModel("baseUIView");
+        UpdateChatChannelViewModel updateChatChannelViewModel = new UpdateChatChannelViewModel();
         FriendRequestViewModel friendRequestViewModel = new FriendRequestViewModel();
         ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("chatChannelViewModel");
         AddChatChannelViewModel addChatChannelViewModel = new AddChatChannelViewModel("addChatChannelViewModel");
@@ -97,7 +102,8 @@ public class BaseUITest {
         // Create actual base view and register it
         AddContactView addContactView = new AddContactView(addContactViewModel, baseUIViewModel, viewManagerModel);
         addContactView.setAddContactController(addContactController);
-        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController);
+        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
+                chatChannelViewModel, viewManagerModel, sessionManager);
         FriendRequestView friendRequestView = new FriendRequestView(friendRequestViewModel, baseUIViewModel,
                 viewManagerModel);
         friendRequestView.setFriendRequestController(friendRequestController);

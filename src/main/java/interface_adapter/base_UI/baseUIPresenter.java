@@ -28,11 +28,14 @@ public class baseUIPresenter implements BaseUIOutputBoundary {
     @Override
     public void DisplayUI(BaseUIOutputData response) {
         final baseUIState baseUIState = viewModelbase.getState();
-        if (response.getDirectChatChannels() != null){
-            baseUIState.setChatEntities(response.getDirectChatChannels());}
-        baseUIState.setChatnames(response.getChatNames());
+        if (response.getDirectChatChannels() != null) {
+            baseUIState.setChatEntities(response.getDirectChatChannels());
+            baseUIState.setChatnames(response.getChatNames());
+        }
+        else {
+            baseUIState.setChatnames(response.getChatNames());
+        }
         this.viewModelbase.firePropertyChange();
-
         this.viewManagerModel.setState(viewModelbase.getViewName());
         this.viewManagerModel.firePropertyChange();
     }

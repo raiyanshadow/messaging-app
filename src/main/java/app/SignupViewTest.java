@@ -23,35 +23,20 @@ public class SignupViewTest {
 
     public static void main(String[] args) throws Exception {
 
-        // ---------------------------
-        // WINDOW + CARD LAYOUT
-        // ---------------------------
         JFrame frame = new JFrame("Signup Test");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         CardLayout cardLayout = new CardLayout();
         JPanel views = new JPanel(cardLayout);
 
-        // ---------------------------
-        // DATABASE
-        // ---------------------------
         Connection conn = DBConnectionFactory.createConnection();
         DBUserDataAccessObject userDAO = new DBUserDataAccessObject(conn);
 
-        // ---------------------------
-        // VIEW MANAGER (unchanged)
-        // ---------------------------
         ViewManagerModel viewManagerModel = new ViewManagerModel();
 
-        // ---------------------------
-        // VIEW MODELS
-        // ---------------------------
-        SignupViewModel signupViewModel = new SignupViewModel();  // viewName = "signup"
-        LoginViewModel loginViewModel = new LoginViewModel();      // viewName = "login"
+        SignupViewModel signupViewModel = new SignupViewModel();
+        LoginViewModel loginViewModel = new LoginViewModel();
 
-        // ---------------------------
-        // PRESENTER / INTERACTOR / CONTROLLER
-        // ---------------------------
         SignupPresenter presenter =
                 new SignupPresenter(viewManagerModel, signupViewModel, loginViewModel);
 
@@ -60,20 +45,14 @@ public class SignupViewTest {
 
         SignupController signupController = new SignupController(interactor);
 
-        // ---------------------------
-        // VIEWS
-        // ---------------------------
         SignupView signupView = new SignupView(signupViewModel);
         signupView.setSignupController(signupController);
 
         LoginView loginView = new LoginView(loginViewModel);
 
-        views.add(signupView, signupViewModel.getViewName());   // "signup"
-        views.add(loginView, loginViewModel.getViewName());     // "login"
+        views.add(signupView, signupViewModel.getViewName());
+        views.add(loginView, loginViewModel.getViewName());
 
-        // --------------------------------------------
-        // LISTEN TO VIEW-MANAGER AND SWITCH SCREENS
-        // --------------------------------------------
         viewManagerModel.addPropertyChangeListener(evt -> {
             String newView = (String) evt.getNewValue();
             if (newView != null && !newView.isEmpty()) {
@@ -81,14 +60,8 @@ public class SignupViewTest {
             }
         });
 
-        // --------------------------------------------
-        // START WITH SIGNUP VIEW (IMPORTANT!)
-        // --------------------------------------------
         cardLayout.show(views, signupViewModel.getViewName());
 
-        // --------------------------------------------
-        // SHOW WINDOW
-        // --------------------------------------------
         frame.add(views, BorderLayout.CENTER);
         frame.pack();
         frame.setVisible(true);

@@ -3,27 +3,19 @@ package app;
 import SendBirdAPI.ChannelCreator;
 import entity.User;
 import io.github.cdimascio.dotenv.Dotenv;
+
+import javax.swing.*;
 import java.sql.*;
 
 public class Main {
-        public static void main(String[] args) {
-            Dotenv dotenv = Dotenv.configure()
-                    .directory("./assets")
-                    .filename("env")
-                    .load();
+        public static void main(String[] args) throws SQLException {
+            AppBuilder appBuilder = new AppBuilder();
+            JFrame application = appBuilder
+                    .buildPreLogin()
+                    .build();
 
-            String url = dotenv.get("DB_URL");
-            String user = dotenv.get("DB_USER");
-            String password = dotenv.get("DB_PASSWORD");
-
-            String appId = dotenv.get("MSG_APP_ID");
-            String apiToken = dotenv.get("MSG_TOKEN");
-
-            User user1 = new User(1, "Alice", "abc", "English");
-            User user2 = new User(2, "Bob", "def", "English");
-
-            ChannelCreator channelCreator = new ChannelCreator(appId);
-            String channelUrl = channelCreator.SendbirdChannelCreator(apiToken, "example", user1, user2);
-            System.out.println("Channel URL: " + channelUrl);
+            application.pack();
+            application.setLocationRelativeTo(null);
+            application.setVisible(true);
         }
 }

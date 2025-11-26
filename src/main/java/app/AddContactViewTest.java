@@ -1,5 +1,6 @@
 package app;
 
+import SendBirdAPI.MessageSender;
 import data_access.*;
 import entity.User;
 import interface_adapter.ViewManagerModel;
@@ -13,15 +14,28 @@ import interface_adapter.base_UI.baseUIController;
 import interface_adapter.base_UI.baseUIPresenter;
 import interface_adapter.base_UI.baseUIViewModel;
 
+import interface_adapter.chat_channel.ChatChannelPresenter;
 import interface_adapter.chat_channel.ChatChannelViewModel;
+import interface_adapter.chat_channel.MessageViewModel;
+import interface_adapter.chat_channel.SendMessageController;
 import interface_adapter.friend_request.FriendRequestViewModel;
+import interface_adapter.update_chat_channel.UpdateChatChannelController;
+import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
+import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
 import io.github.cdimascio.dotenv.Dotenv;
+import org.sendbird.client.ApiClient;
+import org.sendbird.client.Configuration;
 import session.SessionManager;
 import use_case.add_chat_channel.AddChatChannelInteractor;
 import use_case.add_contact.*;
 import use_case.baseUI.BaseUIInteractor;
+import use_case.send_message.SendMessageInputBoundary;
+import use_case.send_message.SendMessageInteractor;
+import use_case.send_message.SendMessageOutputBoundary;
 import use_case.signup.SignupOutputBoundary;
 import use_case.signup.SignupOutputData;
+import use_case.update_chat_channel.UpdateChatChannelInteractor;
+import use_case.update_chat_channel.UpdateChatChannelOutputBoundary;
 import view.AddContactView;
 import view.BaseUIView;
 import view.CreateChatView;
@@ -37,11 +51,17 @@ public class AddContactViewTest {
     public static void main(String[] args) throws SQLException {
         JFrame frame = new JFrame("add contact testing");
 
+        final Dotenv dotenv = Dotenv.configure()
+                .directory("./assets")
+                .filename("env")
+                .load();
+
         // DAO
         Connection conn = DBConnectionFactory.createConnection();
         DBUserDataAccessObject dummyUserDAO = new DBUserDataAccessObject(conn);
         DBContactDataAccessObject dummyContactDAO = new DBContactDataAccessObject(conn);
         DBChatChannelDataAccessObject dbChatChannelDataAccessObject = new DBChatChannelDataAccessObject(conn);
+        DBMessageDataAccessObject messageDataAccessObject = new DBMessageDataAccessObject(conn);
 
 
         // testing if actually able to send request
@@ -55,24 +75,40 @@ public class AddContactViewTest {
         ViewManagerModel viewManagerModel = new ViewManagerModel();
         AddContactPresenter presenter = new AddContactPresenter(addContactViewModel, viewManagerModel);
         SessionManager sessionManager = new SessionManager(temp, true);
+        ApiClient defaultClient = Configuration.getDefaultApiClient().setBasePath(
+                "https://api-" + dotenv.get("MSG_APP_ID") + ".sendbird.com"
+        );
+        MessageSender messageSender = new MessageSender(defaultClient);
 
         baseUIViewModel baseUIViewModel = new baseUIViewModel("baseUIView");
         ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("chatChannelViewModel");
         AddChatChannelViewModel addChatChannelViewModel = new AddChatChannelViewModel("addChatChannelViewModel");
+        MessageViewModel messageViewModel = new MessageViewModel();
+        UpdateChatChannelViewModel updateChatChannelViewModel = new UpdateChatChannelViewModel();
         AddChatChannelPresenter addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel, addChatChannelViewModel, viewManagerModel);
         FriendRequestViewModel friendRequestViewModel = new FriendRequestViewModel();
-        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel);
+        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel);
+        SendMessageOutputBoundary sendMessagePresenter = new ChatChannelPresenter(messageViewModel);
+        UpdateChatChannelOutputBoundary updateChatChannelPresenter = new UpdateChatChannelPresenter(updateChatChannelViewModel);
 
         AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager);
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager);
+        SendMessageInteractor sendMessageInteractor = new SendMessageInteractor(sendMessagePresenter, dummyUserDAO,
+                messageDataAccessObject, sessionManager, messageSender);
+        UpdateChatChannelInteractor updateChatChannelInteractor = new UpdateChatChannelInteractor(
+                dbChatChannelDataAccessObject, updateChatChannelPresenter);
 
         AddChatChannelController addChatChannelController = new AddChatChannelController(addChatChannelInteractor);
         baseUIController baseUIController = new baseUIController(baseUIInteractor);
+        SendMessageController sendMessageController = new SendMessageController(sendMessageInteractor);
+        UpdateChatChannelController updateChatChannelController = new UpdateChatChannelController(updateChatChannelInteractor);
         ViewManager viewManager = new ViewManager(viewManagerModel);
 
 
         // Create actual base view and register it
-        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController);
+        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
+                chatChannelViewModel, viewManagerModel, sessionManager, viewManager, sendMessageController,
+                updateChatChannelController);
         CreateChatView addChatChannelView = new CreateChatView(sessionManager, addChatChannelController, baseUIViewModel, baseUIController);
         AddContactView addContactview = new AddContactView(addContactViewModel, viewManagerModel, sessionManager, baseUIController);
 

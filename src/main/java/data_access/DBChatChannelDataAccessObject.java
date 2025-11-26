@@ -106,7 +106,7 @@ public class DBChatChannelDataAccessObject implements UpdateChatChannelUserDataA
     }
 
     public List<String> getChatURLsByUserId(int userId) throws SQLException {
-        String query = "SELECT channel_url FROM direct_chat_channel " +
+        String query = "SELECT channel_url FROM chat_channel " +
                 "WHERE user1_id = ? OR user2_id = ?";
 
         List<String> chatUrls = new ArrayList<>();

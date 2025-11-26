@@ -15,6 +15,7 @@ import entity.MessageFactory;
 import entity.User;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.add_chat_channel.AddChatChannelViewModel;
+import interface_adapter.add_contact.AddContactViewModel;
 import interface_adapter.base_UI.baseUIController;
 import interface_adapter.base_UI.baseUIPresenter;
 import interface_adapter.base_UI.baseUIViewModel;
@@ -25,18 +26,14 @@ import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
 import interface_adapter.update_chat_channel.UpdateChatChannelState;
 import io.github.cdimascio.dotenv.Dotenv;
+import org.sendbird.client.ApiClient;
+import org.sendbird.client.Configuration;
 import session.Session;
 import session.SessionManager;
 import use_case.baseUI.BaseUIInteractor;
-import use_case.send_message.SendMessageInputBoundary;
-import use_case.send_message.SendMessageInputData;
-import use_case.send_message.SendMessageInteractor;
-import use_case.send_message.SendMessageOutputData;
-import use_case.update_chat_channel.UpdateChatChannelInputBoundary;
-import use_case.update_chat_channel.UpdateChatChannelInputData;
-import use_case.update_chat_channel.UpdateChatChannelInteractor;
+import use_case.send_message.*;
+import use_case.update_chat_channel.*;
 import data_access.DBChatChannelDataAccessObject;
-import use_case.update_chat_channel.UpdateChatChannelOutputData;
 import view.BaseUIView;
 import view.ChatChannelView;
 import view.ViewManager;
@@ -266,38 +263,50 @@ public class ChatChannelViewTest {
         ViewManagerModel viewManagerModel = new ViewManagerModel();
         FriendRequestViewModel friendRequestViewModel = new FriendRequestViewModel();
         AddChatChannelViewModel addChatChannelViewModel = new AddChatChannelViewModel("Add Chat Channel"); // TODO: Should this have a string as an argument?
+        AddContactViewModel addContactViewModel = new AddContactViewModel();
+        ViewManager viewManager = new ViewManager(viewManagerModel);
 
         // 2. Presenter
         UpdateChatChannelPresenter presenter = new UpdateChatChannelPresenter(vm);
         ChatChannelPresenter presenter2 = new ChatChannelPresenter(messageViewModel);
-        baseUIPresenter presenter3 = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel);
+        baseUIPresenter presenter3 = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel);
+        SendMessageOutputBoundary sendMessagePresenter = new ChatChannelPresenter(messageViewModel);
 
         // 2. DAOs and other variables
 //        DBChatChannelDataAccessObject chatDAO = new DBChatChannelDataAccessObject(connection);
         UserDataAccessObject userDAO = new DBUserDataAccessObject(connection);
         DBMessageDataAccessObject messageDAO = new DBMessageDataAccessObject(connection);
-        Session sessionManager = new SessionManager(user1, true);
-        MessageSender messageSender = new MessageSender(appId);
+        SessionManager sessionManager = new SessionManager(user1, true);
+        ApiClient defaultClient = Configuration.getDefaultApiClient().setBasePath(
+                "https://api-" + dotenv.get("MSG_APP_ID") + ".sendbird.com"
+        );
+        MessageSender messageSender = new MessageSender(defaultClient);
 
         // 4. Interactor
         UpdateChatChannelInputBoundary interactor = new UpdateChatChannelInteractor(chatDAO, presenter);
         SendMessageInputBoundary messageInteractor = new SendMessageInteractor(presenter2, userDAO, messageDAO, sessionManager, messageSender);
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(presenter3, chatDAO, userDAO, sessionManager);
+        UpdateChatChannelInteractor updateChatChannelInteractor = new UpdateChatChannelInteractor(
+                chatDAO, presenter);
 
         // 5. Controller
         UpdateChatChannelController controller = new UpdateChatChannelController(interactor);
         SendMessageController sendMessageController = new SendMessageController(messageInteractor);
         baseUIController baseUIController = new baseUIController(baseUIInteractor); // TODO: Fix naming
+        UpdateChatChannelController updateChatChannelController = new UpdateChatChannelController(updateChatChannelInteractor);
 
         // 6. View
-        ChatChannelView view = new ChatChannelView(vm, user1.getUserID(), user2.getUserID(), user1.getUsername(), user2.getUsername(), channelUrl);
-        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController);
+        ChatChannelView view = new ChatChannelView(vm, user1.getUserID(), user2.getUserID(), user1.getUsername(),
+                user2.getUsername(), channelUrl, updateChatChannelController, sendMessageController);
+        UpdateChatChannelViewModel updateChatChannelViewModel = new UpdateChatChannelViewModel();
+        ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("Chat");
+        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
+                chatChannelViewModel, viewManagerModel, sessionManager, viewManager, sendMessageController, updateChatChannelController);
         view.setUpdateChatChannelController(controller);
         view.setSendMessageController(sendMessageController);
         view.setBaseUIController(baseUIController);
 
         // View Manager model
-        ViewManager viewManager = new ViewManager(viewManagerModel);
         viewManager.addView(view, "update chat channel");
         viewManager.addView(baseUIView, "baseUIView");
 

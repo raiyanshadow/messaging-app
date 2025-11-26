@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class AddChatChannelController {
     private final AddChatChannelInputBoundary addChatChannelInteractor;
 
-    public AddChatChannelController(AddChatChannelInteractor addChatChannelInteractor) {
+    public AddChatChannelController(AddChatChannelInputBoundary addChatChannelInteractor) {
         this.addChatChannelInteractor = addChatChannelInteractor;
     }
 

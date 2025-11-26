@@ -9,6 +9,8 @@ import use_case.baseUI.BaseUIOutputBoundary;
 import use_case.baseUI.BaseUIOutputData;
 import view.AddContactView;
 
+import java.util.Collections;
+
 public class baseUIPresenter implements BaseUIOutputBoundary {
     private final baseUIViewModel viewModelbase;
     private final ViewManagerModel viewManagerModel;
@@ -30,9 +32,12 @@ public class baseUIPresenter implements BaseUIOutputBoundary {
         final baseUIState baseUIState = viewModelbase.getState();
         if (response.getDirectChatChannels() != null){
             baseUIState.setChatEntities(response.getDirectChatChannels());}
-        baseUIState.setChatnames(response.getChatNames());
+        if (response.getChatNames() != null) {
+            baseUIState.setChatnames(response.getChatNames());
+        } else {
+            baseUIState.setChatnames(Collections.emptyList());
+        }
         this.viewModelbase.firePropertyChange();
-
         this.viewManagerModel.setState(viewModelbase.getViewName());
         this.viewManagerModel.firePropertyChange();
     }

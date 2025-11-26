@@ -1,5 +1,6 @@
 package use_case.edit_message;
 
+import data_access.DBChatChannelDataAccessObject;
 import data_access.MessageDataAccessObject;
 import data_access.UserDataAccessObject;
 import entity.Message;
@@ -14,6 +15,7 @@ public class EditMessageInteractor implements EditMessageInputBoundary {
     private UserDataAccessObject userDataAccessObject;
     private MessageDataAccessObject messageDataAccessObject;
     private MessageEditor messageEditor;
+
     private Dotenv dotenv =  Dotenv.configure()
             .directory("./assets")
             .filename("env")

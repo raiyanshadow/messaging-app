@@ -1,32 +1,60 @@
 package view;
 
+import entity.DirectChatChannel;
+import interface_adapter.ViewManagerModel;
 import interface_adapter.base_UI.baseUIController;
 import interface_adapter.base_UI.baseUIState;
 import interface_adapter.base_UI.baseUIViewModel;
+import interface_adapter.chat_channel.ChatChannelViewModel;
+import interface_adapter.chat_channel.SendMessageController;
+import interface_adapter.update_chat_channel.UpdateChatChannelController;
+import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
+import session.SessionManager;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class BaseUIView extends JPanel implements PropertyChangeListener {
 
     private final baseUIViewModel viewModel;
     private final baseUIController controller;
+    private final SendMessageController sendMessageController;
+    private final UpdateChatChannelController updateChatChannelController;
+    private final UpdateChatChannelViewModel updateChatChannelViewModel;
+    private ChatChannelView chatChannelView = null;
+    private final ChatChannelViewModel chatChannelViewModel;
+    private final ViewManagerModel viewManagerModel;
+    private ViewManager viewManager;
 
+    private final SessionManager sessionManager;
     private final DefaultListModel<String> chatListModel;
     private final JList<String> chatList;
 
     private final JButton createChatButton = new JButton("Create Chat");
-    private final JButton friendRequestsButton = new JButton("Friend Requests");
+    private final JButton friendRequestsButton = new JButton("Requests");
     private final JButton addFriendButton = new JButton("Add Friend");
     private final JButton logoutButton = new JButton("Logout");
+    private final JButton initiateChatButton = new JButton("Initiate Chat");
 
-    public BaseUIView(baseUIViewModel viewModel, baseUIController controller) {
+    public BaseUIView(baseUIViewModel viewModel, baseUIController controller,
+                      UpdateChatChannelViewModel updateChatChannelViewModel, ChatChannelViewModel chatChannelViewModel,
+                      ViewManagerModel viewManagerModel, SessionManager sessionManager, ViewManager viewManager,
+                      SendMessageController sendMessageController, UpdateChatChannelController updateChatChannelController) throws SQLException {
         this.viewModel = viewModel;
         this.controller = controller;
+        this.updateChatChannelViewModel = updateChatChannelViewModel;
+        this.chatChannelViewModel = chatChannelViewModel;
+        this.viewManagerModel = viewManagerModel;
+        this.sessionManager = sessionManager;
         this.viewModel.addPropertyChangeListener(this);
+        this.viewManager = viewManager;
+        this.sendMessageController = sendMessageController;
+        this.updateChatChannelController = updateChatChannelController;
 
         // Main layout styling
         this.setLayout(new BorderLayout());
@@ -57,8 +85,20 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
         chatList.setFont(new Font("SansSerif", Font.PLAIN, 16));
         chatList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+
         listPanel.add(new JScrollPane(chatList), BorderLayout.CENTER);
         this.add(listPanel, BorderLayout.CENTER);
+
+        // Add Initiate Chat Button under scroll
+        styleRoundedButton(initiateChatButton, new Color(30, 144, 255), Color.WHITE, new Font("SansSerif", Font.BOLD, 13));
+        initiateChatButton.setPreferredSize(new Dimension(130, 32)); // smaller size
+        initiateChatButton.setEnabled(false);
+
+        JPanel initiatePanel = new JPanel();
+        initiatePanel.setBackground(Color.WHITE);
+        initiatePanel.add(initiateChatButton);
+        listPanel.add(initiatePanel, BorderLayout.SOUTH);
+
 
         // Buttons Panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
@@ -92,6 +132,10 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
             }
         });
 
+        chatList.addListSelectionListener(e ->{
+            initiateChatButton.setEnabled(true);
+        });
+
         friendRequestsButton.addActionListener(e -> {
             try {
                 controller.switchToFriendRequestView();
@@ -107,6 +151,36 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
                 throw new RuntimeException(ex);
             }
         });
+
+        initiateChatButton.addActionListener(e -> {
+            baseUIState state = viewModel.getState();
+            java.util.List<String> chatnames = state.getChatnames();
+            java.util.List<DirectChatChannel> chatEntities = state.getChatEntities();
+
+            String name =  chatList.getSelectedValue();
+            Integer index = chatnames.indexOf(name);
+            System.out.println(index);
+            System.out.println(chatnames);
+
+            DirectChatChannel chat = chatEntities.get(index);
+            ChatChannelView newChatChannelView = new ChatChannelView(updateChatChannelViewModel,
+                    sessionManager.getMainUser().getUserID(), chat.getUser1().getUserID(), sessionManager.getMainUser().getUsername(),
+                    chat.getUser1().getUsername(), chat.getChatURL(), updateChatChannelController, sendMessageController);
+            newChatChannelView.setBaseUIController(controller);
+            SwingWorker<Void, Void> worker = new SwingWorker<>() {
+                @Override
+                protected Void doInBackground() throws Exception {
+                    updateChatChannelController.execute(chat.getChatURL());
+                    return null;
+                }
+            };
+            worker.execute();
+            this.chatChannelView = newChatChannelView;
+            viewManager.addView(chatChannelView, chatChannelViewModel.getViewName());
+            this.switchView(this.viewManagerModel, this.chatChannelViewModel);
+        });
+
+        controller.displayUI();
     }
 
     private void styleRoundedButton(JButton button, Color bg, Color fg, Font font) {
@@ -125,16 +199,21 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
         ));
     }
 
-
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        baseUIState state = (baseUIState) evt.getNewValue();
+        baseUIState state = viewModel.getState();
         chatListModel.clear();
         for (String chatName : state.getChatnames()) {
             chatListModel.addElement(chatName);
         }
     }
 
+    public void switchView(ViewManagerModel viewManagerModel, ChatChannelViewModel chatChannelViewModel) {
+        chatChannelViewModel.firePropertyChange();
+        viewManagerModel.setState(chatChannelViewModel.getViewName());
+        viewManagerModel.firePropertyChange();
+
+    }
     public JButton getAddFriendButton() { return addFriendButton; }
     public JButton getFriendRequestsButton() { return friendRequestsButton; }
     public JButton getCreateChatButton() { return createChatButton; }

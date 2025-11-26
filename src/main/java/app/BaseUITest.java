@@ -1,6 +1,5 @@
 package app;
 
-import SendBirdAPI.ChannelCreator;
 import data_access.DBChatChannelDataAccessObject;
 import data_access.DBConnectionFactory;
 import data_access.DBUserDataAccessObject;
@@ -19,14 +18,12 @@ import interface_adapter.chat_channel.ChatChannelViewModel;
 import interface_adapter.friend_request.FriendRequestController;
 import interface_adapter.friend_request.FriendRequestPresenter;
 import interface_adapter.friend_request.FriendRequestViewModel;
-import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
 import session.SessionManager;
 import use_case.add_chat_channel.AddChatChannelInteractor;
 import use_case.add_contact.AddContactInteractor;
 import use_case.baseUI.BaseUIInteractor;
-import use_case.friend_request.FriendRequestInteractor;
-import use_case.friend_request.FriendRequestUserDataAccessInterface;
-import view.*;
+import view.BaseUIView;
+import view.CreateChatView;
 
 import javax.swing.*;
 import java.sql.Connection;
@@ -48,6 +45,7 @@ import use_case.add_chat_channel.AddChatChannelInteractor;
 import use_case.baseUI.BaseUIInteractor;
 import view.BaseUIView;
 import view.CreateChatView;
+import view.ViewManager;
 
 import javax.swing.*;
         import java.sql.Connection;
@@ -57,17 +55,11 @@ public class BaseUITest {
 
     public static void main(String[] args) throws SQLException {
         //create fake user for login
-        User testuser1 = new User(2, "Bob", "def", "English");
-        User testuser2 = new User(1, "Alice", "abc", "English");
-        testuser1.addContact(testuser2);
-        SessionManager sessionManager = new SessionManager(testuser1, true);
-
-        ChannelCreator channelCreator = new ChannelCreator("F0DD09FE-824B-4435-A8D0-8CDD577C4A4F");
+        User testuser = new User(24, "Koorosh","paassy","English");
+        SessionManager sessionManager = new SessionManager(testuser, true);
 
         //create needed instances
         baseUIViewModel baseUIViewModel = new baseUIViewModel("baseUIView");
-        FriendRequestViewModel friendRequestViewModel = new FriendRequestViewModel();
-        UpdateChatChannelViewModel updateChatChannelViewModel = new UpdateChatChannelViewModel();
         ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("chatChannelViewModel");
         AddChatChannelViewModel addChatChannelViewModel = new AddChatChannelViewModel("addChatChannelViewModel");
         AddContactViewModel addContactViewModel = new AddContactViewModel();
@@ -77,47 +69,38 @@ public class BaseUITest {
         DBUserDataAccessObject dbUserDataAccessObject = new DBUserDataAccessObject(conn);
         DBContactDataAccessObject dbContactDataAccessObject = new DBContactDataAccessObject(conn);
 
+        dbUserDataAccessObject.save(testuser);
+
         //create needed dependencies
         AddContactPresenter addContactPresenter = new AddContactPresenter(addContactViewModel, viewManagerModel);
         FriendRequestPresenter friendRequestPresenter = new FriendRequestPresenter(friendRequestViewModel,
-                viewManagerModel, baseUIViewModel);
+                viewManagerModel);
+        AddChatChannelPresenter addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel,
+                addChatChannelViewModel, viewManagerModel);
+        FriendRequestViewModel friendRequestViewModel = new FriendRequestViewModel();
+        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel);
 
-        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel,
-                friendRequestViewModel, addContactViewModel);
-
-        AddContactInteractor addContactInteractor = new AddContactInteractor(dbUserDataAccessObject,
-                dbContactDataAccessObject ,addContactPresenter);
-
+        AddContactInteractor addContactInteractor = new AddContactInteractor(dbUserDataAccessObject, addContactPresenter);
+        AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter,
+                dbChatChannelDataAccessObject, dbUserDataAccessObject, sessionManager);
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject,
                 dbUserDataAccessObject, sessionManager);
         FriendRequestInteractor friendRequestInteractor = new FriendRequestInteractor(dbContactDataAccessObject,
                 friendRequestPresenter);
 
-
+        AddContactController addContactController = new AddContactController(addContactInteractor);
+        AddChatChannelController addChatChannelController = new AddChatChannelController(addChatChannelInteractor);
         baseUIController baseUIController = new baseUIController(baseUIInteractor);
         FriendRequestController friendRequestController = new FriendRequestController(friendRequestInteractor);
 
-
-        AddChatChannelPresenter addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel,
-                addChatChannelViewModel, viewManagerModel, baseUIController);
-        AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter,
-                dbChatChannelDataAccessObject, dbUserDataAccessObject, sessionManager, channelCreator);
-        AddContactController addContactController = new AddContactController(addContactInteractor);
-        AddChatChannelController addChatChannelController = new AddChatChannelController(addChatChannelInteractor);
         ViewManager viewManager = new ViewManager(viewManagerModel);
 
         // Create actual base view and register it
-        AddContactView addContactView = new AddContactView(addContactViewModel, viewManagerModel, sessionManager,
-                baseUIController);
+        AddContactView addContactView = new AddContactView(addContactViewModel, baseUIViewModel, viewManagerModel);
         addContactView.setAddContactController(addContactController);
-        BaseUIView baseUIView = new BaseUIView(baseUIViewModel,baseUIController, updateChatChannelViewModel,
-                chatChannelViewModel, viewManagerModel, sessionManager);
-        FriendRequestView friendRequestView = new FriendRequestView(friendRequestViewModel,viewManagerModel,
-                sessionManager, baseUIController);
-        friendRequestView.setFriendRequestController(friendRequestController);
+        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController);
         CreateChatView addChatChannelView = new CreateChatView(sessionManager, addChatChannelController,
-                baseUIViewModel, baseUIController, addChatChannelViewModel);
-
+                baseUIViewModel, baseUIController);
 
         viewManager.addView(baseUIView, baseUIViewModel.getViewName());
         viewManager.addView(friendRequestView, friendRequestViewModel.getViewName());

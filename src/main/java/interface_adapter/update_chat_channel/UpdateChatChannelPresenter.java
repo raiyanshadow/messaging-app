@@ -1,5 +1,6 @@
 package interface_adapter.update_chat_channel;
 
+import session.SessionManager;
 import use_case.update_chat_channel.UpdateChatChannelOutputBoundary;
 import use_case.update_chat_channel.UpdateChatChannelOutputData;
 import interface_adapter.chat_channel.MessageViewModel;
@@ -10,9 +11,12 @@ import java.util.List;
 
 public class UpdateChatChannelPresenter implements UpdateChatChannelOutputBoundary {
     private final UpdateChatChannelViewModel updateChatChannelViewModel;
+    SessionManager sessionManager;
 
-    public UpdateChatChannelPresenter(UpdateChatChannelViewModel updateChatChannelViewModel) {
+    public UpdateChatChannelPresenter(UpdateChatChannelViewModel updateChatChannelViewModel,
+                                      SessionManager sessionManager) {
         this.updateChatChannelViewModel = updateChatChannelViewModel;
+        this.sessionManager = sessionManager;
     }
 
     @Override
@@ -24,10 +28,10 @@ public class UpdateChatChannelPresenter implements UpdateChatChannelOutputBounda
             messageViewModel.getState().setChannelURL(message.getChannelURL());
             messageViewModel.getState().setContent((String) message.getContent()); // TODO: Might change if message type changes
             messageViewModel.getState().setChannelURL(message.getChannelURL());
-            messageViewModel.getState().setSenderID(message.getSender().getUserID());
-            messageViewModel.getState().setReceiverID(message.getReceiver().getUserID());
+            messageViewModel.getState().setSenderID(message.getSenderId());
+            messageViewModel.getState().setReceiverID(message.getReceiverId());
             messageViewModel.getState().setTimestamp(message.getTimestamp());
-            messageViewModel.getState().setSenderName(message.getSender().getUsername());
+            messageViewModel.getState().setSenderName(sessionManager.getMainUser().getUsername());
             messageViewModels.add(messageViewModel);
         }
         updateChatChannelState.setChatURL(outputData.getChatURL());

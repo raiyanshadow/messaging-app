@@ -52,11 +52,8 @@ public class SignupViewTest {
             }
         };
 
-        // Factory
-        entity.UserFactory factory = new entity.UserFactory();
-
         // nteractor
-        SignupInputBoundary interactor = new SignupInteractor(dummyDAO, dummyPresenter, factory);
+        SignupInputBoundary interactor = new SignupInteractor(dummyDAO, dummyPresenter);
 
         // Controller
         SignupController controller = new SignupController(interactor);

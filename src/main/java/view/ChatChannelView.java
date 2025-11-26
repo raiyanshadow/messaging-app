@@ -46,7 +46,8 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private String receiverUsername;
     private boolean pending;
 
-    public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel, Integer senderID, Integer receiverID, String senderUsername, String receiverUsername, String chatURL) {
+    public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel, Integer senderID, Integer receiverID, String senderUsername, String receiverUsername, String chatURL,
+                           UpdateChatChannelController updateChatChannelController, SendMessageController sendMessageController) {
         // Initialize variables
         this.updateChatChannelViewModel = updateChatChannelViewModel;
         this.updateChatChannelViewModel.addPropertyChangeListener(this);
@@ -57,6 +58,8 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         this.senderUsername = senderUsername;
         this.receiverUsername = receiverUsername;
         this.chatURL = chatURL;
+        this.updateChatChannelController = updateChatChannelController;
+        this.sendMessageController = sendMessageController;
 
 //        this.chatURL = updateChatChannelViewModel.getState().getChatURL();
 //        this.senderID = updateChatChannelViewModel.getState().getUser1ID();
@@ -182,7 +185,6 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
 
     // Redraw messages
     private void updateMessage(List<MessageViewModel> messages) {
-        System.out.println("entered updateMessage");
         if (messages == null || messages.isEmpty()) {
             messageContainer.revalidate();
             messageContainer.repaint();

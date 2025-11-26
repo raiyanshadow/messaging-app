@@ -5,15 +5,14 @@ import org.openapitools.client.model.SendAMessageRequest;
 import org.openapitools.client.model.SendbirdMessageResponse;
 import org.sendbird.client.ApiClient;
 import org.sendbird.client.ApiException;
-import org.sendbird.client.Configuration;
 import org.sendbird.client.api.MessageApi;
 
 public class MessageSender {
     private MessageApi messageApi;
+    private ApiClient defaultClient;
 
-    public MessageSender(String appId) {
-        ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("https://api-" + appId + ".sendbird.com");
+    public MessageSender(ApiClient defaultClient) {
+        this.defaultClient = defaultClient;
         this.messageApi = new MessageApi(defaultClient);
     }
 

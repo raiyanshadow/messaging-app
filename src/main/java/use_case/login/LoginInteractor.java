@@ -3,6 +3,8 @@ package use_case.login;
 import entity.User;
 import use_case.profile_edit.ProfileEditOutputBoundary;
 
+import java.sql.SQLException;
+
 public class LoginInteractor implements LoginInputBoundary {
     private final LoginUserDataAccessInterface userDataAccess;
     private final LoginOutputBoundary userPresenter;
@@ -17,10 +19,20 @@ public class LoginInteractor implements LoginInputBoundary {
         String username = data.getUsername();
         String password = data.getPassword();
 
-        boolean isValid = userDataAccess.validateCredentials(username, password);
+        boolean isValid = false;
+        try {
+            isValid = userDataAccess.validateCredentials(username, password);
+        } catch (SQLException e) {
+            userPresenter.prepareFailureView("DB read fail");
+        }
 
         if (isValid) {
-            User user = userDataAccess.getUserByUsername(username);
+            User user = null;
+            try {
+                user = userDataAccess.getUserByUsername(username);
+            } catch (SQLException e) {
+                userPresenter.prepareFailureView("DB read fail");
+            }
             LoginOutputData outputData = new LoginOutputData(user);
             userPresenter.prepareSuccessView(outputData);
         } else {

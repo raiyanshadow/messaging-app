@@ -1,18 +1,22 @@
 package data_access;
 
 import entity.User;
+import entity.UserFactory;
 import use_case.add_contact.AddContactUserDataAccessInterface;
+import use_case.login.LoginUserDataAccessInterface;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DBUserDataAccessObject implements UserDataAccessObject, AddContactUserDataAccessInterface {
+public class DBUserDataAccessObject implements UserDataAccessObject, AddContactUserDataAccessInterface,
+        LoginUserDataAccessInterface {
 
     private final Connection connection;
 
     public DBUserDataAccessObject(Connection connection) {
         this.connection = connection;
+
     }
 
     // Save a new user
@@ -64,12 +68,16 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
             statement.setInt(1, userId);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
-                return new User(
+                User user = new User(
                         rs.getInt("id"),
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("preferred_language")
                 );
+                DBChatChannelDataAccessObject chatChannelDataAccessObject = new DBChatChannelDataAccessObject(connection);
+                List<String> chatUrls = chatChannelDataAccessObject.getChatURLsByUserId(user.getUserID());
+                user.setUserChats(chatUrls);
+                return user;
             }
         }
         return null;
@@ -137,5 +145,33 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
         }
         // no user found so no username
         return null;
+    }
+
+    @Override
+    public boolean validateCredentials(String username, String password) throws SQLException {
+        String query = "SELECT * FROM \"user\" WHERE username = ? AND password = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, username);
+            statement.setString(2, password);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public User getUserByUsername(String username) throws SQLException {
+        String query =  "SELECT * FROM \"user\" WHERE username = ? RETURNING id, username, password, preferred_language";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, username);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return new User(rs.getInt("id"), rs.getString("username"),
+                        rs.getString("password"), rs.getString("preferred_language"));
+            }
+        }
+        throw new SQLException();
     }
 }

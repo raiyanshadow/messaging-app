@@ -1,9 +1,7 @@
 package app;
 
-import data_access.DBChatChannelDataAccessObject;
-import data_access.DBConnectionFactory;
-import data_access.DBContactDataAccessObject;
-import data_access.DBUserDataAccessObject;
+import SendBirdAPI.MessageSender;
+import data_access.*;
 import entity.Contact;
 import entity.User;
 import interface_adapter.ViewManagerModel;
@@ -16,11 +14,19 @@ import interface_adapter.add_contact.AddContactViewModel;
 import interface_adapter.base_UI.baseUIController;
 import interface_adapter.base_UI.baseUIPresenter;
 import interface_adapter.base_UI.baseUIViewModel;
+import interface_adapter.chat_channel.ChatChannelPresenter;
 import interface_adapter.chat_channel.ChatChannelViewModel;
+import interface_adapter.chat_channel.MessageViewModel;
+import interface_adapter.chat_channel.SendMessageController;
 import interface_adapter.friend_request.FriendRequestController;
 import interface_adapter.friend_request.FriendRequestPresenter;
 import interface_adapter.friend_request.FriendRequestViewModel;
+import interface_adapter.update_chat_channel.UpdateChatChannelController;
+import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
+import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
 import io.github.cdimascio.dotenv.Dotenv;
+import org.sendbird.client.ApiClient;
+import org.sendbird.client.Configuration;
 import session.SessionManager;
 import use_case.add_chat_channel.AddChatChannelInteractor;
 import use_case.add_contact.AddContactInputBoundary;
@@ -28,6 +34,10 @@ import use_case.add_contact.AddContactInteractor;
 import use_case.baseUI.BaseUIInteractor;
 import use_case.friend_request.FriendRequestInputBoundary;
 import use_case.friend_request.FriendRequestInteractor;
+import use_case.send_message.SendMessageInteractor;
+import use_case.send_message.SendMessageOutputBoundary;
+import use_case.update_chat_channel.UpdateChatChannelInteractor;
+import use_case.update_chat_channel.UpdateChatChannelOutputBoundary;
 import view.*;
 
 import javax.swing.*;
@@ -63,9 +73,10 @@ public class FriendRequestViewTest {
         baseUIViewModel baseUIViewModel = new baseUIViewModel("baseUIView");
         ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("chatChannelViewModel");
         AddChatChannelViewModel addChatChannelViewModel = new AddChatChannelViewModel("addChatChannelViewModel");
+        AddContactViewModel addContactViewModel = new AddContactViewModel();
         AddChatChannelPresenter addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel,
                 addChatChannelViewModel, viewManagerModel);
-        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel);
+        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel);
 
         AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager);
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager);
@@ -74,8 +85,6 @@ public class FriendRequestViewTest {
         baseUIController baseUIController = new baseUIController(baseUIInteractor);
         ViewManager viewManager = new ViewManager(viewManagerModel);
 
-
-
         FriendRequestPresenter presenter = new FriendRequestPresenter(friendRequestViewModel, viewManagerModel, baseUIViewModel);
         FriendRequestView friendRequestView = new FriendRequestView(friendRequestViewModel, viewManagerModel, sessionManager, baseUIController);
 
@@ -83,13 +92,40 @@ public class FriendRequestViewTest {
         FriendRequestController controller = new FriendRequestController(interactor);
         friendRequestView.setFriendRequestController(controller);
 
-        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController);
+        MessageViewModel messageViewModel = new MessageViewModel();
+        final Dotenv dotenv = Dotenv.configure()
+                .directory("./assets")
+                .filename("env")
+                .load();
+        ApiClient defaultClient = Configuration.getDefaultApiClient().setBasePath(
+                "https://api-" + dotenv.get("MSG_APP_ID") + ".sendbird.com"
+        );
+        MessageSender messageSender = new MessageSender(defaultClient);
+        UpdateChatChannelViewModel updateChatChannelViewModel = new UpdateChatChannelViewModel();
+
+        DBMessageDataAccessObject messageDataAccessObject = new DBMessageDataAccessObject(conn);
+        DBUserDataAccessObject userDataAccessObject = new DBUserDataAccessObject(conn);
+
+        SendMessageOutputBoundary sendMessagePresenter = new ChatChannelPresenter(messageViewModel);
+        UpdateChatChannelOutputBoundary updateChatChannelPresenter = new UpdateChatChannelPresenter(updateChatChannelViewModel,
+                sessionManager);
+
+        SendMessageInteractor sendMessageInteractor = new SendMessageInteractor(sendMessagePresenter, userDataAccessObject,
+                messageDataAccessObject, sessionManager, messageSender);
+        UpdateChatChannelInteractor updateChatChannelInteractor = new UpdateChatChannelInteractor(
+                dbChatChannelDataAccessObject, updateChatChannelPresenter);
+
+        SendMessageController sendMessageController = new SendMessageController(sendMessageInteractor);
+        UpdateChatChannelController updateChatChannelController = new UpdateChatChannelController(updateChatChannelInteractor);
+
+        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
+                chatChannelViewModel,  viewManagerModel, (SessionManager) sessionManager, viewManager,
+                sendMessageController, updateChatChannelController);
         CreateChatView addChatChannelView = new CreateChatView(sessionManager, addChatChannelController, baseUIViewModel, baseUIController);
 
         viewManager.addView(friendRequestView, friendRequestViewModel.getViewName());
         viewManager.addView(baseUIView, baseUIViewModel.getViewName());
         viewManager.addView(addChatChannelView, addChatChannelViewModel.getViewName());
-
 
         frame.add(viewManager);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

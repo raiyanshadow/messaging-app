@@ -6,28 +6,28 @@ public abstract class Message<T> {
     protected final Long messageID;
     protected Long parentMessageID = null;
     protected String channelURL;
-    protected User sender;
-    protected User receiver;
+    protected Integer senderId;
+    protected Integer receiverId;
     protected String status;
     protected final Timestamp timestamp;
 
-    protected Message(Long messageID, Long parentMessageID, String channelURL, User sender, User receiver,
+    protected Message(Long messageID, Long parentMessageID, String channelURL, Integer senderId, Integer receiverId,
                       String status, Timestamp timestamp) {
         this.messageID = messageID;
         this.parentMessageID = parentMessageID;
         this.channelURL = channelURL;
-        this.sender = sender;
-        this.receiver = receiver;
+        this.senderId = senderId;
+        this.receiverId = receiverId;
         this.status = status;
         this.timestamp = timestamp;
     }
 
-    protected Message(Long messageID, String channelURL, User sender, User receiver,
+    protected Message(Long messageID, String channelURL, Integer senderId, Integer receiverId,
                       String status, Timestamp timestamp) {
         this.messageID = messageID;
         this.channelURL = channelURL;
-        this.sender = sender;
-        this.receiver = receiver;
+        this.senderId = senderId;
+        this.receiverId = receiverId;
         this.status = status;
         this.timestamp = timestamp;
     }
@@ -42,12 +42,12 @@ public abstract class Message<T> {
         return channelURL;
     }
 
-    public User getSender() {
-        return sender;
+    public Integer getSenderId() {
+        return senderId;
     }
 
-    public User getReceiver() {
-        return receiver;
+    public Integer getReceiverId() {
+        return receiverId;
     }
 
     public String getStatus() {

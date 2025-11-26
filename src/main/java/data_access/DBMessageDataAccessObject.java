@@ -3,6 +3,9 @@ package data_access;
 import entity.Message;
 import entity.MessageFactory;
 import java.sql.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +30,8 @@ public class DBMessageDataAccessObject implements MessageDataAccessObject {
                         resultSet.getLong("message_id"),
                         resultSet.getLong("replying_to"),
                         resultSet.getString("channel_url"),
-                        userDAO.getUserFromID(resultSet.getInt("sender_id")),
-                        userDAO.getUserFromID(resultSet.getInt("receiver_id")),
+                        resultSet.getInt("sender_id"),
+                        resultSet.getInt("receiver_id"),
                         resultSet.getString("status"),
                         resultSet.getTimestamp("time_sent"),
                         resultSet.getString("content")
@@ -49,8 +52,8 @@ public class DBMessageDataAccessObject implements MessageDataAccessObject {
                         messageID,
                         resultSet.getLong("replying_to"),
                         resultSet.getString("channel_url"),
-                        userDAO.getUserFromID(resultSet.getInt("sender_id")),
-                        userDAO.getUserFromID(resultSet.getInt("receiver_id")),
+                        resultSet.getInt("sender_id"),
+                        resultSet.getInt("receiver_id"),
                         resultSet.getString("status"),
                         resultSet.getTimestamp("time_sent"),
                         resultSet.getString("content")
@@ -75,8 +78,8 @@ public class DBMessageDataAccessObject implements MessageDataAccessObject {
                 } else {
                     statement.setLong(3, message.getParentMessageID());
                 }
-                statement.setInt(4, message.getSender().getUserID());
-                statement.setInt(5, message.getReceiver().getUserID());
+                statement.setInt(4, message.getSenderId());
+                statement.setInt(5, message.getReceiverId());
                 statement.setTimestamp(6, message.getTimestamp());
                 statement.setString(7, (String) message.getContent());
 

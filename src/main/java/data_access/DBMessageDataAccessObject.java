@@ -20,16 +20,12 @@ public class DBMessageDataAccessObject implements MessageDataAccessObject {
     }
 
     public List<Message> getMessagesFromChannelURL(String channelURL) throws SQLException {
-        String query = "SELECT message_id, replying_to, channel_url, sender_id, receiver_id, " +
-                "status, EXTRACT(EPOCH FROM time_sent) AS epoch_time, content " +
-                "FROM text_message WHERE channel_url = ? ORDER BY time_sent ASC";
+        String query = "SELECT * FROM text_message WHERE channel_url = ? ORDER BY time_sent ASC";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, channelURL);
             ResultSet resultSet = statement.executeQuery();
             List<Message> messages = new ArrayList<>();
             while (resultSet.next()) {
-                long epoch = resultSet.getLong("epoch_time");
-                Instant instant = Instant.ofEpochSecond(epoch);
                 messages.add(MessageFactory.createTextMessage(
                         resultSet.getLong("message_id"),
                         resultSet.getLong("replying_to"),
@@ -37,7 +33,7 @@ public class DBMessageDataAccessObject implements MessageDataAccessObject {
                         resultSet.getInt("sender_id"),
                         resultSet.getInt("receiver_id"),
                         resultSet.getString("status"),
-                        Timestamp.from(instant), // pass this instead of timestamp
+                        resultSet.getTimestamp("time_sent"),
                         resultSet.getString("content")
                 ));
             }

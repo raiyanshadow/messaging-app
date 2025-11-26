@@ -7,6 +7,8 @@ import entity.Message;
 import entity.User;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.junit.jupiter.api.Test;
+import org.sendbird.client.ApiClient;
+import org.sendbird.client.Configuration;
 import session.Session;
 import session.SessionManager;
 
@@ -66,7 +68,10 @@ class SendMessageInteractorTest {
         MessageDataAccessObject messageDAO = new DBMessageDataAccessObject(connection);
         Session session = new SessionManager(testMainUser, true);
 
-        MessageSender messageSender = new MessageSender(dotenv.get("MSG_APP_ID"));
+        ApiClient defaultClient = Configuration.getDefaultApiClient().setBasePath(
+                "https://api-" + dotenv.get("MSG_APP_ID") + ".sendbird.com"
+        );
+        MessageSender messageSender = new MessageSender(defaultClient);
 
         SendMessageInputBoundary interactor = new SendMessageInteractor(successPresenter, userDAO,
                 messageDAO, session, messageSender);

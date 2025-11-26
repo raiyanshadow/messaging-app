@@ -255,6 +255,10 @@ public class ChatChannelViewTest {
         System.out.println("User1: " + chat.getUser1().getUsername() + ", User2: " + chat.getUser2().getUsername());
         System.out.println("url: " + chat.getChatURL());
 
+        SessionManager sessionManager = new SessionManager();
+        sessionManager.setMainUser(user1);
+        sessionManager.setLoggedin(true);
+
 
         // 1. ViewModel
         UpdateChatChannelViewModel vm = new UpdateChatChannelViewModel();
@@ -267,7 +271,7 @@ public class ChatChannelViewTest {
         ViewManager viewManager = new ViewManager(viewManagerModel);
 
         // 2. Presenter
-        UpdateChatChannelPresenter presenter = new UpdateChatChannelPresenter(vm);
+        UpdateChatChannelPresenter presenter = new UpdateChatChannelPresenter(vm, sessionManager);
         ChatChannelPresenter presenter2 = new ChatChannelPresenter(messageViewModel);
         baseUIPresenter presenter3 = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel);
         SendMessageOutputBoundary sendMessagePresenter = new ChatChannelPresenter(messageViewModel);
@@ -276,7 +280,6 @@ public class ChatChannelViewTest {
 //        DBChatChannelDataAccessObject chatDAO = new DBChatChannelDataAccessObject(connection);
         UserDataAccessObject userDAO = new DBUserDataAccessObject(connection);
         DBMessageDataAccessObject messageDAO = new DBMessageDataAccessObject(connection);
-        SessionManager sessionManager = new SessionManager(user1, true);
         ApiClient defaultClient = Configuration.getDefaultApiClient().setBasePath(
                 "https://api-" + dotenv.get("MSG_APP_ID") + ".sendbird.com"
         );

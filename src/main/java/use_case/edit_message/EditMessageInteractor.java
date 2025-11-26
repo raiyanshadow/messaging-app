@@ -63,8 +63,8 @@ public class EditMessageInteractor implements EditMessageInputBoundary {
         EditMessageOutputData outputData = new EditMessageOutputData(message.getMessageID(),
                 message.getChannelURL(),
                 (String) message.getContent(),
-                message.getSender().getUserID(),
-                message.getReceiver().getUserID(),
+                message.getSenderId(),
+                message.getReceiverId(),
                 oldTimestamp,
                 message.getTimestamp());
 

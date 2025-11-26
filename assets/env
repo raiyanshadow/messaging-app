@@ -1,4 +1,4 @@
-DB_URL=jdbc:postgresql://db.egwwgffidqtyqxqiuocm.supabase.co:5432/postgres
+DB_URL=jdbc:postgresql://db.egwwgffidqtyqxqiuocm.supabase.co:5432/postgres?sslmode=require&options=-c%20TimeZone=UTC
 DB_USER=postgres
 DB_PASSWORD=C69tt4we30tE
 

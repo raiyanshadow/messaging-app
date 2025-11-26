@@ -3,6 +3,9 @@ package data_access;
 import entity.Message;
 import entity.MessageFactory;
 import java.sql.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,20 +20,24 @@ public class DBMessageDataAccessObject implements MessageDataAccessObject {
     }
 
     public List<Message> getMessagesFromChannelURL(String channelURL) throws SQLException {
-        String query = "SELECT * FROM text_message WHERE channel_url = ? ORDER BY time_sent ASC";
+        String query = "SELECT message_id, replying_to, channel_url, sender_id, receiver_id, " +
+                "status, EXTRACT(EPOCH FROM time_sent) AS epoch_time, content " +
+                "FROM text_message WHERE channel_url = ? ORDER BY time_sent ASC";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, channelURL);
             ResultSet resultSet = statement.executeQuery();
             List<Message> messages = new ArrayList<>();
             while (resultSet.next()) {
+                long epoch = resultSet.getLong("epoch_time");
+                Instant instant = Instant.ofEpochSecond(epoch);
                 messages.add(MessageFactory.createTextMessage(
                         resultSet.getLong("message_id"),
                         resultSet.getLong("replying_to"),
                         resultSet.getString("channel_url"),
-                        userDAO.getUserFromID(resultSet.getInt("sender_id")),
-                        userDAO.getUserFromID(resultSet.getInt("receiver_id")),
+                        resultSet.getInt("sender_id"),
+                        resultSet.getInt("receiver_id"),
                         resultSet.getString("status"),
-                        resultSet.getTimestamp("time_sent"),
+                        Timestamp.from(instant), // pass this instead of timestamp
                         resultSet.getString("content")
                 ));
             }
@@ -49,8 +56,8 @@ public class DBMessageDataAccessObject implements MessageDataAccessObject {
                         messageID,
                         resultSet.getLong("replying_to"),
                         resultSet.getString("channel_url"),
-                        userDAO.getUserFromID(resultSet.getInt("sender_id")),
-                        userDAO.getUserFromID(resultSet.getInt("receiver_id")),
+                        resultSet.getInt("sender_id"),
+                        resultSet.getInt("receiver_id"),
                         resultSet.getString("status"),
                         resultSet.getTimestamp("time_sent"),
                         resultSet.getString("content")
@@ -75,8 +82,8 @@ public class DBMessageDataAccessObject implements MessageDataAccessObject {
                 } else {
                     statement.setLong(3, message.getParentMessageID());
                 }
-                statement.setInt(4, message.getSender().getUserID());
-                statement.setInt(5, message.getReceiver().getUserID());
+                statement.setInt(4, message.getSenderId());
+                statement.setInt(5, message.getReceiverId());
                 statement.setTimestamp(6, message.getTimestamp());
                 statement.setString(7, (String) message.getContent());
 

@@ -107,7 +107,8 @@ public class FriendRequestViewTest {
         DBUserDataAccessObject userDataAccessObject = new DBUserDataAccessObject(conn);
 
         SendMessageOutputBoundary sendMessagePresenter = new ChatChannelPresenter(messageViewModel);
-        UpdateChatChannelOutputBoundary updateChatChannelPresenter = new UpdateChatChannelPresenter(updateChatChannelViewModel);
+        UpdateChatChannelOutputBoundary updateChatChannelPresenter = new UpdateChatChannelPresenter(updateChatChannelViewModel,
+                sessionManager);
 
         SendMessageInteractor sendMessageInteractor = new SendMessageInteractor(sendMessagePresenter, userDataAccessObject,
                 messageDataAccessObject, sessionManager, messageSender);

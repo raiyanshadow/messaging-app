@@ -190,7 +190,8 @@ public class AppBuilder {
                 viewManagerModel, baseUIViewModel);
         LogoutOutputBoundary logoutPresenter = new LogoutPresenter(logoutViewModel, viewManagerModel, loginViewModel,
                 sessionManager, this);
-        UpdateChatChannelOutputBoundary updatePresenter = new UpdateChatChannelPresenter(updateChatChannelViewModel);
+        UpdateChatChannelOutputBoundary updatePresenter = new UpdateChatChannelPresenter(updateChatChannelViewModel,
+                sessionManager);
         SendMessageOutputBoundary sendMessagePresenter = new ChatChannelPresenter(messageViewModel);
 
         AddChatChannelInputBoundary addChatChannelInteractor = new AddChatChannelInteractor(

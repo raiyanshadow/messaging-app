@@ -99,7 +99,8 @@ public class BaseUITest {
 
         baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel);
         SendMessageOutputBoundary sendMessagePresenter = new ChatChannelPresenter(messageViewModel);
-        UpdateChatChannelOutputBoundary updateChatChannelPresenter = new UpdateChatChannelPresenter(updateChatChannelViewModel);
+        UpdateChatChannelOutputBoundary updateChatChannelPresenter = new UpdateChatChannelPresenter(updateChatChannelViewModel,
+                sessionManager);
 
 
         AddContactInteractor addContactInteractor = new AddContactInteractor(dbUserDataAccessObject, dbContactDataAccessObject, addContactPresenter);

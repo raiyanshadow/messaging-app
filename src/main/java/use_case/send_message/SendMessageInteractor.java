@@ -42,14 +42,6 @@ public class SendMessageInteractor implements SendMessageInputBoundary {
     @Override
     public void execute(SendMessageInputData request) {
         final User currentUser = sessionManager.getMainUser();
-        User receiver;
-
-        try {
-            receiver = userDataAccessObject.getUserFromID(request.getReceiverID());
-        } catch (SQLException e) {
-            presenter.prepareSendMessageFailView("DB read fail");
-            return;
-        }
 
         Long messageId = messageSender.sendMessage(request.getMessage(),
                 dotenv.get("MSG_TOKEN"),
@@ -58,8 +50,8 @@ public class SendMessageInteractor implements SendMessageInputBoundary {
 
         Message<String> message = MessageFactory.createTextMessage(messageId,
                 request.getChannelUrl(),
-                currentUser,
-                receiver,
+                currentUser.getUserID(),
+                request.getReceiverID(),
                 "pending",
                 Timestamp.valueOf(LocalDateTime.now()),
                 request.getMessage());
@@ -79,7 +71,7 @@ public class SendMessageInteractor implements SendMessageInputBoundary {
         SendMessageOutputData response = new SendMessageOutputData(
                 messageId,
                 currentUser.getUserID(),
-                receiver.getUserID(),
+                request.getReceiverID(),
                 request.getChannelUrl(),
                 request.getMessage(),
                 message.getTimestamp()

@@ -164,8 +164,17 @@ public class AppBuilder {
         signupView.setSignupController(signupController);
         loginView.setLoginController(loginController);
 
-        cardPanel.add(signupView);
-        cardPanel.add(loginView);
+        cardPanel.add(signupView, signupViewModel.getViewName());
+        cardPanel.add(loginView, loginViewModel.getViewName());
+
+        viewManagerModel.addPropertyChangeListener(evt -> {
+            String newView = (String) evt.getNewValue();
+            if (newView != null && !newView.isEmpty()) {
+                cardLayout.show(cardPanel, newView);
+            }
+        });
+
+        cardLayout.show(cardPanel, signupViewModel.getViewName());
 
         return this;
     }

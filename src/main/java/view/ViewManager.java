@@ -30,6 +30,7 @@ public class ViewManager extends JPanel implements PropertyChangeListener {
         add(view, viewName);
     }
 
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String activeView = (String) evt.getNewValue();
@@ -37,4 +38,5 @@ public class ViewManager extends JPanel implements PropertyChangeListener {
         revalidate();
         repaint();
     }
+
 }

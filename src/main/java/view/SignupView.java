@@ -14,7 +14,7 @@ import java.sql.SQLException;
 
 public class SignupView extends JPanel implements PropertyChangeListener {
 
-    private final String viewName = "sign up";
+    private final String viewName = "signup";
 
     private final SignupViewModel signupViewModel;
     private final JTextField usernameInputField = new JTextField(20);

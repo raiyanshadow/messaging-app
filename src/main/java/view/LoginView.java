@@ -80,7 +80,7 @@ public class LoginView extends JPanel implements PropertyChangeListener {
             }
         });
 
-        toSignupButton.addActionListener(evt -> loginController.switchToLoginView());
+        toSignupButton.addActionListener(evt -> loginController.switchToSignupView());
 
         addUsernameListener();
         addPasswordListener();

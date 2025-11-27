@@ -17,7 +17,8 @@ public class LoginController {
         loginInteractor.logIn(inputData);
     }
 
-    public void switchToLoginView() {
+    public void switchToSignupView() {
         loginInteractor.switchToSignupView();
     }
+
 }

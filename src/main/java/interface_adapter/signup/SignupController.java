@@ -19,6 +19,7 @@ public class SignupController {
     }
 
     public void switchToLoginView() {
+
         signupInteractor.switchToLoginView();
     }
 }

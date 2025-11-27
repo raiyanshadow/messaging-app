@@ -21,5 +21,5 @@ public interface LoginUserDataAccessInterface {
      * @param username The username of the user to retrieve.
      * @return The User entity corresponding to the username.
      */
-    User getUserByUsername(String username) throws SQLException;
+    public User getUserFromName(String username) throws SQLException;
 }

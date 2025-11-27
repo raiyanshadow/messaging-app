@@ -1,5 +1,6 @@
 package data_access;
 
+import entity.Contact;
 import entity.User;
 import entity.UserFactory;
 import use_case.add_contact.AddContactUserDataAccessInterface;
@@ -108,12 +109,23 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
             ResultSet rs = statement.executeQuery();
 
             if (rs.next()) {
-                return new User(
+                User user = new User(
                         rs.getInt("id"),
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("preferred_language")
                 );
+                DBChatChannelDataAccessObject chatChannelDataAccessObject = new DBChatChannelDataAccessObject(connection);
+                DBContactDataAccessObject contactDataAccessObject = new DBContactDataAccessObject(connection);
+                List<Contact> contacts = new ArrayList<>();
+                contactDataAccessObject.updateUserContacts(user, contacts);
+                user.setContacts(contacts);
+                List<String> friend_requests = new ArrayList<>();
+                contactDataAccessObject.updateUserFriendRequests(user, friend_requests);
+                user.setFriendRequests(friend_requests);
+                List<String> user_chats = chatChannelDataAccessObject.getChatURLsByUserId(user.getUserID());
+                user.setUserChats(user_chats);
+                return user;
             }
         }
         return null; // no user found
@@ -159,19 +171,5 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
             }
         }
         return false;
-    }
-
-    @Override
-    public User getUserByUsername(String username) throws SQLException {
-        String query =  "SELECT * FROM \"user\" WHERE username = ? RETURNING id, username, password, preferred_language";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, username);
-            ResultSet rs = statement.executeQuery();
-            if (rs.next()) {
-                return new User(rs.getInt("id"), rs.getString("username"),
-                        rs.getString("password"), rs.getString("preferred_language"));
-            }
-        }
-        throw new SQLException();
     }
 }

@@ -29,6 +29,7 @@ public class BaseUIInteractor implements BaseUIInputBoundary{
     public void GetUserChats(BaseUIInputData request) throws SQLException {
 
         User mainUser = sessionManager.getMainUser();
+        System.out.println("MAIN USER CHATS: " + mainUser.getUserChats());
         List<String> chatURLs = mainUser.getUserChats();
         List<String> chatnames = new ArrayList<>();
         List<DirectChatChannel> chatEntities = new ArrayList<>();

@@ -59,7 +59,7 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
         // Main layout styling
         this.setLayout(new BorderLayout());
         this.setBackground(new Color(245, 248, 250));
-        this.setBorder(BorderFactory.createEmptyBorder(50, 80, 50, 80));
+        this.setBorder(null);
 
         // Title
         JPanel titlePanel = new JPanel(new BorderLayout());
@@ -164,8 +164,8 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
 
             DirectChatChannel chat = chatEntities.get(index);
             ChatChannelView newChatChannelView = new ChatChannelView(updateChatChannelViewModel,
-                    sessionManager.getMainUser().getUserID(), chat.getUser1().getUserID(), sessionManager.getMainUser().getUsername(),
-                    chat.getUser1().getUsername(), chat.getChatURL(), updateChatChannelController, sendMessageController);
+                    sessionManager.getMainUser().getUserID(), chat.getUser2().getUserID(), sessionManager.getMainUser().getUsername(),
+                    chat.getUser2().getUsername(), chat.getChatURL(), updateChatChannelController, sendMessageController);
             newChatChannelView.setBaseUIController(controller);
             SwingWorker<Void, Void> worker = new SwingWorker<>() {
                 @Override
@@ -173,14 +173,25 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
                     updateChatChannelController.execute(chat.getChatURL());
                     return null;
                 }
+
+                @Override
+                protected void done() {
+                    // Now the chat messages are loaded into the view model
+                    // Scroll AFTER the UI fully lays out
+
+                    SwingUtilities.invokeLater(() -> {
+                        SwingUtilities.invokeLater(() -> {
+                            JScrollBar v = newChatChannelView.getScrollPane().getVerticalScrollBar();
+                            v.setValue(v.getMaximum());
+                        });
+                    });
+                }
             };
             worker.execute();
             this.chatChannelView = newChatChannelView;
             viewManager.addView(chatChannelView, chatChannelViewModel.getViewName());
             this.switchView(this.viewManagerModel, this.chatChannelViewModel);
         });
-
-        controller.displayUI();
     }
 
     private void styleRoundedButton(JButton button, Color bg, Color fg, Font font) {
@@ -202,10 +213,16 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         baseUIState state = viewModel.getState();
+        System.out.println("UPDATE: " + state.getChatnames());
+        System.out.println("ENTITIES: " + state.getChatEntities());
         chatListModel.clear();
         for (String chatName : state.getChatnames()) {
             chatListModel.addElement(chatName);
         }
+        chatList.revalidate();
+        chatList.repaint();
+        this.revalidate();
+        this.repaint();
     }
 
     public void switchView(ViewManagerModel viewManagerModel, ChatChannelViewModel chatChannelViewModel) {

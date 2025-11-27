@@ -45,6 +45,8 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private String senderUsername;
     private String receiverUsername;
     private boolean pending;
+    private int lastRenderedCount = 0;
+    private boolean firstOpen = true;
 
     public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel, Integer senderID, Integer receiverID, String senderUsername, String receiverUsername, String chatURL,
                            UpdateChatChannelController updateChatChannelController, SendMessageController sendMessageController) {
@@ -81,6 +83,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         messageContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
         scrollPane = new JScrollPane(messageContainer);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(30);
         scrollPane.setPreferredSize(new Dimension(400, 350));
         send = new JButton("Send");
         back = new JButton("Back");
@@ -112,20 +115,9 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
 //                    messageState.setSenderName(updateChatChannelState.getUser1Name());
             messageState.setSenderID(senderID);
             messageState.setReceiverID(receiverID);
+            messageState.setSenderName(senderUsername);
             messageState.setChannelURL(chatURL);
             messageState.setContent(message);
-            messageViewModel.setState(messageState);
-
-            // Display message instantly (overcomes lag)
-            MessagePanel instantMessagePanel = new MessagePanel(new JLabel(senderUsername), new JLabel(messageState.getContent()),
-                    new JLabel(LocalDateTime.now().toString()));
-            instantMessagePanel.setLayout(new BoxLayout(instantMessagePanel, BoxLayout.Y_AXIS));
-            instantMessagePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-            instantMessagePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            messageContainer.add(instantMessagePanel);
-            messageContainer.revalidate();
-            messageContainer.repaint();
-            pending = true; // This prevents the updateMessage from redrawing and creating a lag
 
             // Execute the controller to send
             sendMessageController.execute(message, messageState.getChannelURL(), messageState.getSenderID(), messageState.getReceiverID());
@@ -133,7 +125,10 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
             System.out.println("message sent");
             SwingUtilities.invokeLater(() -> {
                 JScrollBar vertical = scrollPane.getVerticalScrollBar();
-                vertical.setValue(vertical.getMaximum());
+                boolean shouldScroll = vertical.getValue() + vertical.getVisibleAmount() >= vertical.getMaximum() - 20;
+                if (shouldScroll) {
+                    vertical.setValue(vertical.getMaximum());
+                }
             }); // TODO: Fix where scrolling occurs
 
 //                    System.out.println("messages length:" + updateChatChannelState.getMessages().size());
@@ -186,27 +181,44 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     // Redraw messages
     private void updateMessage(List<MessageViewModel> messages) {
         if (messages == null || messages.isEmpty()) {
-            messageContainer.revalidate();
-            messageContainer.repaint();
             return;
         }
         if (!pending) { // Draw only after temporary message updates in database
-            messageContainer.removeAll();
-//        List<MessageViewModel> messages = updateChatChannelViewModel.getState().getMessages();
-            for (MessageViewModel message : messages) {
-                MessagePanel messagePanel = new MessagePanel(new JLabel(message.getState().getSenderName()), new JLabel(message.getState().getContent()),
+            for (int i = lastRenderedCount; i < messages.size(); i++) {
+                MessageViewModel message = messages.get(i);
+                boolean isSelf = (message.getState().getSenderID().equals(senderID));
+                String name = isSelf ? senderUsername : receiverUsername;
+                MessagePanel messagePanel = new MessagePanel(new JLabel(name), new JLabel(message.getState().getContent()),
                         new JLabel(message.getState().getTimestamp().toString()));
-                messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
-                messagePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                messagePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-                messageContainer.add(messagePanel);
+                JPanel bubble = messagePanel.createBubble(
+                        name,
+                        message.getState().getContent(),
+                        message.getState().getTimestamp().toString(),
+                        isSelf
+                );
+                messageContainer.add(bubble);
+                messageContainer.add(Box.createVerticalStrut(8));
+                messageContainer.revalidate();
+                messageContainer.repaint();
             }
-            messageContainer.revalidate();
-            messageContainer.repaint();
-            SwingUtilities.invokeLater(() -> { // TODO: Fix scrolling after
-                JScrollBar vertical = scrollPane.getVerticalScrollBar();
-                vertical.setValue(vertical.getMaximum());
-            });
+            lastRenderedCount = messages.size();
+            // Scroll only if user is at bottom
+            JScrollBar v = scrollPane.getVerticalScrollBar();
+            boolean stickToBottom = v.getValue() + v.getVisibleAmount() >= v.getMaximum() - 20;
+
+            if (firstOpen) {
+                firstOpen = false;
+
+                SwingUtilities.invokeLater(() ->
+                        SwingUtilities.invokeLater(() -> {
+                            JScrollBar bar = scrollPane.getVerticalScrollBar();
+                            bar.setValue(bar.getMaximum());
+                        })
+                );
+            } else if (stickToBottom) {
+            SwingUtilities.invokeLater(() -> v.setValue(v.getMaximum()));
+            }
+
         }
 
 //        scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
@@ -228,5 +240,9 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
 
     public String getContent() {
         return content.getText();
+    }
+
+    public JScrollPane getScrollPane() {
+        return this.scrollPane;
     }
 }

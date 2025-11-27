@@ -23,6 +23,7 @@ public class ViewManager extends JPanel implements PropertyChangeListener {
 
         this.cardLayout = new CardLayout();
         setLayout(cardLayout);
+        this.setPreferredSize(new Dimension(720, 500));
     }
 
     public void addView(JPanel view, String viewName) {

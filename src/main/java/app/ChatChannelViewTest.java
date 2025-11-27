@@ -21,6 +21,10 @@ import interface_adapter.base_UI.baseUIPresenter;
 import interface_adapter.base_UI.baseUIViewModel;
 import interface_adapter.chat_channel.*;
 import interface_adapter.friend_request.FriendRequestViewModel;
+import interface_adapter.login.LoginViewModel;
+import interface_adapter.logout.LogoutController;
+import interface_adapter.logout.LogoutPresenter;
+import interface_adapter.logout.LogoutViewModel;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
 import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
@@ -31,6 +35,8 @@ import org.sendbird.client.Configuration;
 import session.Session;
 import session.SessionManager;
 import use_case.baseUI.BaseUIInteractor;
+import use_case.logout.LogoutInteractor;
+import use_case.logout.LogoutOutputBoundary;
 import use_case.send_message.*;
 import use_case.update_chat_channel.*;
 import data_access.DBChatChannelDataAccessObject;
@@ -45,130 +51,6 @@ import java.util.List;
 
 public class ChatChannelViewTest {
     public static <DBessageDataAccessObject> void main(String[] args) throws SQLException {
-
-//        // 1. Create ViewModel
-//        UpdateChatChannelViewModel vm = new UpdateChatChannelViewModel();
-//
-//// 2. Create Presenter
-//        UpdateChatChannelPresenter presenter = new UpdateChatChannelPresenter(vm);
-//
-//// 3. Create mock interactor
-//        // 3. Create mock interactor
-//        UpdateChatChannelInputBoundary mockInteractor = chatURL -> {
-//            User alice = new User(1, "Alice", "abc", "English");
-//            User bob = new User(2, "Bob", "def", "English");
-//
-//            List<Message> messages = new ArrayList<>();
-//            messages.add(MessageFactory.createTextMessage(1, "chat123", alice, bob, "sent", Timestamp.valueOf(LocalDateTime.now()), "Hello world!"));
-//            messages.add(MessageFactory.createTextMessage(2, "chat123", bob, alice, "sent", Timestamp.valueOf(LocalDateTime.now()), "Hi Alice!"));
-//            messages.add(MessageFactory.createTextMessage(1, "chat123", alice, bob, "sent", Timestamp.valueOf(LocalDateTime.now()), "are you taking csc207"));
-//            messages.add(MessageFactory.createTextMessage(2, "chat123", bob, alice, "sent", Timestamp.valueOf(LocalDateTime.now()), "yes"));
-//            messages.add(MessageFactory.createTextMessage(1, "chat123", alice, bob, "sent", Timestamp.valueOf(LocalDateTime.now()), "when is your class"));
-//            messages.add(MessageFactory.createTextMessage(2, "chat123", bob, alice, "sent", Timestamp.valueOf(LocalDateTime.now()), "today"));
-//
-//            presenter.prepareSuccessView(new UpdateChatChannelOutputData("Example Chat", "chat123", alice, bob, messages));
-//        };
-//
-//// Controller
-//        UpdateChatChannelController controller = new UpdateChatChannelController(mockInteractor);
-//        // Mock or real send message controller
-////        SendMessageController mockSendMessageController = new SendMessageController(mockSendMessageInteractor);
-//
-//// 5. View
-//        ChatChannelView view = new ChatChannelView(vm);
-//        view.setUpdateChatChannelController(controller);
-////        view.setSendMessageController(mockSendMessageController);
-//
-//// 6. Window
-//        JFrame frame = new JFrame("Chat View Test");
-//        frame.setContentPane(view);
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.pack();
-//        frame.setVisible(true);
-//
-//// 7. Trigger mock load
-//        controller.execute("chat123");
-
-        // ============================ACTUAL DATABASE =============================
-
-
-//        Dotenv dotenv = Dotenv.configure()
-//                .directory("./assets")
-//                .filename("env")
-//                .load();
-//
-//        String url = dotenv.get("DB_URL");
-//        String user = dotenv.get("DB_USER");
-//        String password = dotenv.get("DB_PASSWORD");
-//
-//        Connection connection = DriverManager.getConnection(url, user, password);
-//        Statement statement = connection.createStatement();
-//
-//        String appId = dotenv.get("MSG_APP_ID");
-//        String apiToken = dotenv.get("MSG_TOKEN");
-//
-//        User user1 = new User(1, "Alice", "abc", "English");
-//        User user2 = new User(2, "Bob", "def", "English");
-//
-//
-//        // Insert users
-//        statement.executeUpdate(
-//                "INSERT INTO \"user\" (id, username, created_at, preferred_language, password) " +
-//                        "VALUES (1, 'Alice', NOW(), 'English', 'abc') " +
-//                        "ON CONFLICT (id) DO UPDATE " +
-//                        "SET password = EXCLUDED.password, " +
-//                        "    preferred_language = EXCLUDED.preferred_language"
-//        );
-//        statement.executeUpdate(
-//                "INSERT INTO \"user\" (id, username, created_at, preferred_language, password) " +
-//                        "VALUES (2, 'Bob', NOW(), 'English', 'def') " +
-//                        "ON CONFLICT (id) DO UPDATE " +
-//                        "SET password = EXCLUDED.password, " +
-//                        "    preferred_language = EXCLUDED.preferred_language"
-//        );
-//
-//
-////        // Insert chat channel
-////        statement.executeUpdate("INSERT INTO chat_channel (chat_id, user1_id, user2_id, channel_url, name) " +
-////                "VALUES (0, 1, 2, '\" + channelUrl + \"'\n, 'Example Chat') ON CONFLICT DO NOTHING");
-//        ChannelCreator channelCreator = new ChannelCreator(appId);
-//        String channelUrl = channelCreator.SendbirdChannelCreator(apiToken, "example", user1, user2);
-//        System.out.println("Channel URL: " + channelUrl);
-//
-//        String sql = "INSERT INTO chat_channel (chat_id, user1_id, user2_id, channel_url, name) " +
-//                "VALUES (?, ?, ?, ?, ?) " +
-//                "ON CONFLICT DO NOTHING";
-//
-//        PreparedStatement ps = connection.prepareStatement(sql);
-//        ps.setInt(1, 0);         // 0
-//        ps.setInt(2, 1);         // 1
-//        ps.setInt(3, 2);         // 2
-//        ps.setString(4, channelUrl);   // sendbird_channel_...
-//        ps.setString(5, "Example Chat");         // "Example Chat"
-//
-//        ps.executeUpdate();
-//
-//        System.out.println("Chat Channel Created: " + channelUrl);
-//
-//        // Insert messages
-//        int messageId = 1;
-//        int senderId = 1;
-//        int receiverId = 2;
-//        String content = "Hello, from Alice!";
-//        String status = "sent";
-//        Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
-//
-//        String msg1 = "INSERT INTO text_message (message_id, channel_url, sender_id, receiver_id, content, time_sent, status) " +
-//                "VALUES (" + messageId + ", '" + channelUrl + "', " + senderId + ", " + receiverId + ", '" + content + "', '" + createdAt + "', '" + status + "') " +
-//                "ON CONFLICT DO NOTHING";
-//
-//        statement.executeUpdate(msg1);
-//
-//        System.out.println("Message inserted!");
-//
-//        System.out.println("Connected to SQL successfully!");
-
-        // =====================================IMPLEMENT SEND =============================
         // ============================ SETUP ============================
         Dotenv dotenv = Dotenv.configure()
                 .directory("./assets")
@@ -229,24 +111,6 @@ public class ChatChannelViewTest {
 
         System.out.println("Chat Channel inserted successfully!");
 
-        // ============================ INSERT A MESSAGE ============================
-//        String insertMessageSQL = "INSERT INTO text_message (channel_url, sender_id, receiver_id, content, time_sent, status) " +
-//                "VALUES (?, ?, ?, ?, ?, ?) " +
-//                "ON CONFLICT DO NOTHING";
-//
-//        try (PreparedStatement ps = connection.prepareStatement(insertMessageSQL)) {
-//            ps.setString(1, channelUrl);
-//            ps.setInt(2, user1.getUserID()); // sender
-//            ps.setInt(3, user2.getUserID()); // receiver
-//            ps.setString(4, "Hello, from Alice!");
-//            ps.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
-//            ps.setString(6, "sent");
-//            ps.executeUpdate();
-//        }
-//
-//        System.out.println("Message inserted successfully!");
-
-        // ============================ USE DAO TO FETCH CHAT ============================
         DBChatChannelDataAccessObject chatDAO = new DBChatChannelDataAccessObject(connection);
         DirectChatChannel chat = chatDAO.getDirectChatChannelByURL(channelUrl);
 
@@ -269,12 +133,16 @@ public class ChatChannelViewTest {
         AddChatChannelViewModel addChatChannelViewModel = new AddChatChannelViewModel("Add Chat Channel"); // TODO: Should this have a string as an argument?
         AddContactViewModel addContactViewModel = new AddContactViewModel();
         ViewManager viewManager = new ViewManager(viewManagerModel);
+        LogoutViewModel logoutViewModel = new LogoutViewModel();
+        LoginViewModel loginViewModel = new LoginViewModel();
+        AppBuilder appBuilder = new AppBuilder();
 
         // 2. Presenter
         UpdateChatChannelPresenter presenter = new UpdateChatChannelPresenter(vm, sessionManager);
         ChatChannelPresenter presenter2 = new ChatChannelPresenter(messageViewModel);
         baseUIPresenter presenter3 = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel);
         SendMessageOutputBoundary sendMessagePresenter = new ChatChannelPresenter(messageViewModel);
+        LogoutOutputBoundary logoutPresenter = new LogoutPresenter(logoutViewModel, viewManagerModel, loginViewModel, sessionManager, appBuilder);
 
         // 2. DAOs and other variables
 //        DBChatChannelDataAccessObject chatDAO = new DBChatChannelDataAccessObject(connection);
@@ -291,12 +159,14 @@ public class ChatChannelViewTest {
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(presenter3, chatDAO, userDAO, sessionManager);
         UpdateChatChannelInteractor updateChatChannelInteractor = new UpdateChatChannelInteractor(
                 chatDAO, presenter);
+        LogoutInteractor logoutInteractor = new LogoutInteractor(logoutPresenter);
 
         // 5. Controller
         UpdateChatChannelController controller = new UpdateChatChannelController(interactor);
         SendMessageController sendMessageController = new SendMessageController(messageInteractor);
         baseUIController baseUIController = new baseUIController(baseUIInteractor); // TODO: Fix naming
         UpdateChatChannelController updateChatChannelController = new UpdateChatChannelController(updateChatChannelInteractor);
+        LogoutController logoutController = new LogoutController(logoutInteractor);
 
         // 6. View
         ChatChannelView view = new ChatChannelView(vm, user1.getUserID(), user2.getUserID(), user1.getUsername(),
@@ -304,7 +174,7 @@ public class ChatChannelViewTest {
         UpdateChatChannelViewModel updateChatChannelViewModel = new UpdateChatChannelViewModel();
         ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("Chat");
         BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
-                chatChannelViewModel, viewManagerModel, sessionManager, viewManager, sendMessageController, updateChatChannelController);
+                chatChannelViewModel, viewManagerModel, sessionManager, viewManager, sendMessageController, updateChatChannelController, logoutController);
         view.setUpdateChatChannelController(controller);
         view.setSendMessageController(sendMessageController);
         view.setBaseUIController(baseUIController);

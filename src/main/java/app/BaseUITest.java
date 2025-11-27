@@ -19,6 +19,10 @@ import interface_adapter.chat_channel.*;
 import interface_adapter.friend_request.FriendRequestController;
 import interface_adapter.friend_request.FriendRequestPresenter;
 import interface_adapter.friend_request.FriendRequestViewModel;
+import interface_adapter.login.LoginViewModel;
+import interface_adapter.logout.LogoutController;
+import interface_adapter.logout.LogoutPresenter;
+import interface_adapter.logout.LogoutViewModel;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
 import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
@@ -30,6 +34,8 @@ import use_case.add_chat_channel.AddChatChannelInteractor;
 import use_case.add_contact.AddContactInteractor;
 import use_case.baseUI.BaseUIInteractor;
 import use_case.friend_request.FriendRequestInteractor;
+import use_case.logout.LogoutInteractor;
+import use_case.logout.LogoutOutputBoundary;
 import use_case.send_message.SendMessageInteractor;
 import use_case.send_message.SendMessageOutputBoundary;
 import use_case.update_chat_channel.UpdateChatChannelInteractor;
@@ -70,6 +76,9 @@ public class BaseUITest {
         AddChatChannelViewModel addChatChannelViewModel = new AddChatChannelViewModel("addChatChannelViewModel");
         AddContactViewModel addContactViewModel = new AddContactViewModel();
         FriendRequestViewModel friendRequestViewModel = new FriendRequestViewModel();
+        LogoutViewModel logoutViewModel = new LogoutViewModel();
+        LoginViewModel loginViewModel = new LoginViewModel();
+        AppBuilder appBuilder = new AppBuilder();
         MessageViewModel messageViewModel = new MessageViewModel();
         final Dotenv dotenv = Dotenv.configure()
                 .directory("./assets")
@@ -101,6 +110,7 @@ public class BaseUITest {
         SendMessageOutputBoundary sendMessagePresenter = new ChatChannelPresenter(messageViewModel);
         UpdateChatChannelOutputBoundary updateChatChannelPresenter = new UpdateChatChannelPresenter(updateChatChannelViewModel,
                 sessionManager);
+        LogoutOutputBoundary logoutPresenter = new LogoutPresenter(logoutViewModel, viewManagerModel, loginViewModel, sessionManager, appBuilder);
 
 
         AddContactInteractor addContactInteractor = new AddContactInteractor(dbUserDataAccessObject, dbContactDataAccessObject, addContactPresenter);
@@ -114,6 +124,7 @@ public class BaseUITest {
                 messageDataAccessObject, sessionManager, messageSender);
         UpdateChatChannelInteractor updateChatChannelInteractor = new UpdateChatChannelInteractor(
                 dbChatChannelDataAccessObject, updateChatChannelPresenter);
+        LogoutInteractor logoutInteractor = new LogoutInteractor(logoutPresenter);
 
         AddContactController addContactController = new AddContactController(addContactInteractor);
         AddChatChannelController addChatChannelController = new AddChatChannelController(addChatChannelInteractor);
@@ -121,6 +132,7 @@ public class BaseUITest {
         FriendRequestController friendRequestController = new FriendRequestController(friendRequestInteractor);
         SendMessageController sendMessageController = new SendMessageController(sendMessageInteractor);
         UpdateChatChannelController updateChatChannelController = new UpdateChatChannelController(updateChatChannelInteractor);
+        LogoutController logoutController = new LogoutController(logoutInteractor);
 
         ViewManager viewManager = new ViewManager(viewManagerModel);
 
@@ -129,7 +141,7 @@ public class BaseUITest {
         addContactView.setAddContactController(addContactController);
         BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
                 chatChannelViewModel, viewManagerModel, sessionManager, viewManager, sendMessageController,
-                updateChatChannelController);
+                updateChatChannelController, logoutController);
         CreateChatView addChatChannelView = new CreateChatView(sessionManager, addChatChannelController,
                 baseUIViewModel, baseUIController);
         FriendRequestView friendRequestView = new FriendRequestView(friendRequestViewModel, viewManagerModel,

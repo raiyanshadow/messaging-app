@@ -2,6 +2,7 @@ package use_case.signup;
 
 import data_access.UserDataAccessObject;
 import entity.User;
+import entity.UserFactory;
 
 import java.sql.SQLException;
 

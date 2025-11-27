@@ -2,67 +2,68 @@ package app;
 
 import data_access.DBConnectionFactory;
 import data_access.DBUserDataAccessObject;
-
-import interface_adapter.ViewManagerModel;
-import interface_adapter.signup.SignupViewModel;
 import interface_adapter.signup.SignupController;
-import interface_adapter.signup.SignupPresenter;
-import interface_adapter.login.LoginViewModel;
-
-import use_case.signup.SignupInputBoundary;
-import use_case.signup.SignupInteractor;
-
+import interface_adapter.signup.SignupViewModel;
+import use_case.signup.*;
 import view.SignupView;
-import view.LoginView;
 
 import javax.swing.*;
 import java.awt.*;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public class SignupViewTest {
-
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws SQLException {
 
         JFrame frame = new JFrame("Signup Test");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        CardLayout cardLayout = new CardLayout();
-        JPanel views = new JPanel(cardLayout);
-
+        // DAO
         Connection conn = DBConnectionFactory.createConnection();
-        DBUserDataAccessObject userDAO = new DBUserDataAccessObject(conn);
+        DBUserDataAccessObject dummyDAO = new DBUserDataAccessObject(conn);
 
-        ViewManagerModel viewManagerModel = new ViewManagerModel();
+        // ViewModel
+        SignupViewModel viewModel = new SignupViewModel();
 
-        SignupViewModel signupViewModel = new SignupViewModel();
-        LoginViewModel loginViewModel = new LoginViewModel();
-
-        SignupPresenter presenter =
-                new SignupPresenter(viewManagerModel, signupViewModel, loginViewModel);
-
-        SignupInputBoundary interactor =
-                new SignupInteractor(userDAO, presenter);
-
-        SignupController signupController = new SignupController(interactor);
-
-        SignupView signupView = new SignupView(signupViewModel);
-        signupView.setSignupController(signupController);
-
-        LoginView loginView = new LoginView(loginViewModel);
-
-        views.add(signupView, signupViewModel.getViewName());
-        views.add(loginView, loginViewModel.getViewName());
-
-        viewManagerModel.addPropertyChangeListener(evt -> {
-            String newView = (String) evt.getNewValue();
-            if (newView != null && !newView.isEmpty()) {
-                cardLayout.show(views, newView);
+        // Presenter with GUI callback
+        SignupOutputBoundary dummyPresenter = new SignupOutputBoundary() {
+            @Override
+            public void prepareFailView(String message) {
+                JOptionPane.showMessageDialog(frame, message, "Signup Failed", JOptionPane.ERROR_MESSAGE);
             }
-        });
 
-        cardLayout.show(views, signupViewModel.getViewName());
+            @Override
+            public void prepareSuccessView(SignupOutputData outputData) {
+                JOptionPane.showMessageDialog(frame, "Signup successful for " + outputData.getUsername(), "Success", JOptionPane.INFORMATION_MESSAGE);
+                switchToLoginView();
+            }
 
-        frame.add(views, BorderLayout.CENTER);
+            @Override
+            public void switchToLoginView() {
+                // Close signup frame and show login view
+                frame.dispose();
+
+                // For testing, just show a simple login frame
+                JFrame loginFrame = new JFrame("Login View");
+                loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                loginFrame.setSize(300, 200);
+                loginFrame.add(new JLabel("Login Screen", SwingConstants.CENTER), BorderLayout.CENTER);
+                loginFrame.setVisible(true);
+            }
+        };
+
+        // nteractor
+        SignupInputBoundary interactor = new SignupInteractor(dummyDAO, dummyPresenter);
+
+        // Controller
+        SignupController controller = new SignupController(interactor);
+
+        // View
+        SignupView view = new SignupView(viewModel);
+        view.setSignupController(controller);
+
+        // Display signup UI
+        frame.add(view);
         frame.pack();
         frame.setVisible(true);
     }

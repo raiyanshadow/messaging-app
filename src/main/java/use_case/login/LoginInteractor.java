@@ -31,6 +31,7 @@ public class LoginInteractor implements LoginInputBoundary {
             try {
                 user = userDataAccess.getUserByUsername(username);
             } catch (SQLException e) {
+                e.printStackTrace();
                 userPresenter.prepareFailureView("DB read fail");
             }
             LoginOutputData outputData = new LoginOutputData(user);

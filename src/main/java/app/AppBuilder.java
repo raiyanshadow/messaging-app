@@ -130,6 +130,12 @@ public class AppBuilder {
 
     public AppBuilder() throws SQLException {
         cardPanel.setLayout(cardLayout);
+        viewManagerModel.addPropertyChangeListener(evt -> {
+            String newView = (String) evt.getNewValue();
+            if (newView != null && !newView.isEmpty()) {
+                cardLayout.show(cardPanel, newView);
+            }
+        });
     }
 
     public JFrame build() {
@@ -147,6 +153,7 @@ public class AppBuilder {
     public AppBuilder buildPreLogin() {
         signupViewModel = new SignupViewModel();
         loginViewModel = new LoginViewModel();
+        baseUIViewModel = new baseUIViewModel("baseUIView");
 
         SignupOutputBoundary signupPresenter = new SignupPresenter(viewManagerModel, signupViewModel, loginViewModel);
         LoginOutputBoundary loginPresenter = new LoginPresenter(viewManagerModel, loginViewModel, baseUIViewModel,
@@ -167,13 +174,6 @@ public class AppBuilder {
         cardPanel.add(signupView, signupViewModel.getViewName());
         cardPanel.add(loginView, loginViewModel.getViewName());
 
-        viewManagerModel.addPropertyChangeListener(evt -> {
-            String newView = (String) evt.getNewValue();
-            if (newView != null && !newView.isEmpty()) {
-                cardLayout.show(cardPanel, newView);
-            }
-        });
-
         cardLayout.show(cardPanel, signupViewModel.getViewName());
 
         return this;
@@ -182,7 +182,6 @@ public class AppBuilder {
     public AppBuilder buildPostLogin() {
         addChatChannelViewModel = new AddChatChannelViewModel("addChatChannelView");
         addContactViewModel = new AddContactViewModel();
-        baseUIViewModel = new baseUIViewModel("baseUIView");
         chatChannelViewModel = new ChatChannelViewModel("Chat");
         updateChatChannelViewModel = new UpdateChatChannelViewModel();
         messageViewModel = new MessageViewModel();

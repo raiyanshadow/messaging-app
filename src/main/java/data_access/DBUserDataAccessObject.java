@@ -150,6 +150,7 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
     @Override
     public boolean validateCredentials(String username, String password) throws SQLException {
         String query = "SELECT * FROM \"user\" WHERE username = ? AND password = ?";
+//        String query = "SELECT * FROM \"user\"";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, username);
             statement.setString(2, password);
@@ -163,7 +164,8 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
 
     @Override
     public User getUserByUsername(String username) throws SQLException {
-        String query =  "SELECT * FROM \"user\" WHERE username = ? RETURNING id, username, password, preferred_language";
+        String query =  "SELECT * FROM \"user\" WHERE username = ?";
+        // OLD: RETURNING id, username, password, preferred_language
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, username);
             ResultSet rs = statement.executeQuery();

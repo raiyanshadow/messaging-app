@@ -167,9 +167,26 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
             System.out.println(chatnames);
 
             DirectChatChannel chat = chatEntities.get(index);
+
+            Integer senderID;
+            Integer receiverID;
+            String senderUsername;
+            String receiverUsername;
+            if (chat.getUser1().getUsername().equals(sessionManager.getMainUser().getUsername())) {
+                senderID = sessionManager.getMainUser().getUserID();
+                receiverID = chat.getUser2().getUserID();
+                senderUsername = sessionManager.getMainUser().getUsername();
+                receiverUsername = chat.getUser2().getUsername();
+            }
+            else {
+                senderID = sessionManager.getMainUser().getUserID();
+                receiverID = chat.getUser1().getUserID();
+                senderUsername = sessionManager.getMainUser().getUsername();
+                receiverUsername = chat.getUser1().getUsername();
+            }
             ChatChannelView newChatChannelView = new ChatChannelView(updateChatChannelViewModel,
-                    sessionManager.getMainUser().getUserID(), chat.getUser2().getUserID(), sessionManager.getMainUser().getUsername(),
-                    chat.getUser2().getUsername(), chat.getChatURL(), updateChatChannelController, sendMessageController);
+                    senderID, receiverID, senderUsername,
+                    receiverUsername, chat.getChatURL(), updateChatChannelController, sendMessageController);
             newChatChannelView.setBaseUIController(controller);
             SwingWorker<Void, Void> worker = new SwingWorker<>() {
                 @Override

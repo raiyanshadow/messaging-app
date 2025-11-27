@@ -10,6 +10,5 @@ public class baseUIViewModel extends ViewModel<baseUIState> {
         super(viewName);
         setState(new baseUIState());
     }
-
 }
 

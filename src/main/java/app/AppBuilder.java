@@ -4,6 +4,9 @@ import SendBirdAPI.MessageDeleter;
 import SendBirdAPI.MessageEditor;
 import SendBirdAPI.MessageSender;
 import data_access.*;
+import entity.DirectChatChannel;
+import entity.User;
+import interface_adapter.base_UI.baseUIState;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
 import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
 import org.sendbird.client.ApiClient;
@@ -73,8 +76,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class AppBuilder {
-    private final JPanel cardPanel = new JPanel();
-    private final CardLayout cardLayout = new CardLayout();
     final ViewManagerModel viewManagerModel = new ViewManagerModel();
     private ViewManager viewManager = new ViewManager(viewManagerModel);
 
@@ -99,7 +100,6 @@ public class AppBuilder {
     private LoginViewModel loginViewModel;
     private BaseUIView baseUIView;
     private baseUIViewModel baseUIViewModel;
-    private ChatChannelView chatChannelView;
     private ChatChannelViewModel chatChannelViewModel;
     private FriendRequestView friendRequestView;
     private FriendRequestViewModel friendRequestViewModel;
@@ -129,17 +129,13 @@ public class AppBuilder {
     private MessageDeleter messageDeleter;
 
     public AppBuilder() throws SQLException {
-        cardPanel.setLayout(cardLayout);
     }
 
     public JFrame build() {
         final JFrame application = new JFrame("Messaging App");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        application.add(cardPanel);
-
-        viewManagerModel.setState(signupView.getViewName());
-        viewManagerModel.firePropertyChange();
+        application.add(viewManager);
 
         return application;
     }
@@ -147,13 +143,15 @@ public class AppBuilder {
     public AppBuilder buildPreLogin() {
         signupViewModel = new SignupViewModel();
         loginViewModel = new LoginViewModel();
+        baseUIViewModel = new baseUIViewModel("baseUIView");
 
         SignupOutputBoundary signupPresenter = new SignupPresenter(viewManagerModel, signupViewModel, loginViewModel);
-        LoginOutputBoundary loginPresenter = new LoginPresenter(viewManagerModel, loginViewModel, baseUIViewModel,
-                signupViewModel, sessionManager, this);
+        LoginOutputBoundary loginPresenter = new LoginPresenter(viewManagerModel, loginViewModel,
+                signupViewModel, baseUIViewModel, sessionManager, this);
 
         SignupInputBoundary signupInteractor = new SignupInteractor(userDataAccessObject, signupPresenter);
-        LoginInputBoundary loginInteractor = new LoginInteractor(userDataAccessObject, loginPresenter);
+        LoginInputBoundary loginInteractor = new LoginInteractor(userDataAccessObject, loginPresenter,
+                chatChannelDataAccessObject, baseUIViewModel);
 
         SignupController signupController = new  SignupController(signupInteractor);
         LoginController loginController = new LoginController(loginInteractor);
@@ -164,32 +162,24 @@ public class AppBuilder {
         signupView.setSignupController(signupController);
         loginView.setLoginController(loginController);
 
-        cardPanel.add(signupView, signupViewModel.getViewName());
-        cardPanel.add(loginView, loginViewModel.getViewName());
+        viewManager.addView(signupView, signupView.getViewName());
+        viewManager.addView(loginView,  loginView.getViewName());
 
-        viewManagerModel.addPropertyChangeListener(evt -> {
-            String newView = (String) evt.getNewValue();
-            if (newView != null && !newView.isEmpty()) {
-                cardLayout.show(cardPanel, newView);
-            }
-        });
-
-        cardLayout.show(cardPanel, signupViewModel.getViewName());
+        viewManagerModel.setState(signupView.getViewName());
+        viewManagerModel.firePropertyChange();
 
         return this;
     }
 
     public AppBuilder buildPostLogin() {
+        System.out.println("SESSION USER = " + sessionManager.getMainUser().getUserID());
         addChatChannelViewModel = new AddChatChannelViewModel("addChatChannelView");
         addContactViewModel = new AddContactViewModel();
-        baseUIViewModel = new baseUIViewModel("baseUIView");
         chatChannelViewModel = new ChatChannelViewModel("Chat");
         updateChatChannelViewModel = new UpdateChatChannelViewModel();
         messageViewModel = new MessageViewModel();
         friendRequestViewModel = new FriendRequestViewModel();
-        addChatChannelViewModel = new AddChatChannelViewModel("addChatChannel");
         logoutViewModel = new LogoutViewModel();
-
         AddChatChannelOutputBoundary addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel,
                 addChatChannelViewModel, viewManagerModel);
         AddContactOutputBoundary addContactPresenter = new AddContactPresenter(addContactViewModel, viewManagerModel);
@@ -231,6 +221,7 @@ public class AppBuilder {
         createChatView = new CreateChatView(sessionManager, addChatChannelController,
                 baseUIViewModel, baseUIController);
         addContactView = new AddContactView(addContactViewModel, viewManagerModel, sessionManager, baseUIController);
+
         try {
             baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
                     chatChannelViewModel, viewManagerModel, sessionManager, viewManager,
@@ -246,22 +237,30 @@ public class AppBuilder {
         addContactView.setAddContactController(addContactController);
         friendRequestView.setFriendRequestController(friendRequestController);
 
-        cardPanel.add(createChatView);
-        cardPanel.add(addContactView);
-        cardPanel.add(friendRequestView);
-        cardPanel.add(baseUIView);
+        viewManager.addView(createChatView, addChatChannelViewModel.getViewName());
+        viewManager.addView(addContactView, addContactViewModel.getViewName());
+        viewManager.addView(friendRequestView, friendRequestViewModel.getViewName());
+        viewManager.addView(baseUIView, baseUIViewModel.getViewName());
+
+        // run displayUI off-EDT or in SwingWorker; simple immediate call (acceptable if light)
+        try {
+            baseUIController.displayUI(); // triggers BaseUIInteractor -> presenter -> model.firePropertyChange()
+            viewManagerModel.setState(baseUIViewModel.getViewName());
+            viewManagerModel.firePropertyChange();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         return this;
     }
 
     public void destroyPostLogin() {
-        cardPanel.remove(baseUIView);
-        cardPanel.remove(friendRequestView);
-        cardPanel.remove(addContactView);
-        cardPanel.remove(createChatView);
+        viewManager.remove(baseUIView);
+        viewManager.remove(friendRequestView);
+        viewManager.remove(addContactView);
+        viewManager.remove(createChatView);
 
         baseUIView = null;
-        chatChannelView = null;
         friendRequestView = null;
         addContactView = null;
         createChatView = null;
@@ -272,8 +271,5 @@ public class AppBuilder {
         addContactViewModel = null;
         addChatChannelViewModel = null;
         updateChatChannelViewModel = null;
-
-        cardPanel.revalidate();
-        cardPanel.repaint();
     }
 }

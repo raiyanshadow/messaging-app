@@ -17,7 +17,7 @@ public class SignupViewModel extends ViewModel<SignupState> {
     public static final String[] LANGUAGES = {"English", "French", "Spanish"};
 
     public SignupViewModel() {
-        super("sign up");
+        super("signup");
         SignupState initialState = new SignupState();
         // Set default language
         initialState.setPreferredLanguage(LANGUAGES[0]);

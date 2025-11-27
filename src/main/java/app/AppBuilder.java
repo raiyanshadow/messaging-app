@@ -225,7 +225,7 @@ public class AppBuilder {
         try {
             baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
                     chatChannelViewModel, viewManagerModel, sessionManager, viewManager,
-                    sendMessageController, updateChatChannelController);
+                    sendMessageController, updateChatChannelController, logoutController);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -260,12 +260,10 @@ public class AppBuilder {
         viewManager.remove(addContactView);
         viewManager.remove(createChatView);
 
-        baseUIView = null;
         friendRequestView = null;
         addContactView = null;
         createChatView = null;
 
-        baseUIViewModel = null;
         chatChannelViewModel = null;
         friendRequestViewModel = null;
         addContactViewModel = null;

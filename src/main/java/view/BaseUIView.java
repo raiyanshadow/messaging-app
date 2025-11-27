@@ -7,6 +7,7 @@ import interface_adapter.base_UI.baseUIState;
 import interface_adapter.base_UI.baseUIViewModel;
 import interface_adapter.chat_channel.ChatChannelViewModel;
 import interface_adapter.chat_channel.SendMessageController;
+import interface_adapter.logout.LogoutController;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
 import session.SessionManager;
@@ -26,6 +27,7 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
     private final SendMessageController sendMessageController;
     private final UpdateChatChannelController updateChatChannelController;
     private final UpdateChatChannelViewModel updateChatChannelViewModel;
+    private final LogoutController logoutController;
     private ChatChannelView chatChannelView = null;
     private final ChatChannelViewModel chatChannelViewModel;
     private final ViewManagerModel viewManagerModel;
@@ -44,7 +46,8 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
     public BaseUIView(baseUIViewModel viewModel, baseUIController controller,
                       UpdateChatChannelViewModel updateChatChannelViewModel, ChatChannelViewModel chatChannelViewModel,
                       ViewManagerModel viewManagerModel, SessionManager sessionManager, ViewManager viewManager,
-                      SendMessageController sendMessageController, UpdateChatChannelController updateChatChannelController) throws SQLException {
+                      SendMessageController sendMessageController, UpdateChatChannelController updateChatChannelController,
+                      LogoutController logoutController) throws SQLException {
         this.viewModel = viewModel;
         this.controller = controller;
         this.updateChatChannelViewModel = updateChatChannelViewModel;
@@ -55,6 +58,7 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
         this.viewManager = viewManager;
         this.sendMessageController = sendMessageController;
         this.updateChatChannelController = updateChatChannelController;
+        this.logoutController = logoutController;
 
         // Main layout styling
         this.setLayout(new BorderLayout());
@@ -191,6 +195,10 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
             this.chatChannelView = newChatChannelView;
             viewManager.addView(chatChannelView, chatChannelViewModel.getViewName());
             this.switchView(this.viewManagerModel, this.chatChannelViewModel);
+        });
+
+        logoutButton.addActionListener(e -> {
+            logoutController.logoutUser(sessionManager.getMainUser());
         });
     }
 

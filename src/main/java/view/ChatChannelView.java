@@ -63,17 +63,8 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         this.updateChatChannelController = updateChatChannelController;
         this.sendMessageController = sendMessageController;
 
-//        this.chatURL = updateChatChannelViewModel.getState().getChatURL();
-//        this.senderID = updateChatChannelViewModel.getState().getUser1ID();
-//        this.recieverID = updateChatChannelViewModel.getState().getUser2ID();
-
         // Set layout
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-        // Title of screen
-//        final JLabel title = new JLabel("Chat Display");
-//        title.setAlignmentX(Component.CENTER_ALIGNMENT);
-//        this.add(title);
 
         // Chat Preview Panel
         chatName = new JLabel("");
@@ -104,15 +95,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         send.addActionListener(evt -> {
             // Set new message state
             String message = content.getText();
-//                    UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
-//                    try {
-//                        updateChatChannelController.execute(updateChatChannelState.getChatURL());
-//                    } catch (SQLException e) {
-//                        throw new RuntimeException(e);
-//                    }
             MessageState messageState = new MessageState();
-//                    System.out.println("messages length:" + updateChatChannelState.getMessages().size());
-//                    messageState.setSenderName(updateChatChannelState.getUser1Name());
             messageState.setSenderID(senderID);
             messageState.setReceiverID(receiverID);
             messageState.setSenderName(senderUsername);
@@ -129,14 +112,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
                 if (shouldScroll) {
                     vertical.setValue(vertical.getMaximum());
                 }
-            }); // TODO: Fix where scrolling occurs
-
-//                    System.out.println("messages length:" + updateChatChannelState.getMessages().size());
-//                    try {
-//                        updateChatChannelController.execute(updateChatChannelState.getChatURL());
-//                    } catch (SQLException e) {
-//                        throw new RuntimeException(e);
-//                    }
+            });
         });
         startThread();
     }

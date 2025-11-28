@@ -75,6 +75,8 @@ public class LoginView extends JPanel implements PropertyChangeListener {
                         state.getUsername(),
                         state.getPassword()
                 );
+                this.usernameInputField.setText("");
+                this.passwordInputField.setText("");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

@@ -47,6 +47,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private boolean pending;
     private int lastRenderedCount = 0;
     private boolean firstOpen = true;
+    private Thread thread;
 
     public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel, Integer senderID, Integer receiverID, String senderUsername, String receiverUsername, String chatURL,
                            UpdateChatChannelController updateChatChannelController, SendMessageController sendMessageController) {
@@ -84,6 +85,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
 
         // Back button
         back.addActionListener(event -> {
+            this.thread.interrupt();
             try {
                 baseUIController.displayUI();
             } catch (SQLException e) {
@@ -96,9 +98,9 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
             // Set new message state
             String message = content.getText();
             MessageState messageState = new MessageState();
-            messageState.setSenderID(senderID);
-            messageState.setReceiverID(receiverID);
-            messageState.setSenderName(senderUsername);
+            messageState.setSenderID(this.senderID);
+            messageState.setReceiverID(this.receiverID);
+            messageState.setSenderName(this.senderUsername);
             messageState.setChannelURL(chatURL);
             messageState.setContent(message);
 
@@ -135,7 +137,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
 
     // Ensures receiver can see new message
     private void startThread() {
-        Thread thread = new Thread(() -> {
+        this.thread = new Thread(() -> {
             while (true) {
                 try {
                     if (updateChatChannelController != null) {
@@ -162,12 +164,12 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         if (!pending) { // Draw only after temporary message updates in database
             for (int i = lastRenderedCount; i < messages.size(); i++) {
                 MessageViewModel message = messages.get(i);
-                boolean isSelf = (message.getState().getSenderID().equals(senderID));
+                boolean isSelf = (message.getState().getSenderID().equals(this.senderID));
                 String name = isSelf ? senderUsername : receiverUsername;
                 MessagePanel messagePanel = new MessagePanel(new JLabel(name), new JLabel(message.getState().getContent()),
                         new JLabel(message.getState().getTimestamp().toString()));
                 JPanel bubble = messagePanel.createBubble(
-                        name,
+                        message.getState().getSenderName(),
                         message.getState().getContent(),
                         message.getState().getTimestamp().toString(),
                         isSelf

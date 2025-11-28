@@ -44,6 +44,13 @@ public class CreateChatView extends JPanel implements PropertyChangeListener {
 
         // Top panel with label and back button
         JButton backButton = new JButton("Back");
+        Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
+        backButton.setFont(buttonFont);
+        backButton.setBackground(new Color(96, 179, 120));
+        backButton.setForeground(Color.WHITE);
+        backButton.setPreferredSize(new Dimension(140, 42));
+        backButton.setBorder(BorderFactory.createLineBorder(new Color(96, 179, 120), 1, true));
+
         backButton.addActionListener(e -> {
             try {
                 baseUIController.displayUI();
@@ -51,6 +58,7 @@ public class CreateChatView extends JPanel implements PropertyChangeListener {
                 throw new RuntimeException(ex);
             }
         });
+
 
         JPanel topPanel = new JPanel(new BorderLayout());
         JLabel label = new JLabel("Select a user to start a chat with:");

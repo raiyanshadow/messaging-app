@@ -38,6 +38,15 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
         }
     }
 
+    // Delete a user by username (for rollback)
+    public void deleteByUsername(String username) throws SQLException {
+        String query = "DELETE FROM \"user\" WHERE username = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, username);
+            statement.executeUpdate();
+        }
+    }
+
     // Check if username exists
     public boolean existsByName(String username) throws SQLException {
         String query = "SELECT 1 FROM \"user\" WHERE username = ?";

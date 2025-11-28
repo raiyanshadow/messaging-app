@@ -10,6 +10,7 @@ public interface UserDataAccessObject {
     User getUserFromID(int UserID) throws SQLException;
     List<User> getAllUsers() throws SQLException;
     public void save(User user) throws SQLException;
+    void deleteByUsername(String username) throws SQLException;
     User getUserFromName(String username) throws SQLException;
     public void sendRequest(User sender, String receiverUsername);
 }

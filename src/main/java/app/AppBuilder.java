@@ -3,6 +3,7 @@ package app;
 import SendBirdAPI.MessageDeleter;
 import SendBirdAPI.MessageEditor;
 import SendBirdAPI.MessageSender;
+import SendBirdAPI.SendbirdUserCreator;
 import data_access.*;
 import entity.DirectChatChannel;
 import entity.User;
@@ -145,15 +146,18 @@ public class AppBuilder {
         loginViewModel = new LoginViewModel();
         baseUIViewModel = new baseUIViewModel("baseUIView");
 
+        SendbirdUserCreator sendbirdUserCreator = new SendbirdUserCreator(dotenv.get("MSG_APP_ID"));
+
         SignupOutputBoundary signupPresenter = new SignupPresenter(viewManagerModel, signupViewModel, loginViewModel);
         LoginOutputBoundary loginPresenter = new LoginPresenter(viewManagerModel, loginViewModel,
                 signupViewModel, baseUIViewModel, sessionManager, this);
 
-        SignupInputBoundary signupInteractor = new SignupInteractor(userDataAccessObject, signupPresenter);
+        SignupInputBoundary signupInteractor = new SignupInteractor(userDataAccessObject, signupPresenter,
+                sendbirdUserCreator);
         LoginInputBoundary loginInteractor = new LoginInteractor(userDataAccessObject, loginPresenter,
                 chatChannelDataAccessObject, baseUIViewModel);
 
-        SignupController signupController = new  SignupController(signupInteractor);
+        SignupController signupController = new SignupController(signupInteractor);
         LoginController loginController = new LoginController(loginInteractor);
 
         signupView = new SignupView(signupViewModel);

@@ -1,17 +1,15 @@
 package app;
 
+import SendBirdAPI.SendbirdUserCreator;
 import data_access.DBConnectionFactory;
 import data_access.DBUserDataAccessObject;
-
 import interface_adapter.ViewManagerModel;
 import interface_adapter.signup.SignupViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.login.LoginViewModel;
-
 import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInteractor;
-
 import view.SignupView;
 import view.LoginView;
 
@@ -32,6 +30,9 @@ public class SignupViewTest {
         Connection conn = DBConnectionFactory.createConnection();
         DBUserDataAccessObject userDAO = new DBUserDataAccessObject(conn);
 
+        // Replace "YOUR_APP_ID" with your Sendbird app ID
+        SendbirdUserCreator sendbirdUserCreator = new SendbirdUserCreator("YOUR_APP_ID");
+
         ViewManagerModel viewManagerModel = new ViewManagerModel();
 
         SignupViewModel signupViewModel = new SignupViewModel();
@@ -40,8 +41,9 @@ public class SignupViewTest {
         SignupPresenter presenter =
                 new SignupPresenter(viewManagerModel, signupViewModel, loginViewModel);
 
+        // Replace "YOUR_API_TOKEN" with your Sendbird API token
         SignupInputBoundary interactor =
-                new SignupInteractor(userDAO, presenter);
+                new SignupInteractor(userDAO, presenter, sendbirdUserCreator);
 
         SignupController signupController = new SignupController(interactor);
 

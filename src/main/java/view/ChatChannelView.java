@@ -48,18 +48,26 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private int lastRenderedCount = 0;
     private boolean firstOpen = true;
 
-    public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel, Integer senderID, Integer receiverID, String senderUsername, String receiverUsername, String chatURL,
+    public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel,
                            UpdateChatChannelController updateChatChannelController, SendMessageController sendMessageController) {
-        // Initialize variables
+
         this.updateChatChannelViewModel = updateChatChannelViewModel;
         this.updateChatChannelViewModel.addPropertyChangeListener(this);
         this.messageViewModel = new MessageViewModel();
         this.messageViewModel.addPropertyChangeListener(this);
-        this.senderID = senderID;
-        this.receiverID = receiverID;
-        this.senderUsername = senderUsername;
-        this.receiverUsername = receiverUsername;
-        this.chatURL = chatURL;
+        // OLD:
+//        this.senderID = senderID;
+//        this.receiverID = receiverID;
+//        this.senderUsername = senderUsername;
+//        this.receiverUsername = receiverUsername;
+//        this.chatURL = chatURL;
+
+        this.senderID = updateChatChannelViewModel.getState().getUser1ID();
+        this.receiverID = updateChatChannelViewModel.getState().getUser2ID();
+        this.senderUsername = updateChatChannelViewModel.getState().getUser1Name();
+        this.receiverUsername = updateChatChannelViewModel.getState().getUser2Name();
+        this.chatURL = updateChatChannelViewModel.getState().getChatURL();
+
         this.updateChatChannelController = updateChatChannelController;
         this.sendMessageController = sendMessageController;
 

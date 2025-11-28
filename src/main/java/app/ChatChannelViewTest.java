@@ -169,12 +169,13 @@ public class ChatChannelViewTest {
         LogoutController logoutController = new LogoutController(logoutInteractor);
 
         // 6. View
-        ChatChannelView view = new ChatChannelView(vm, user1.getUserID(), user2.getUserID(), user1.getUsername(),
-                user2.getUsername(), channelUrl, updateChatChannelController, sendMessageController);
         UpdateChatChannelViewModel updateChatChannelViewModel = new UpdateChatChannelViewModel();
         ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("Chat");
         BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
                 chatChannelViewModel, viewManagerModel, sessionManager, viewManager, sendMessageController, updateChatChannelController, logoutController);
+        ChatChannelView view = new ChatChannelView(vm, updateChatChannelController, sendMessageController);
+        // OLD: user1.getUserID(), user2.getUserID(), user1.getUsername(),
+        //                user2.getUsername(), channelUrl,
         view.setUpdateChatChannelController(controller);
         view.setSendMessageController(sendMessageController);
         view.setBaseUIController(baseUIController);

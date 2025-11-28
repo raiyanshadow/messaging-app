@@ -185,13 +185,14 @@ public class ChatChannelViewTestReceiver {
         LogoutController logoutController = new LogoutController(logoutInteractor);
 
         // 6. View
-        ChatChannelView view = new ChatChannelView(vm, user1.getUserID(), user2.getUserID(),
-                user1.getUsername(), user2.getUsername(), channelUrl, controller, sendMessageController);
-        UpdateChatChannelViewModel updateChatChannelViewModel = new  UpdateChatChannelViewModel();
         ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("Chat");
+        UpdateChatChannelViewModel updateChatChannelViewModel = new  UpdateChatChannelViewModel();
         BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
                 chatChannelViewModel, viewManagerModel, (SessionManager) sessionManager, viewManager,
                 sendMessageController, controller, logoutController);
+        ChatChannelView view = new ChatChannelView(vm, controller, sendMessageController);
+        // OLD: user1.getUserID(), user2.getUserID(),
+        //                user1.getUsername(), user2.getUsername(), channelUrl,
         view.setUpdateChatChannelController(controller);
         view.setSendMessageController(sendMessageController);
         view.setBaseUIController(baseUIController);

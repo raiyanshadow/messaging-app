@@ -174,8 +174,6 @@ public class ChatChannelViewTest {
         BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
                 chatChannelViewModel, viewManagerModel, sessionManager, viewManager, sendMessageController, updateChatChannelController, logoutController);
         ChatChannelView view = new ChatChannelView(vm, updateChatChannelController, sendMessageController);
-        // OLD: user1.getUserID(), user2.getUserID(), user1.getUsername(),
-        //                user2.getUsername(), channelUrl,
         view.setUpdateChatChannelController(controller);
         view.setSendMessageController(sendMessageController);
         view.setBaseUIController(baseUIController);

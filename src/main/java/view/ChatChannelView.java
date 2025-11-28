@@ -44,7 +44,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private Integer receiverID;
     private String senderUsername;
     private String receiverUsername;
-    private boolean pending;
+//    private boolean pending;
     private boolean running = true;
     private Thread thread;
     private int lastRenderedCount = 0;
@@ -57,6 +57,8 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         this.updateChatChannelViewModel.addPropertyChangeListener(this);
         this.messageViewModel = new MessageViewModel();
         this.messageViewModel.addPropertyChangeListener(this);
+
+        lastRenderedCount = 0;
         // OLD:
 //        this.senderID = senderID;
 //        this.receiverID = receiverID;
@@ -147,13 +149,14 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
 
     // Ensures receiver can see new message
     private void startThread() {
+        System.out.println("starting thread");
         thread = new Thread(() -> {
             while (running && !Thread.currentThread().isInterrupted()) {
                 try {
                     if (updateChatChannelController != null) {
                         UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
                         updateChatChannelController.execute(updateChatChannelState.getChatURL());
-                        pending = false; // temporary message stored to database, safe to redraw
+//                        pending = false; // temporary message stored to database, safe to redraw
                     }
                     Thread.sleep(200);
                 } catch (SQLException e) {
@@ -176,43 +179,43 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         if (messages == null || messages.isEmpty()) {
             return;
         }
-        if (!pending) { // Draw only after temporary message updates in database
-            for (int i = lastRenderedCount; i < messages.size(); i++) {
-                MessageViewModel message = messages.get(i);
-                boolean isSelf = (message.getState().getSenderID().equals(senderID));
-                String name = isSelf ? senderUsername : receiverUsername;
-                MessagePanel messagePanel = new MessagePanel(new JLabel(name), new JLabel(message.getState().getContent()),
-                        new JLabel(message.getState().getTimestamp().toString()));
-                JPanel bubble = messagePanel.createBubble(
-                        name,
-                        message.getState().getContent(),
-                        message.getState().getTimestamp().toString(),
-                        isSelf
-                );
-                messageContainer.add(bubble);
-                messageContainer.add(Box.createVerticalStrut(8));
-                messageContainer.revalidate();
-                messageContainer.repaint();
-            }
-            lastRenderedCount = messages.size();
-            // Scroll only if user is at bottom
-            JScrollBar v = scrollPane.getVerticalScrollBar();
-            boolean stickToBottom = v.getValue() + v.getVisibleAmount() >= v.getMaximum() - 20;
-
-            if (firstOpen) {
-                firstOpen = false;
-
-                SwingUtilities.invokeLater(() ->
-                        SwingUtilities.invokeLater(() -> {
-                            JScrollBar bar = scrollPane.getVerticalScrollBar();
-                            bar.setValue(bar.getMaximum());
-                        })
-                );
-            } else if (stickToBottom) {
-            SwingUtilities.invokeLater(() -> v.setValue(v.getMaximum()));
-            }
-
+//        if (!pending) { // Draw only after temporary message updates in database
+        for (int i = lastRenderedCount; i < messages.size(); i++) {
+            MessageViewModel message = messages.get(i);
+            boolean isSelf = (message.getState().getSenderID().equals(senderID));
+            String name = isSelf ? senderUsername : receiverUsername;
+            MessagePanel messagePanel = new MessagePanel(new JLabel(name), new JLabel(message.getState().getContent()),
+                    new JLabel(message.getState().getTimestamp().toString()));
+            JPanel bubble = messagePanel.createBubble(
+                    name,
+                    message.getState().getContent(),
+                    message.getState().getTimestamp().toString(),
+                    isSelf
+            );
+            messageContainer.add(bubble);
+            messageContainer.add(Box.createVerticalStrut(8));
+            messageContainer.revalidate();
+            messageContainer.repaint();
         }
+        lastRenderedCount = messages.size();
+        // Scroll only if user is at bottom
+        JScrollBar v = scrollPane.getVerticalScrollBar();
+        boolean stickToBottom = v.getValue() + v.getVisibleAmount() >= v.getMaximum() - 20;
+
+        if (firstOpen) {
+            firstOpen = false;
+
+            SwingUtilities.invokeLater(() ->
+                    SwingUtilities.invokeLater(() -> {
+                        JScrollBar bar = scrollPane.getVerticalScrollBar();
+                        bar.setValue(bar.getMaximum());
+                    })
+            );
+        } else if (stickToBottom) {
+            SwingUtilities.invokeLater(() -> v.setValue(v.getMaximum()));
+        }
+
+//        }
     }
 
     public void setBaseUIController(baseUIController baseUIController) {

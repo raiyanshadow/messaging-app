@@ -194,33 +194,10 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
             updateChatChannelViewModel.setState(updateChatChannelState);
             ChatChannelView newChatChannelView = new ChatChannelView(updateChatChannelViewModel,
                      updateChatChannelController, sendMessageController);
-            // old: senderID, receiverID, senderUsername,
-            //                    receiverUsername, chat.getChatURL(),
             newChatChannelView.setBaseUIController(controller);
-            SwingWorker<Void, Void> worker = new SwingWorker<>() {
-                @Override
-                protected Void doInBackground() throws Exception {
-                    updateChatChannelController.execute(chat.getChatURL());
-                    return null;
-                }
-
-                @Override
-                protected void done() {
-                    // Now the chat messages are loaded into the view model
-                    // Scroll AFTER the UI fully lays out
-
-                    SwingUtilities.invokeLater(() -> {
-                        SwingUtilities.invokeLater(() -> {
-                            JScrollBar v = newChatChannelView.getScrollPane().getVerticalScrollBar();
-                            v.setValue(v.getMaximum());
-                        });
-                    });
-                }
-            };
-            worker.execute();
             this.chatChannelView = newChatChannelView;
-            viewManager.addView(chatChannelView, chatChannelViewModel.getViewName());
-            this.switchView(this.viewManagerModel, this.chatChannelViewModel);
+            viewManager.addView(chatChannelView, updateChatChannelViewModel.getViewName());
+            this.switchView(this.viewManagerModel, this.updateChatChannelViewModel);
         });
 
         logoutButton.addActionListener(e -> {
@@ -259,9 +236,11 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
         this.repaint();
     }
 
-    public void switchView(ViewManagerModel viewManagerModel, ChatChannelViewModel chatChannelViewModel) {
-        chatChannelViewModel.firePropertyChange();
-        viewManagerModel.setState(chatChannelViewModel.getViewName());
+    public void switchView(ViewManagerModel viewManagerModel, UpdateChatChannelViewModel updateChatChannelViewModel) {
+        System.out.println(chatChannelViewModel.getViewName());
+        System.out.println(updateChatChannelViewModel.getViewName());
+        updateChatChannelViewModel.firePropertyChange();
+        viewManagerModel.setState(updateChatChannelViewModel.getViewName());
         viewManagerModel.firePropertyChange();
 
     }

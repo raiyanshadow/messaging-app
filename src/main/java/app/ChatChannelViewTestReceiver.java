@@ -191,8 +191,6 @@ public class ChatChannelViewTestReceiver {
                 chatChannelViewModel, viewManagerModel, (SessionManager) sessionManager, viewManager,
                 sendMessageController, controller, logoutController);
         ChatChannelView view = new ChatChannelView(vm, controller, sendMessageController);
-        // OLD: user1.getUserID(), user2.getUserID(),
-        //                user1.getUsername(), user2.getUsername(), channelUrl,
         view.setUpdateChatChannelController(controller);
         view.setSendMessageController(sendMessageController);
         view.setBaseUIController(baseUIController);
@@ -203,6 +201,7 @@ public class ChatChannelViewTestReceiver {
 
         // 7. Execute
         controller.execute(channelUrl);
+//        baseUIController.displayUI();
 
         // 8. Create Window
         JFrame frame = new JFrame("TEST CHAT VIEW");

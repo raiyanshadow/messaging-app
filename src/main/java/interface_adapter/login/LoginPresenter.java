@@ -1,38 +1,47 @@
 package interface_adapter.login;
 
+import app.AppBuilder;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.base_UI.baseUIState;
 import interface_adapter.home_page.HomePageState;
-import interface_adapter.home_page.HomePageViewModel;
-import interface_adapter.signup.SignupState;
+import interface_adapter.base_UI.baseUIViewModel;
 import interface_adapter.signup.SignupViewModel;
+import session.SessionManager;
 import use_case.login.LoginOutputBoundary;
 import use_case.login.LoginOutputData;
 
 public class LoginPresenter implements LoginOutputBoundary {
     private final LoginViewModel loginViewModel;
     private final ViewManagerModel viewManagerModel;
-    private final HomePageViewModel homePageViewModel;
     private final SignupViewModel signupViewModel;
+    private final baseUIViewModel baseUIViewModel;
+    private final SessionManager session;
+    private AppBuilder appBuilder;
 
     public LoginPresenter(ViewManagerModel viewManagerModel,
-                          LoginViewModel loginViewModel,
-                          HomePageViewModel homePageViewModel, SignupViewModel signupViewModel) {
+                          LoginViewModel loginViewModel, SignupViewModel signupViewModel,
+                          baseUIViewModel baseUIViewModel,
+                          SessionManager session, AppBuilder appBuilder) {
         this.viewManagerModel = viewManagerModel;
         this.loginViewModel = loginViewModel;
-        this.homePageViewModel = homePageViewModel;
         this.signupViewModel = signupViewModel;
+        this.session = session;
+        this.baseUIViewModel = baseUIViewModel;
+        this.appBuilder = appBuilder;
     }
 
     @Override
     public void prepareSuccessView(LoginOutputData outputData) {
-        final HomePageState homePageState = homePageViewModel.getState();
-        final LoginState loginState = loginViewModel.getState();
+        session.setMainUser(outputData.getUser());
+        session.setLoggedin(true);
+        appBuilder.buildPostLogin();
+        LoginState loginState = new LoginState();
+        loginState.setUsername(outputData.getUser().getUsername());
+        loginState.setPassword(outputData.getUser().getPassword());
         loginState.setIsSuccessful(true);
-        homePageState.setUser(outputData.getUser());
-        homePageState.setisLoggedIn(true);
-        loginViewModel.firePropertyChange();
-        homePageViewModel.firePropertyChange();
+        loginViewModel.setState(loginState);
         switchToHomePageView();
+        loginViewModel.firePropertyChange();
     }
 
     @Override
@@ -45,7 +54,7 @@ public class LoginPresenter implements LoginOutputBoundary {
 
     @Override
     public void switchToHomePageView() {
-        viewManagerModel.setState(homePageViewModel.getViewName());
+        viewManagerModel.setState(baseUIViewModel.getViewName());
         viewManagerModel.firePropertyChange();
     }
 

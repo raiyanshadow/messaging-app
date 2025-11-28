@@ -6,6 +6,8 @@ public class SessionManager implements Session {
     private User mainUser;
     private boolean isLoggedin;
 
+    public SessionManager() {}
+
     public SessionManager(User mainUser, boolean isLoggedin) throws SQLException {
         this.mainUser = mainUser;
         this.isLoggedin = isLoggedin;

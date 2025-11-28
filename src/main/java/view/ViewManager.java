@@ -23,11 +23,13 @@ public class ViewManager extends JPanel implements PropertyChangeListener {
 
         this.cardLayout = new CardLayout();
         setLayout(cardLayout);
+        this.setPreferredSize(new Dimension(720, 500));
     }
 
     public void addView(JPanel view, String viewName) {
         add(view, viewName);
     }
+
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
@@ -36,4 +38,5 @@ public class ViewManager extends JPanel implements PropertyChangeListener {
         revalidate();
         repaint();
     }
+
 }

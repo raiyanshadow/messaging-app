@@ -69,6 +69,7 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+    public void setUserChats(List<String> userChats) {this.userChats = userChats;}
     public List<Contact> getContacts() { return contacts; }
     public List<Integer> getContactIDs() {
         List<Integer> contactIDs = new ArrayList<>();

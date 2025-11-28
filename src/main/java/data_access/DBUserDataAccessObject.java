@@ -1,18 +1,23 @@
 package data_access;
 
+import entity.Contact;
 import entity.User;
+import entity.UserFactory;
 import use_case.add_contact.AddContactUserDataAccessInterface;
+import use_case.login.LoginUserDataAccessInterface;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DBUserDataAccessObject implements UserDataAccessObject, AddContactUserDataAccessInterface {
+public class DBUserDataAccessObject implements UserDataAccessObject, AddContactUserDataAccessInterface,
+        LoginUserDataAccessInterface {
 
     private final Connection connection;
 
     public DBUserDataAccessObject(Connection connection) {
         this.connection = connection;
+
     }
 
     // Save a new user
@@ -61,12 +66,16 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
             statement.setInt(1, userId);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
-                return new User(
+                User user = new User(
                         rs.getInt("id"),
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("preferred_language")
                 );
+                DBChatChannelDataAccessObject chatChannelDataAccessObject = new DBChatChannelDataAccessObject(connection);
+                List<String> chatUrls = chatChannelDataAccessObject.getChatURLsByUserId(user.getUserID());
+                user.setUserChats(chatUrls);
+                return user;
             }
         }
         return null;
@@ -97,12 +106,23 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
             ResultSet rs = statement.executeQuery();
 
             if (rs.next()) {
-                return new User(
+                User user = new User(
                         rs.getInt("id"),
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("preferred_language")
                 );
+                DBChatChannelDataAccessObject chatChannelDataAccessObject = new DBChatChannelDataAccessObject(connection);
+                DBContactDataAccessObject contactDataAccessObject = new DBContactDataAccessObject(connection);
+                List<Contact> contacts = new ArrayList<>();
+                contactDataAccessObject.updateUserContacts(user, contacts);
+                user.setContacts(contacts);
+                List<String> friend_requests = new ArrayList<>();
+                contactDataAccessObject.updateUserFriendRequests(user, friend_requests);
+                user.setFriendRequests(friend_requests);
+                List<String> user_chats = chatChannelDataAccessObject.getChatURLsByUserId(user.getUserID());
+                user.setUserChats(user_chats);
+                return user;
             }
         }
         return null; // no user found
@@ -151,4 +171,17 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
         return users;
     }
 
+    @Override
+    public boolean validateCredentials(String username, String password) throws SQLException {
+        String query = "SELECT * FROM \"user\" WHERE username = ? AND password = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, username);
+            statement.setString(2, password);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

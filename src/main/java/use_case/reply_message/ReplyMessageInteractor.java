@@ -39,14 +39,6 @@ public class ReplyMessageInteractor implements ReplyMessageInputBoundary {
     @Override
     public void execute(ReplyMessageInputData inputData) {
         final User currentUser = sessionManager.getMainUser();
-        User receiver;
-
-        try {
-            receiver = userDataAccessObject.getUserFromID(inputData.getReceiverId());
-        } catch (SQLException e) {
-            presenter.prepareReplyMessageFailView("DB read fail");
-            return;
-        }
 
         Long messageId = messageSender.sendMessage(dotenv.get("MSG_TOKEN"), inputData.getMessage(),
                 inputData.getChannelUrl(), inputData.getSenderId());
@@ -57,7 +49,7 @@ public class ReplyMessageInteractor implements ReplyMessageInputBoundary {
 
         Message message = MessageFactory.createTextMessage(
             messageId, inputData.getParentMessageId(), inputData.getChannelUrl(),
-            currentUser, receiver, "pending", Timestamp.valueOf(LocalDateTime.now()), inputData.getMessage()
+            currentUser.getUserID(), inputData.getReceiverId(), "pending", Timestamp.valueOf(LocalDateTime.now()), inputData.getMessage()
         );
 
         final Long childMessageId;

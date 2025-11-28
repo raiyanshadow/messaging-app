@@ -63,7 +63,6 @@ public class CreateChatView extends JPanel implements PropertyChangeListener {
         JList<Object> userList = new JList<>(model);
 
         DefaultListModel<String> model2 = new DefaultListModel<>();
-        JList<String> userListnames = new JList<>(model2);
 
         for (Contact contact : currentUser.getContacts()) {
             model.addElement(contact.getContact().getUsername());
@@ -71,6 +70,7 @@ public class CreateChatView extends JPanel implements PropertyChangeListener {
             model2.addElement(contact.getUser().getUsername());
         }
 
+        JList<String> userListnames = new JList<>(model2);
         userListnames.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(userList);
         add(scrollPane, BorderLayout.CENTER);

@@ -9,6 +9,7 @@ import interface_adapter.chat_channel.ChatChannelViewModel;
 import interface_adapter.chat_channel.SendMessageController;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
+import interface_adapter.update_chat_channel.UpdateChatChannelState;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
 import session.SessionManager;
 
@@ -184,31 +185,16 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
                 senderUsername = sessionManager.getMainUser().getUsername();
                 receiverUsername = chat.getUser1().getUsername();
             }
+            UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
+            updateChatChannelState.setUser1ID(senderID); // NOTE: We use the convention that user1 is the sender, user2 is the receiver
+            updateChatChannelState.setUser2ID(receiverID);
+            updateChatChannelState.setChatURL(chat.getChatURL());
+            updateChatChannelState.setUser1Name(senderUsername);
+            updateChatChannelState.setUser2Name(receiverUsername);
+            updateChatChannelViewModel.setState(updateChatChannelState);
             ChatChannelView newChatChannelView = new ChatChannelView(updateChatChannelViewModel,
-                    senderID, receiverID, senderUsername,
-                    receiverUsername, chat.getChatURL(), updateChatChannelController, sendMessageController);
+                    updateChatChannelController, sendMessageController);
             newChatChannelView.setBaseUIController(controller);
-            SwingWorker<Void, Void> worker = new SwingWorker<>() {
-                @Override
-                protected Void doInBackground() throws Exception {
-                    updateChatChannelController.execute(chat.getChatURL());
-                    return null;
-                }
-
-                @Override
-                protected void done() {
-                    // Now the chat messages are loaded into the view model
-                    // Scroll AFTER the UI fully lays out
-
-                    SwingUtilities.invokeLater(() -> {
-                        SwingUtilities.invokeLater(() -> {
-                            JScrollBar v = newChatChannelView.getScrollPane().getVerticalScrollBar();
-                            v.setValue(v.getMaximum());
-                        });
-                    });
-                }
-            };
-            worker.execute();
             this.chatChannelView = newChatChannelView;
             viewManager.addView(chatChannelView, chatChannelViewModel.getViewName());
             this.switchView(this.viewManagerModel, this.chatChannelViewModel);

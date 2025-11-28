@@ -44,23 +44,29 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private Integer receiverID;
     private String senderUsername;
     private String receiverUsername;
-    private boolean pending;
     private int lastRenderedCount = 0;
     private boolean firstOpen = true;
     private Thread thread;
+    private boolean running = true;
 
-    public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel, Integer senderID, Integer receiverID, String senderUsername, String receiverUsername, String chatURL,
+    public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel,
                            UpdateChatChannelController updateChatChannelController, SendMessageController sendMessageController) {
+        // Integer senderID, Integer receiverID, String senderUsername, String receiverUsername, String chatURL,
+
+        // Reset last rendered
+        lastRenderedCount = 0;
+        running = true;
+
         // Initialize variables
         this.updateChatChannelViewModel = updateChatChannelViewModel;
         this.updateChatChannelViewModel.addPropertyChangeListener(this);
         this.messageViewModel = new MessageViewModel();
         this.messageViewModel.addPropertyChangeListener(this);
-        this.senderID = senderID;
-        this.receiverID = receiverID;
-        this.senderUsername = senderUsername;
-        this.receiverUsername = receiverUsername;
-        this.chatURL = chatURL;
+        this.senderID = updateChatChannelViewModel.getState().getUser1ID();
+        this.receiverID = updateChatChannelViewModel.getState().getUser2ID();
+        this.senderUsername = updateChatChannelViewModel.getState().getUser1Name();
+        this.receiverUsername = updateChatChannelViewModel.getState().getUser2Name();
+        this.chatURL = updateChatChannelViewModel.getState().getChatURL();
         this.updateChatChannelController = updateChatChannelController;
         this.sendMessageController = sendMessageController;
 
@@ -87,6 +93,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         back.addActionListener(event -> {
             this.thread.interrupt();
             try {
+                stopThread();
                 baseUIController.displayUI();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -123,14 +130,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("state")) {
             final UpdateChatChannelState state = (UpdateChatChannelState) evt.getNewValue();
-//            if (chatURL == null) {
-//                chatURL = state.getChatURL();
-//                senderID = state.getUser1ID();
-//                receiverID = state.getUser2ID();
-//                senderUsername = state.getUser1Name();
-//            }
             chatName.setText(receiverUsername);
-//            chatName.setText(state.getChatChannelName());
             updateMessage(state.getMessages());
         }
     }
@@ -138,22 +138,26 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     // Ensures receiver can see new message
     private void startThread() {
         this.thread = new Thread(() -> {
-            while (true) {
+            while (running && !Thread.currentThread().isInterrupted()) {
                 try {
                     if (updateChatChannelController != null) {
                         UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
                         updateChatChannelController.execute(updateChatChannelState.getChatURL());
-                        pending = false; // temporary message stored to database, safe to redraw
                     }
                     Thread.sleep(200);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    break;
                 }
             }
         });
         thread.start();
+    }
+
+    private void stopThread() {
+        running = false;
+        thread.interrupt();
     }
 
     // Redraw messages
@@ -161,47 +165,40 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         if (messages == null || messages.isEmpty()) {
             return;
         }
-        if (!pending) { // Draw only after temporary message updates in database
-            for (int i = lastRenderedCount; i < messages.size(); i++) {
-                MessageViewModel message = messages.get(i);
-                boolean isSelf = (message.getState().getSenderID().equals(this.senderID));
-                String name = isSelf ? senderUsername : receiverUsername;
-                MessagePanel messagePanel = new MessagePanel(new JLabel(name), new JLabel(message.getState().getContent()),
-                        new JLabel(message.getState().getTimestamp().toString()));
-                JPanel bubble = messagePanel.createBubble(
-                        message.getState().getSenderName(),
-                        message.getState().getContent(),
-                        message.getState().getTimestamp().toString(),
-                        isSelf
-                );
-                messageContainer.add(bubble);
-                messageContainer.add(Box.createVerticalStrut(8));
-                messageContainer.revalidate();
-                messageContainer.repaint();
-            }
-            lastRenderedCount = messages.size();
-            // Scroll only if user is at bottom
-            JScrollBar v = scrollPane.getVerticalScrollBar();
-            boolean stickToBottom = v.getValue() + v.getVisibleAmount() >= v.getMaximum() - 20;
-
-            if (firstOpen) {
-                firstOpen = false;
-
-                SwingUtilities.invokeLater(() ->
-                        SwingUtilities.invokeLater(() -> {
-                            JScrollBar bar = scrollPane.getVerticalScrollBar();
-                            bar.setValue(bar.getMaximum());
-                        })
-                );
-            } else if (stickToBottom) {
-            SwingUtilities.invokeLater(() -> v.setValue(v.getMaximum()));
-            }
-
+        for (int i = lastRenderedCount; i < messages.size(); i++) {
+            MessageViewModel message = messages.get(i);
+            boolean isSelf = (message.getState().getSenderID().equals(this.senderID));
+            String name = isSelf ? senderUsername : receiverUsername;
+            MessagePanel messagePanel = new MessagePanel(new JLabel(name), new JLabel(message.getState().getContent()),
+                    new JLabel(message.getState().getTimestamp().toString()));
+            JPanel bubble = messagePanel.createBubble(
+                    message.getState().getSenderName(),
+                    message.getState().getContent(),
+                    message.getState().getTimestamp().toString(),
+                    isSelf
+            );
+            messageContainer.add(bubble);
+            messageContainer.add(Box.createVerticalStrut(8));
+            messageContainer.revalidate();
+            messageContainer.repaint();
         }
+        lastRenderedCount = messages.size();
+        // Scroll only if user is at bottom
+        JScrollBar v = scrollPane.getVerticalScrollBar();
+        boolean stickToBottom = v.getValue() + v.getVisibleAmount() >= v.getMaximum() - 20;
 
-//        scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
-//        scrollPane.revalidate();
-//        scrollPane.repaint();
+        if (firstOpen) {
+            firstOpen = false;
+
+            SwingUtilities.invokeLater(() ->
+                    SwingUtilities.invokeLater(() -> {
+                        JScrollBar bar = scrollPane.getVerticalScrollBar();
+                        bar.setValue(bar.getMaximum());
+                    })
+            );
+        } else if (stickToBottom) {
+            SwingUtilities.invokeLater(() -> v.setValue(v.getMaximum()));
+        }
     }
 
     public void setBaseUIController(baseUIController baseUIController) {

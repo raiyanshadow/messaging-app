@@ -20,7 +20,7 @@ public class UpdateChatChannelInteractor implements UpdateChatChannelInputBounda
         }
         else {
             final DirectChatChannel chat = updateChatChannelUserDataAccess.getDirectChatChannelByURL(chatURL);
-            if (chat == null) {
+            if (chat.getChatURL().equals("")) { // This means an empty chat was created
                 updateChatChannelPresenter.prepareFailView("Chat not found");
             }
             else {

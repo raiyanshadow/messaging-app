@@ -169,35 +169,19 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
 
             DirectChatChannel chat = chatEntities.get(index);
 
-            Integer senderID;
-            Integer receiverID;
-            String senderUsername;
-            String receiverUsername;
-            if (chat.getUser1().getUsername().equals(sessionManager.getMainUser().getUsername())) {
-                senderID = sessionManager.getMainUser().getUserID();
-                receiverID = chat.getUser2().getUserID();
-                senderUsername = sessionManager.getMainUser().getUsername();
-                receiverUsername = chat.getUser2().getUsername();
+            try {
+                updateChatChannelController.execute(chat.getChatURL());
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
             }
-            else {
-                senderID = sessionManager.getMainUser().getUserID();
-                receiverID = chat.getUser1().getUserID();
-                senderUsername = sessionManager.getMainUser().getUsername();
-                receiverUsername = chat.getUser1().getUsername();
-            }
-            UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
-            updateChatChannelState.setUser1ID(senderID); // NOTE: We use the convention that user1 is the sender, user2 is the receiver
-            updateChatChannelState.setUser2ID(receiverID);
-            updateChatChannelState.setChatURL(chat.getChatURL());
-            updateChatChannelState.setUser1Name(senderUsername);
-            updateChatChannelState.setUser2Name(receiverUsername);
-            updateChatChannelViewModel.setState(updateChatChannelState);
             ChatChannelView newChatChannelView = new ChatChannelView(updateChatChannelViewModel,
-                    updateChatChannelController, sendMessageController);
-            newChatChannelView.setBaseUIController(controller);
-            this.chatChannelView = newChatChannelView;
-            viewManager.addView(chatChannelView, chatChannelViewModel.getViewName());
-            this.switchView(this.viewManagerModel, this.chatChannelViewModel);
+                    updateChatChannelController, sendMessageController); // TODO: Fix fail switching
+            if (updateChatChannelViewModel.getState().getError() == null) {
+                newChatChannelView.setBaseUIController(controller);
+                this.chatChannelView = newChatChannelView;
+                viewManager.addView(chatChannelView, chatChannelViewModel.getViewName());
+                this.switchView(this.viewManagerModel, this.chatChannelViewModel);
+            }
         });
 
         logoutButton.addActionListener(e -> {

@@ -62,6 +62,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         this.updateChatChannelViewModel.addPropertyChangeListener(this);
         this.messageViewModel = new MessageViewModel();
         this.messageViewModel.addPropertyChangeListener(this);
+
         this.senderID = updateChatChannelViewModel.getState().getUser1ID();
         this.receiverID = updateChatChannelViewModel.getState().getUser2ID();
         this.senderUsername = updateChatChannelViewModel.getState().getUser1Name();
@@ -129,9 +130,16 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("state")) {
-            final UpdateChatChannelState state = (UpdateChatChannelState) evt.getNewValue();
-            chatName.setText(receiverUsername);
-            updateMessage(state.getMessages());
+            // Fail view
+            if (updateChatChannelViewModel.getState().getError() != null) {
+                JOptionPane.showMessageDialog(this, updateChatChannelViewModel.getState().getError());
+                stopThread();
+            }
+            else {
+                final UpdateChatChannelState state = (UpdateChatChannelState) evt.getNewValue();
+                chatName.setText(receiverUsername);
+                updateMessage(state.getMessages());
+            }
         }
     }
 

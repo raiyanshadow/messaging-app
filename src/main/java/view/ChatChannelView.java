@@ -29,6 +29,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private MessageViewModel messageViewModel;
     private baseUIViewModel baseUIViewModel;
     private baseUIController baseUIController = null;
+    Thread thread;
 
     // GUI components
     private final JLabel chatName;
@@ -142,8 +143,8 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     }
 
     // Ensures receiver can see new message
-    private void startThread() {
-        Thread thread = new Thread(() -> {
+    public void startThread() {
+        thread = new Thread(() -> {
             while (true) {
                 try {
                     if (updateChatChannelController != null) {
@@ -160,6 +161,10 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
             }
         });
         thread.start();
+    }
+
+    public void stopThread() {
+        thread.interrupt();
     }
 
     // Redraw messages

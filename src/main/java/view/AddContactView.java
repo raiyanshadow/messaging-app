@@ -128,6 +128,8 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
             catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+            state =  new AddContactState();
+            addContactViewModel.setState(state);
         });
 
         this.setLayout(new BorderLayout());

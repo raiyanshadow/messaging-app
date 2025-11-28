@@ -1,8 +1,11 @@
 package use_case.friend_request;
 
 
+import entity.Contact;
 import entity.User;
 import use_case.add_contact.AddContactOutputData;
+
+import java.util.List;
 
 public class FriendRequestInteractor implements FriendRequestInputBoundary {
 
@@ -36,10 +39,21 @@ public class FriendRequestInteractor implements FriendRequestInputBoundary {
         // accept friend request -> add both users to each other's contacts
         else {
             System.out.println("acceptinggggggg............");
+
+            // accept the friend request in the DAO
             userDataAccessObject.acceptRequest(acceptee, accepted_username);
+
+            // fetch the updated contact list from the user
+            List<Contact> updatedContacts = userDataAccessObject.getContacts(acceptee);
+
+            // create output data including full contact list
             final FriendRequestOutputData friendRequestOutputData = new FriendRequestOutputData(acceptee, accepted_username);
+            friendRequestOutputData.setUpdatedContactList(updatedContacts);
+
+            // send to presenter
             userPresenter.prepareSuccessView(friendRequestOutputData);
         }
+
     }
 
 }

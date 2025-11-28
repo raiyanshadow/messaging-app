@@ -1,18 +1,28 @@
 package use_case.friend_request;
 
+import entity.Contact;
 import entity.User;
 
-public class FriendRequestOutputData {
-    // user1 is the user who sends out add contact request
-    private final User acceptee;
-    // user2 is the user who receives add contact request
-    private final String accepted_username;
+import java.util.List;
 
-    public FriendRequestOutputData(User acceptee, String accepted_username) {
+public class FriendRequestOutputData {
+    // user who accepted the request
+    private final User acceptee;
+    private final String acceptedUsername;
+    // username of the newly accepted friend
+
+    private List<Contact> updatedContactList;
+
+    public FriendRequestOutputData(User acceptee, String acceptedUsername) {
         this.acceptee = acceptee;
-        this.accepted_username = accepted_username;
+        this.acceptedUsername = acceptedUsername;
     }
 
-    User getAcceptee() { return acceptee; }
-    String getAccepted_username() { return accepted_username; }
+    public User getAcceptee() { return acceptee; }
+    public String getAcceptedUsername() { return acceptedUsername; }
+
+    public List<Contact> getUpdatedContactList() { return updatedContactList; }
+    public void setUpdatedContactList(List<Contact> updatedContactList) {
+        this.updatedContactList = updatedContactList;
+    }
 }

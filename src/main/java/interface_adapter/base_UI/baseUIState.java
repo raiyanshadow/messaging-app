@@ -1,37 +1,25 @@
 package interface_adapter.base_UI;
 
+import entity.Contact;
 import entity.DirectChatChannel;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class baseUIState {
-    List<DirectChatChannel> chatEntities = new ArrayList<>();
+    private List<DirectChatChannel> chatEntities = new ArrayList<>();
     private List<String> chatnames = new ArrayList<>();
     private String errorMessage = null;
-    public baseUIState() {
-    };
+    private List<Contact> contacts = new ArrayList<>(); // ensure not null
 
-    public void setChatnames(List<String> chatnames) {
-        this.chatnames = chatnames;
-    }
+    public List<DirectChatChannel> getChatEntities() { return chatEntities; }
+    public void setChatEntities(List<DirectChatChannel> chatEntities) { this.chatEntities = chatEntities; }
 
-    public List<String> getChatnames() {
-        return chatnames;
-    }
+    public List<String> getChatnames() { return chatnames; }
+    public void setChatnames(List<String> chatnames) { this.chatnames = chatnames; }
 
-    public void setChatEntities(List<DirectChatChannel> chatEntities) {
-        this.chatEntities = chatEntities    ;
-    }
+    public String getErrorMessage() { return errorMessage; }
+    public void setErrorMessage(String errorMessage) { this.errorMessage = errorMessage; }
 
-    public List<DirectChatChannel> getChatEntities() {
-        return chatEntities;
-    }
-
-    public void setErrorMessage(String s) {
-        this.errorMessage = s;
-    }
-    public String getErrorMessage(){
-        return this.errorMessage;
-    }
+    public List<Contact> getContacts() { return contacts; }
+    public void setContacts(List<Contact> contacts) { this.contacts = contacts; }
 }

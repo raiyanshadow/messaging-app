@@ -29,7 +29,6 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private MessageViewModel messageViewModel;
     private baseUIViewModel baseUIViewModel;
     private baseUIController baseUIController = null;
-    Thread thread;
 
     // GUI components
     private final JLabel chatName;
@@ -46,6 +45,8 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private String senderUsername;
     private String receiverUsername;
     private boolean pending;
+    private boolean running = true;
+    private Thread thread;
     private int lastRenderedCount = 0;
     private boolean firstOpen = true;
 
@@ -94,6 +95,8 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         // Back button
         back.addActionListener(event -> {
             try {
+                stopThread();
+                running = false;
                 baseUIController.displayUI();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -143,9 +146,9 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     }
 
     // Ensures receiver can see new message
-    public void startThread() {
+    private void startThread() {
         thread = new Thread(() -> {
-            while (true) {
+            while (running && !Thread.currentThread().isInterrupted()) {
                 try {
                     if (updateChatChannelController != null) {
                         UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
@@ -156,14 +159,15 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    break;
                 }
             }
         });
         thread.start();
     }
 
-    public void stopThread() {
+    private void stopThread() {
+        running = false; // This stops the thread despite the .sleep
         thread.interrupt();
     }
 
@@ -209,10 +213,6 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
             }
 
         }
-
-//        scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
-//        scrollPane.revalidate();
-//        scrollPane.repaint();
     }
 
     public void setBaseUIController(baseUIController baseUIController) {

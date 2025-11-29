@@ -40,7 +40,7 @@ class SendMessageInteractorTest {
         ChatChannelDataAccessObject chatChannelDAO = new DBChatChannelDataAccessObject(connection);
         DirectChatChannel chatChannel = chatChannelDAO.getDirectChatChannelByID(channelId);
 
-        SendMessageInputData inputData = new SendMessageInputData("Test chat", chatChannel.getChatURL(),
+        SendMessageInputData inputData = new SendMessageInputData("Test chat", chatChannel.getChatUrl(),
                 senderId, receiverId);
 
         SendMessageOutputBoundary successPresenter = new SendMessageOutputBoundary() {
@@ -52,7 +52,7 @@ class SendMessageInteractorTest {
                 final List<Message> messages = chatChannel.getMessages();
                 final String message = messages.get(messages.size() - 1).getContent().toString();
                 assertEquals(message, inputData.getMessage());
-                assertEquals(outputData.getChannelUrl(), chatChannel.getChatURL());
+                assertEquals(outputData.getChannelUrl(), chatChannel.getChatUrl());
             }
 
             @Override

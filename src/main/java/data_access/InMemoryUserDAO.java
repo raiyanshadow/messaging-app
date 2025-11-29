@@ -19,8 +19,9 @@ public class InMemoryUserDAO implements UserDataAccessObject {
     }
 
     @Override
-    public void save(User user) throws SQLException {
+    public Integer save(User user) throws SQLException {
         users.add(user);
+        return user.getUserID();
     }
 
     @Override

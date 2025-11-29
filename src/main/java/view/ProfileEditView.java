@@ -145,3 +145,4 @@ public class ProfileEditView extends JPanel implements PropertyChangeListener {
         this.profileEditController = profileEditController;
     }
 }
+

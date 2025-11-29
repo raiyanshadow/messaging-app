@@ -29,8 +29,6 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
             statement.setString(2, user.getPassword());
             statement.setString(3, user.getPreferredLanguage());
             statement.executeUpdate();
-
-            // Get database-generated ID
             ResultSet keys = statement.getGeneratedKeys();
             if (keys.next()) {
                 int generatedId = keys.getInt(1);
@@ -49,7 +47,7 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
         }
     }
 
-    // Check if username exists
+
     public boolean existsByName(String username) throws SQLException {
         String query = "SELECT 1 FROM \"user\" WHERE username = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -73,7 +71,6 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
         }
     }
 
-    // Get a user by ID
     public User getUserFromID(int userId) throws SQLException {
         String query = "SELECT * FROM \"user\" WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -95,7 +92,7 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
         return null;
     }
 
-    // Get all users
+
     public List<User> getAllUsers() throws SQLException {
         List<User> users = new ArrayList<>();
         String query = "SELECT * FROM \"user\"";
@@ -152,7 +149,6 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
                 return rs.getInt("id");
             }
         }
-        // no user found so no userID
         return 0;
     }
 
@@ -166,8 +162,24 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
                 return rs.getString("username");
             }
         }
-        // no user found so no username
         return null;
+    }
+
+    public List<User> searchUsers(String keyword) throws SQLException {
+        List<User> users = new ArrayList<>();
+        String query = "SELECT * FROM \"user\" WHERE username LIKE ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, "%" + keyword + "%");
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                users.add(new User(
+                        rs.getInt("id"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("preferred_language")));
+            }
+        }
+        return users;
     }
 
     @Override
@@ -226,3 +238,4 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
         }
     }
 }
+

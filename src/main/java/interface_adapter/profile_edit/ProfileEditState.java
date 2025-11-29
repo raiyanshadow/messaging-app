@@ -3,17 +3,42 @@ package interface_adapter.profile_edit;
 import entity.User;
 
 public class ProfileEditState {
-    private User user;
+    private Integer userId;
+    private String username;
+    private String password;
+    private String preferredLanguage;
+    private String error;
 
-    public ProfileEditState() {
-        this.user = null;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public String getUsername() {
+        return this.username;
     }
 
-    public User getUser() {
-        return user;
+    public void setPassword(String password) {
+        this.password = password;
     }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPreferredLanguage(String preferredLanguage) {
+        this.preferredLanguage = preferredLanguage;
+    }
+
+    public String getPreferredLanguage() {
+        return this.preferredLanguage;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public String getError() {
+        return this.error;
+    }
+
 }

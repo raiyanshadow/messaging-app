@@ -1,11 +1,8 @@
 package interface_adapter.add_contact;
 
 import interface_adapter.ViewManagerModel;
-import interface_adapter.base_UI.baseUIState;
-import interface_adapter.base_UI.baseUIViewModel;
 import use_case.add_contact.AddContactOutputBoundary;
 import use_case.add_contact.AddContactOutputData;
-import view.BaseUIView;
 
 public class AddContactPresenter implements AddContactOutputBoundary{
     private final AddContactViewModel addContactViewModel;
@@ -25,7 +22,7 @@ public class AddContactPresenter implements AddContactOutputBoundary{
     public void prepareSuccessView(AddContactOutputData response) {
         final AddContactState state = addContactViewModel.getState();
         state.setAddContactError(null);
-        state.setSuccess_message("sending request to " + response.getReceiverUsername() + "...");
+        state.setSuccessMessage("sending request to " + response.getReceiverUsername() + "...");
         addContactViewModel.firePropertyChange();
     }
 
@@ -33,7 +30,7 @@ public class AddContactPresenter implements AddContactOutputBoundary{
     public void prepareFailView(String errorMessage) {
         final AddContactState state = addContactViewModel.getState();
         state.setAddContactError(errorMessage);
-        state.setSuccess_message(null);
+        state.setSuccessMessage(null);
         addContactViewModel.firePropertyChange();
     }
 

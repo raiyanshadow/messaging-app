@@ -1,11 +1,7 @@
 package view;
 
-import entity.Contact;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.add_contact.AddContactState;
 import interface_adapter.base_UI.baseUIController;
-import interface_adapter.base_UI.baseUIState;
-import interface_adapter.base_UI.baseUIViewModel;
 import interface_adapter.friend_request.FriendRequestController;
 import interface_adapter.friend_request.FriendRequestState;
 import interface_adapter.friend_request.FriendRequestViewModel;
@@ -141,17 +137,16 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
 
         acceptButton.addActionListener(evt -> {
 
-            state.setAcceptee(sessionmanager.getMainUser());
+            // state.setAcceptee(sessionmanager.getMainUser());
             try {
-                System.out.println(state.getAcceptee().getUsername());
-                System.out.println(state.getAccepted_username());
+                // System.out.println(state.getAcceptee().getUsername());
+                System.out.println(state.getAcceptedUsername());
 
                 friendRequestController.execute(
-                        state.getAcceptee(),
-                        state.getAccepted_username(),
+                        state.getAcceptedUsername(),
                         true
                 );
-                listModel.removeElement(state.getAccepted_username());
+                listModel.removeElement(state.getAcceptedUsername());
 
             }
             catch (SQLException e) {
@@ -161,17 +156,16 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
 
         declineButton.addActionListener(evt -> {
 
-            state.setAcceptee(sessionmanager.getMainUser());
+            // state.setAcceptee(sessionmanager.getMainUser());
             try {
-                System.out.println(state.getAcceptee().getUsername());
-                System.out.println(state.getAccepted_username());
+                // System.out.println(state.getAcceptee().getUsername());
+                System.out.println(state.getAcceptedUsername());
 
                 friendRequestController.execute(
-                        state.getAcceptee(),
-                        state.getAccepted_username(),
+                        state.getAcceptedUsername(),
                         false
                 );
-                listModel.removeElement(state.getAccepted_username());
+                listModel.removeElement(state.getAcceptedUsername());
 
             }
             catch (SQLException e) {
@@ -182,7 +176,7 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
 
         scrollableList.addListSelectionListener(e -> {
             // System.out.println(scrollableList.getSelectedValue());
-            state.setAccepted_username(scrollableList.getSelectedValue());
+            state.setAcceptedUsername(scrollableList.getSelectedValue());
         });
     }
 
@@ -193,8 +187,8 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
         if (state.getFriendRequestError() != null) {
             JOptionPane.showMessageDialog(this, state.getFriendRequestError());
         }
-        if (state.getSuccess_message() != null) {
-            JOptionPane.showMessageDialog(this, state.getSuccess_message());
+        if (state.getSuccessMessage() != null) {
+            JOptionPane.showMessageDialog(this, state.getSuccessMessage());
         }
     }
 

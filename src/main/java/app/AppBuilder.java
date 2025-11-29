@@ -197,10 +197,10 @@ public class AppBuilder {
                 addChatChannelPresenter, chatChannelDataAccessObject, userDataAccessObject, sessionManager
         );
         AddContactInputBoundary addContactInteractor = new AddContactInteractor(
-                userDataAccessObject, contactDataAccessObject, addContactPresenter
+                userDataAccessObject, contactDataAccessObject, addContactPresenter, sessionManager
         );
         FriendRequestInputBoundary friendRequestInteractor = new FriendRequestInteractor(
-                contactDataAccessObject, friendRequestPresenter
+                contactDataAccessObject, friendRequestPresenter, sessionManager
         );
         LogoutInputBoundary logoutInteractor = new LogoutInteractor(logoutPresenter);
         UpdateChatChannelInputBoundary updateInteractor = new UpdateChatChannelInteractor(chatChannelDataAccessObject,

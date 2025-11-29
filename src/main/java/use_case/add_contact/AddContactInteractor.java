@@ -4,6 +4,7 @@ import data_access.ContactDataAccessObject;
 import data_access.UserDataAccessObject;
 import entity.Contact;
 import entity.User;
+import session.Session;
 
 import java.sql.SQLException;
 
@@ -12,17 +13,19 @@ public class AddContactInteractor implements AddContactInputBoundary {
     private final UserDataAccessObject userDataAccessObject;
     private final ContactDataAccessObject contactDataAccessObject;
     private final AddContactOutputBoundary userPresenter;
+    private final Session sessionManager;
 
 
-    public AddContactInteractor(UserDataAccessObject userDataAccessObject, ContactDataAccessObject contactDataAccessObject, AddContactOutputBoundary addContactOutputBoundary) {
+    public AddContactInteractor(UserDataAccessObject userDataAccessObject, ContactDataAccessObject contactDataAccessObject, AddContactOutputBoundary addContactOutputBoundary, Session sessionManager) {
         this.userDataAccessObject = userDataAccessObject;
         this.contactDataAccessObject = contactDataAccessObject;
         this.userPresenter = addContactOutputBoundary;
+        this.sessionManager = sessionManager;
     }
 
     @Override
     public void execute(AddContactInputData addContactInputData) throws SQLException {
-        final User sender = addContactInputData.getSender();
+        final User sender = this.sessionManager.getMainUser();
         final String receiver_username = addContactInputData.getReceiverUsername();
         final User receiver = userDataAccessObject.getUserFromName(receiver_username);
         boolean in_contacts = false;
@@ -99,7 +102,7 @@ public class AddContactInteractor implements AddContactInputBoundary {
             // System.out.println("sending request...");
             userDataAccessObject.sendRequest(sender, receiver_username);
             // prepare output
-            final AddContactOutputData addContactOutputData = new AddContactOutputData(sender, receiver_username);
+            final AddContactOutputData addContactOutputData = new AddContactOutputData(receiver_username);
             userPresenter.prepareSuccessView(addContactOutputData);
         }
 

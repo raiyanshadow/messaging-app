@@ -5,13 +5,14 @@ import entity.User;
 import entity.UserFactory;
 import use_case.add_contact.AddContactUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
+import use_case.profile_edit.ProfileEditUserDataAccessInterface;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DBUserDataAccessObject implements UserDataAccessObject, AddContactUserDataAccessInterface,
-        LoginUserDataAccessInterface {
+        LoginUserDataAccessInterface, ProfileEditUserDataAccessInterface {
 
     private final Connection connection;
 
@@ -194,21 +195,47 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
         }
         return false;
     }
-    public List<User> searchUsers(String keyword) throws SQLException {
-        List<User> users = new ArrayList<>();
-        String query = "SELECT * FROM \"user\" WHERE username LIKE ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, "%" + keyword + "%");
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                users.add(new User(
-                        rs.getInt("id"),
-                        rs.getString("username"),
-                        rs.getString("password"),
-                        rs.getString("preferred_language")));
-            }
+
+    // Edit profile methods
+    @Override
+    public void updateUsername(int userId, String newUsername) throws SQLException {
+        System.out.println("entered updateUsername");
+        String query = "UPDATE \"user\" SET username = ? WHERE id = ?";
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, newUsername);
+            statement.setInt(2, userId);
+            statement.executeUpdate();
         }
-        return users;
+        catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void updatePassword(int userId, String newPassword) throws SQLException {
+        String query = "UPDATE \"user\" SET password = ? WHERE id = ?";
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, newPassword);
+            statement.setInt(2, userId);
+            statement.executeUpdate();
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void updatePreferredLanguage(int userId, String newPreferredLanguage) throws SQLException {
+        String query = "UPDATE \"user\" SET preferred_language = ? WHERE id = ?";
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, newPreferredLanguage);
+            statement.setInt(2, userId);
+            statement.executeUpdate();
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 

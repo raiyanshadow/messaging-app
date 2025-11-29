@@ -27,7 +27,6 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private UpdateChatChannelController updateChatChannelController = null;
     private SendMessageController sendMessageController = null;
     private MessageViewModel messageViewModel;
-    private baseUIViewModel baseUIViewModel;
     private baseUIController baseUIController = null;
 
     // GUI components

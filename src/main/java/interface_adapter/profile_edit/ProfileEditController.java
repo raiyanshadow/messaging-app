@@ -3,6 +3,8 @@ package interface_adapter.profile_edit;
 import use_case.profile_edit.ProfileEditInputBoundary;
 import use_case.profile_edit.ProfileEditInputData;
 
+import java.sql.SQLException;
+
 public class ProfileEditController {
     private final ProfileEditInputBoundary profileEditInteractor;
 
@@ -10,7 +12,7 @@ public class ProfileEditController {
         this.profileEditInteractor = profileEditInteractor;
     }
 
-    public void editProfile(int userId, String username, String password, String preferredLanguage) {
+    public void editProfile(int userId, String username, String password, String preferredLanguage) throws SQLException {
         ProfileEditInputData inputData = new ProfileEditInputData(userId, username, password, preferredLanguage);
         profileEditInteractor.execute(inputData);
     }

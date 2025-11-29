@@ -71,4 +71,9 @@ public class BaseUIInteractor implements BaseUIInputBoundary{
         sessionManager.getMainUser().setContacts(contacts);
         presenter.DisplayAddContact();
     }
+
+    @Override
+    public void switchToProfileEdit(BaseUIInputData request) throws SQLException {
+        presenter.DisplayProfileEditView();
+    }
 }

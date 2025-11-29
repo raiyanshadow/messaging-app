@@ -7,6 +7,7 @@ import interface_adapter.add_contact.AddContactState;
 import interface_adapter.add_contact.AddContactViewModel;
 import interface_adapter.friend_request.FriendRequestState;
 import interface_adapter.friend_request.FriendRequestViewModel;
+import interface_adapter.profile_edit.ProfileEditViewModel;
 import use_case.baseUI.BaseUIOutputBoundary;
 import use_case.baseUI.BaseUIOutputData;
 import view.AddContactView;
@@ -20,14 +21,17 @@ public class baseUIPresenter implements BaseUIOutputBoundary {
     private final AddChatChannelViewModel addChatChannelViewModel;
     private final FriendRequestViewModel friendRequestViewModel;
     private final AddContactViewModel addContactViewModel;
+    private final ProfileEditViewModel profileEditViewModel;
 
     public baseUIPresenter(baseUIViewModel viewmodel, ViewManagerModel viewManagerModel,
-                           AddChatChannelViewModel addChatChannelViewModel, FriendRequestViewModel friendRequestViewModel, AddContactViewModel addContactViewModel) {
+                           AddChatChannelViewModel addChatChannelViewModel, FriendRequestViewModel friendRequestViewModel, AddContactViewModel addContactViewModel,
+                           ProfileEditViewModel profileEditViewModel) {
         this.viewModelbase = viewmodel;
         this.viewManagerModel = viewManagerModel;
         this.addChatChannelViewModel = addChatChannelViewModel;
         this.friendRequestViewModel = friendRequestViewModel;
         this.addContactViewModel = addContactViewModel;
+        this.profileEditViewModel = profileEditViewModel;
     }
 
     @Override
@@ -64,6 +68,13 @@ public class baseUIPresenter implements BaseUIOutputBoundary {
     public void DisplayAddContact() {
         addContactViewModel.firePropertyChange();
         viewManagerModel.setState(addContactViewModel.getViewName());
+        viewManagerModel.firePropertyChange();
+    }
+
+    @Override
+    public void DisplayProfileEditView() {
+        profileEditViewModel.firePropertyChange();
+        viewManagerModel.setState(profileEditViewModel.getViewName());
         viewManagerModel.firePropertyChange();
     }
 

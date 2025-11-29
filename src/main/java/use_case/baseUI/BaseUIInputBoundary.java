@@ -7,4 +7,5 @@ public interface BaseUIInputBoundary {
     void displayAddChat(BaseUIInputData request);
     void switchToFriendRequestView(BaseUIInputData request) throws SQLException;
     void switchToAddContact(BaseUIInputData request) throws SQLException;
+    void switchToProfileEdit(BaseUIInputData request) throws SQLException;
 }

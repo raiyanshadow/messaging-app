@@ -5,6 +5,7 @@ import entity.User;
 import use_case.friend_request.FriendRequestUserDataAccessInterface;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,6 +19,35 @@ public class DBContactDataAccessObject implements ContactDataAccessObject, Frien
     public DBContactDataAccessObject(Connection conn) {
         this.conn = conn;
         this.userDAO = new DBUserDataAccessObject(this.conn);
+    }
+
+    @Override
+    public List<Contact> getContacts(User user) {
+        List<Contact> contacts = new ArrayList<>();
+        String query = "SELECT * FROM \"contact\"";
+
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                boolean isFriendRequest = rs.getBoolean("is_friend_request");
+
+                // only include accepted contacts
+                if (!isFriendRequest) {
+                    if (rs.getInt("user_id") == user.getUserID()) {
+                        int contactId = rs.getInt("contact_id");
+                        contacts.add(new Contact(user, userDAO.getUserFromID(contactId)));
+                    } else if (rs.getInt("contact_id") == user.getUserID()) {
+                        int contactId = rs.getInt("user_id");
+                        contacts.add(new Contact(user, userDAO.getUserFromID(contactId)));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return contacts;
     }
 
     @Override

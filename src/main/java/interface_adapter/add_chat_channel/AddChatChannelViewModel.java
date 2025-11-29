@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddChatChannelViewModel extends ViewModel<AddChatChannelState> {
+    private AddChatChannelState state = new AddChatChannelState();
     private String message;
     private String error;
     private Boolean HasError;
@@ -14,6 +15,15 @@ public class AddChatChannelViewModel extends ViewModel<AddChatChannelState> {
 
     public AddChatChannelViewModel(String viewName) {
         super(viewName);
+    }
+
+    public AddChatChannelState getState() {
+        return state;
+    }
+
+    public void setState(AddChatChannelState state) {
+        this.state = state;
+        firePropertyChange();
     }
 
     public boolean getHasError() {

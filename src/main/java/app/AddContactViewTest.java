@@ -1,5 +1,6 @@
 package app;
 
+import SendBirdAPI.ChannelCreator;
 import SendBirdAPI.MessageSender;
 import data_access.*;
 import entity.User;
@@ -85,6 +86,7 @@ public class AddContactViewTest {
                 "https://api-" + dotenv.get("MSG_APP_ID") + ".sendbird.com"
         );
         MessageSender messageSender = new MessageSender(defaultClient);
+        ChannelCreator channelCreator = new ChannelCreator(defaultClient);
 
         baseUIViewModel baseUIViewModel = new baseUIViewModel("baseUIView");
         ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("chatChannelViewModel");
@@ -102,8 +104,10 @@ public class AddContactViewTest {
                 sessionManager);
         LogoutOutputBoundary logoutPresenter = new LogoutPresenter(logoutViewModel, viewManagerModel, loginViewModel, sessionManager, appBuilder);
 
-        AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager);
-        BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager);
+        AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager,
+                channelCreator);
+        BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager,
+                dummyContactDAO);
         SendMessageInteractor sendMessageInteractor = new SendMessageInteractor(sendMessagePresenter, dummyUserDAO,
                 messageDataAccessObject, sessionManager, messageSender);
         UpdateChatChannelInteractor updateChatChannelInteractor = new UpdateChatChannelInteractor(
@@ -122,7 +126,8 @@ public class AddContactViewTest {
         BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
                 chatChannelViewModel, viewManagerModel, sessionManager, viewManager, sendMessageController,
                 updateChatChannelController, logoutController);
-        CreateChatView addChatChannelView = new CreateChatView(sessionManager, addChatChannelController, baseUIViewModel, baseUIController);
+        CreateChatView addChatChannelView = new CreateChatView(sessionManager, addChatChannelController, baseUIViewModel, baseUIController,
+                addChatChannelViewModel);
         AddContactView addContactview = new AddContactView(addContactViewModel, viewManagerModel, sessionManager, baseUIController);
 
         AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, presenter);

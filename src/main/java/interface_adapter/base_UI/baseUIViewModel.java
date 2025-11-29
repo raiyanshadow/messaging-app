@@ -1,8 +1,6 @@
 package interface_adapter.base_UI;
 
 import interface_adapter.ViewModel;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 
 public class baseUIViewModel extends ViewModel<baseUIState> {
 
@@ -10,5 +8,9 @@ public class baseUIViewModel extends ViewModel<baseUIState> {
         super(viewName);
         setState(new baseUIState());
     }
-}
 
+    @Override
+    public void setState(baseUIState state) {
+        super.setState(state);
+    }
+}

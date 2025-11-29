@@ -156,7 +156,8 @@ public class ChatChannelViewTest {
         // 4. Interactor
         UpdateChatChannelInputBoundary interactor = new UpdateChatChannelInteractor(chatDAO, presenter);
         SendMessageInputBoundary messageInteractor = new SendMessageInteractor(presenter2, userDAO, messageDAO, sessionManager, messageSender);
-        BaseUIInteractor baseUIInteractor = new BaseUIInteractor(presenter3, chatDAO, userDAO, sessionManager);
+        BaseUIInteractor baseUIInteractor = new BaseUIInteractor(presenter3, chatDAO, userDAO, sessionManager,
+                appBuilder.contactDataAccessObject);
         UpdateChatChannelInteractor updateChatChannelInteractor = new UpdateChatChannelInteractor(
                 chatDAO, presenter);
         LogoutInteractor logoutInteractor = new LogoutInteractor(logoutPresenter);

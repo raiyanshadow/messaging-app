@@ -5,15 +5,15 @@ import java.sql.Timestamp;
 public class TextMessage extends Message<String> {
     private String content;
 
-    public TextMessage(Long messageID, Long parentMessageId, String channelURL,
+    public TextMessage(Long messageID, Long parentMessageId, String channelUrl,
                        Integer senderId, Integer receiverId, String status, Timestamp timestamp, String content) {
-        super(messageID, parentMessageId, channelURL, senderId, receiverId, status, timestamp);
+        super(messageID, parentMessageId, channelUrl, senderId, receiverId, status, timestamp);
         this.content = content;
     }
 
-    public TextMessage(Long messageID, String channelURL,
+    public TextMessage(Long messageID, String channelUrl,
                        Integer senderId, Integer receiverId, String status, Timestamp timestamp, String content) {
-        super(messageID, channelURL, senderId, receiverId, status, timestamp);
+        super(messageID, channelUrl, senderId, receiverId, status, timestamp);
         this.content = content;
     }
 

@@ -1,6 +1,5 @@
 package view;
 
-import entity.Contact;
 import entity.DirectChatChannel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.base_UI.baseUIController;
@@ -20,7 +19,6 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BaseUIView extends JPanel implements PropertyChangeListener {
@@ -206,12 +204,12 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
             updateChatChannelViewModel.firePropertyChange();
             ChatChannelView newChatChannelView = new ChatChannelView(updateChatChannelViewModel,
                     senderID, receiverID, senderUsername,
-                    receiverUsername, chat.getChatURL(), updateChatChannelController, sendMessageController);
+                    receiverUsername, chat.getChatUrl(), updateChatChannelController, sendMessageController);
             newChatChannelView.setBaseUIController(controller);
             SwingWorker<Void, Void> worker = new SwingWorker<>() {
                 @Override
                 protected Void doInBackground() throws Exception {
-                    updateChatChannelController.execute(chat.getChatURL());
+                    updateChatChannelController.execute(chat.getChatUrl());
                     return null;
                 }
 

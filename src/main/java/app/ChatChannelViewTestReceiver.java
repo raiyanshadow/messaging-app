@@ -33,12 +33,10 @@ import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.sendbird.client.ApiClient;
 import org.sendbird.client.Configuration;
-import session.Session;
 import session.SessionManager;
 import use_case.baseUI.BaseUIInteractor;
 import use_case.logout.LogoutInputBoundary;
 import use_case.logout.LogoutInteractor;
-import use_case.logout.LogoutOutputBoundary;
 import use_case.send_message.SendMessageInputBoundary;
 import use_case.send_message.SendMessageInteractor;
 import use_case.update_chat_channel.UpdateChatChannelInputBoundary;
@@ -138,7 +136,7 @@ public class ChatChannelViewTestReceiver {
         // Verify
         System.out.println("Fetched Chat Channel: " + chat.getChatName());
         System.out.println("User1: " + chat.getUser1().getUsername() + ", User2: " + chat.getUser2().getUsername());
-        System.out.println("url: " + chat.getChatURL());
+        System.out.println("url: " + chat.getChatUrl());
 
 
         // 1. ViewModel

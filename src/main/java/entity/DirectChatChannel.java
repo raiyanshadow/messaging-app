@@ -3,20 +3,19 @@ package entity;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class DirectChatChannel {
     private String chatName;
     private User sender;
     private User receiver;
-    private String chatURL;
+    private String chatUrl;
     private List<Message> messages;
 
-    public DirectChatChannel(String chatName, User sender, User receiver, String chatURL, List<Message> messages) {
+    public DirectChatChannel(String chatName, User sender, User receiver, String chatUrl, List<Message> messages) {
         this.chatName = chatName;
         this.sender = sender;
         this.receiver = receiver;
         this.messages = messages;
-        this.chatURL = chatURL;
+        this.chatUrl = chatUrl;
     }
 
     public String getChatName() {
@@ -39,28 +38,28 @@ public class DirectChatChannel {
         return receiver;
     }
 
-    public void setUser2(User receiver) {
-        this.receiver = receiver;
+    public void setUser2(User recieve) {
+        this.receiver = recieve;
     }
 
-    public String getChatURL() {
-        return chatURL;
+    public String getChatUrl() {
+        return chatUrl;
     }
 
-    public void setChatURL(String chatURL) {
-        this.chatURL = chatURL;
+    public void setChatUrl(String chatUrl) {
+        this.chatUrl = chatUrl;
     }
 
     public List<Message> getMessages() {
         return messages;
     }
 
-    public List<Long> getMessageIDs() {
-        List<Long> messageIDs = new ArrayList<>();
-        for  (Message message : messages) {
-            messageIDs.add(message.getMessageID());
+    public List<Long> getMessageIds() {
+        final List<Long> messageIds = new ArrayList<>();
+        for (Message message : messages) {
+            messageIds.add(message.getMessageID());
         }
-        return messageIDs;
+        return messageIds;
     }
 
     public void setMessages(List<Message> messages) {

@@ -37,11 +37,8 @@ import use_case.add_contact.*;
 import use_case.baseUI.BaseUIInteractor;
 import use_case.logout.LogoutInteractor;
 import use_case.logout.LogoutOutputBoundary;
-import use_case.send_message.SendMessageInputBoundary;
 import use_case.send_message.SendMessageInteractor;
 import use_case.send_message.SendMessageOutputBoundary;
-import use_case.signup.SignupOutputBoundary;
-import use_case.signup.SignupOutputData;
 import use_case.update_chat_channel.UpdateChatChannelInteractor;
 import use_case.update_chat_channel.UpdateChatChannelOutputBoundary;
 import view.AddContactView;
@@ -50,9 +47,7 @@ import view.CreateChatView;
 import view.ViewManager;
 
 import javax.swing.*;
-import java.awt.*;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class AddContactViewTest {
@@ -65,7 +60,7 @@ public class AddContactViewTest {
                 .load();
 
         // DAO
-        Connection conn = DBConnectionFactory.createConnection();
+        Connection conn = DbConnectionFactory.createConnection();
         DBUserDataAccessObject dummyUserDAO = new DBUserDataAccessObject(conn);
         DBContactDataAccessObject dummyContactDAO = new DBContactDataAccessObject(conn);
         DBChatChannelDataAccessObject dbChatChannelDataAccessObject = new DBChatChannelDataAccessObject(conn);

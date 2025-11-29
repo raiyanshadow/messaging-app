@@ -1,9 +1,8 @@
 package app;
 
 import SendBirdAPI.SendbirdUserCreator;
-import data_access.DBConnectionFactory;
+import data_access.DbConnectionFactory;
 import data_access.DBUserDataAccessObject;
-import entity.User;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.signup.SignupViewModel;
 import interface_adapter.signup.SignupController;
@@ -41,7 +40,7 @@ public class SignupViewTest {
         JPanel views = new JPanel(cardLayout);
 
         // Database connection
-        Connection conn = DBConnectionFactory.createConnection();
+        Connection conn = DbConnectionFactory.createConnection();
         DBUserDataAccessObject userDAO = new DBUserDataAccessObject(conn);
 
         // Sendbird API creator

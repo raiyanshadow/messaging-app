@@ -25,9 +25,9 @@ public class UpdateChatChannelPresenter implements UpdateChatChannelOutputBounda
         List<MessageViewModel> messageViewModels = new ArrayList<>();
         for (Message message : outputData.getMessages()) {
             MessageViewModel messageViewModel = new MessageViewModel();
-            messageViewModel.getState().setChannelURL(message.getChannelURL());
+            messageViewModel.getState().setChannelURL(message.getChannelUrl());
             messageViewModel.getState().setContent((String) message.getContent()); // TODO: Might change if message type changes
-            messageViewModel.getState().setChannelURL(message.getChannelURL());
+            messageViewModel.getState().setChannelURL(message.getChannelUrl());
             messageViewModel.getState().setSenderID(message.getSenderId());
             messageViewModel.getState().setReceiverID(message.getReceiverId());
             messageViewModel.getState().setTimestamp(message.getTimestamp());

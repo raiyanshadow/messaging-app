@@ -24,7 +24,7 @@ public class UpdateChatChannelInteractor implements UpdateChatChannelInputBounda
                 updateChatChannelPresenter.prepareFailView("Chat not found");
             }
             else {
-                final UpdateChatChannelOutputData outputData = new UpdateChatChannelOutputData(chat.getChatName(), chat.getChatURL(), chat.getUser1(), chat.getUser2(), chat.getMessages());
+                final UpdateChatChannelOutputData outputData = new UpdateChatChannelOutputData(chat.getChatName(), chat.getChatUrl(), chat.getUser1(), chat.getUser2(), chat.getMessages());
                 updateChatChannelPresenter.prepareSuccessView(outputData);
             }
         }

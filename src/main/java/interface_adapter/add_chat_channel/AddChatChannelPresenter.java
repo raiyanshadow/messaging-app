@@ -1,9 +1,12 @@
 package interface_adapter.add_chat_channel;
 
 import interface_adapter.ViewManagerModel;
+import interface_adapter.base_UI.baseUIController;
 import interface_adapter.chat_channel.ChatChannelViewModel;
 import use_case.add_chat_channel.AddChatChannelOutputBoundary;
 import use_case.add_chat_channel.AddChatChannelOutputData;
+
+import java.sql.SQLException;
 
 public class AddChatChannelPresenter implements AddChatChannelOutputBoundary {
     private final ChatChannelViewModel  viewModel;
@@ -18,7 +21,7 @@ public class AddChatChannelPresenter implements AddChatChannelOutputBoundary {
     }
 
     @Override
-    public void PresentChat(AddChatChannelOutputData response) {
+    public void PresentChat(AddChatChannelOutputData response) throws SQLException {
         if (!response.isNewChat()) {
             // Update the AddChatChannelViewModel with an error message
             AddChatChannelState state = viewModel2.getState();
@@ -26,14 +29,10 @@ public class AddChatChannelPresenter implements AddChatChannelOutputBoundary {
             viewModel2.firePropertyChange();
             return;
         } else {
-            final interface_adapter.chat_channel.ChatChannelState chatChannelState = viewModel.getState();
-            chatChannelState.setChatName(response.getChatName());
-            this.viewModel.firePropertyChange();
 
-            this.viewModel2.setState(new AddChatChannelState());
-
-            this.viewManagerModel.setState(viewModel.getViewName());
-            this.viewManagerModel.firePropertyChange();
+            AddChatChannelState successState = new AddChatChannelState();
+            viewModel2.setState(successState);
+            viewModel2.firePropertyChange();
         }
     }
 }

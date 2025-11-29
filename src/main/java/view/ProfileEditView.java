@@ -131,3 +131,4 @@ public class ProfileEditView extends JPanel implements PropertyChangeListener {
         resultsPanel.repaint();
     }
 }
+

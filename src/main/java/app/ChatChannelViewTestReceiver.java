@@ -28,6 +28,7 @@ import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.logout.LogoutViewModel;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
 import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
+import interface_adapter.update_chat_channel.UpdateChatChannelState;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.sendbird.client.ApiClient;
@@ -134,13 +135,11 @@ public class ChatChannelViewTestReceiver {
         DBChatChannelDataAccessObject chatDAO = new DBChatChannelDataAccessObject(connection);
         DirectChatChannel chat = chatDAO.getDirectChatChannelByURL(channelUrl);
 
-        // Verify
         System.out.println("Fetched Chat Channel: " + chat.getChatName());
         System.out.println("User1: " + chat.getUser1().getUsername() + ", User2: " + chat.getUser2().getUsername());
         System.out.println("url: " + chat.getChatURL());
 
 
-        // 1. ViewModel
         UpdateChatChannelViewModel vm = new UpdateChatChannelViewModel();
         MessageViewModel messageViewModel = new MessageViewModel();
         baseUIViewModel baseUIViewModel = new baseUIViewModel("baseUIView"); // TODO: should this have a string as an argument?
@@ -153,7 +152,6 @@ public class ChatChannelViewTestReceiver {
         LoginViewModel loginViewModel = new LoginViewModel();
         AppBuilder appBuilder = new AppBuilder();
 
-        // 2. Presenter
         SessionManager sessionManager = new SessionManager();
         sessionManager.setMainUser(user1);
         sessionManager.setLoggedin(true);
@@ -162,7 +160,6 @@ public class ChatChannelViewTestReceiver {
         baseUIPresenter presenter3 = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel);
         LogoutPresenter presenter4 = new LogoutPresenter(logoutViewModel, viewManagerModel, loginViewModel, sessionManager, appBuilder);
 
-        // 2. DAOs and other variables
 //        DBChatChannelDataAccessObject chatDAO = new DBChatChannelDataAccessObject(connection);
         UserDataAccessObject userDAO = new DBUserDataAccessObject(connection);
         DBMessageDataAccessObject messageDAO = new DBMessageDataAccessObject(connection);
@@ -171,7 +168,6 @@ public class ChatChannelViewTestReceiver {
         );
         MessageSender messageSender = new MessageSender(defaultClient);
 
-        // 4. Interactor
         UpdateChatChannelInputBoundary interactor = new UpdateChatChannelInteractor(chatDAO, presenter);
         SendMessageInputBoundary messageInteractor = new SendMessageInteractor(presenter2, userDAO, messageDAO, sessionManager, messageSender);
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(presenter3, chatDAO, userDAO, sessionManager,
@@ -179,18 +175,21 @@ public class ChatChannelViewTestReceiver {
         LogoutInputBoundary logoutInteractor = new LogoutInteractor(presenter4);
 
 
-        // 5. Controller
         UpdateChatChannelController controller = new UpdateChatChannelController(interactor);
         SendMessageController sendMessageController = new SendMessageController(messageInteractor);
         baseUIController baseUIController = new baseUIController(baseUIInteractor); // TODO: Fix naming
         LogoutController logoutController = new LogoutController(logoutInteractor);
 
-        // 6. View
-        ChatChannelView view = new ChatChannelView(vm, user1.getUserID(), user2.getUserID(),
-                user1.getUsername(), user2.getUsername(), channelUrl, controller, sendMessageController);
-        UpdateChatChannelViewModel updateChatChannelViewModel = new  UpdateChatChannelViewModel();
+        UpdateChatChannelState updateChatChannelState = vm.getState();
+        updateChatChannelState.setUser1ID(2);
+        updateChatChannelState.setUser2ID(1);
+        updateChatChannelState.setChatURL(channelUrl);
+        updateChatChannelState.setUser1Name("Bob");
+        updateChatChannelState.setUser2Name("Alice");
+        vm.setState(updateChatChannelState);
+        ChatChannelView view = new ChatChannelView(vm, controller, sendMessageController);
         ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("Chat");
-        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
+        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, vm,
                 chatChannelViewModel, viewManagerModel, (SessionManager) sessionManager, viewManager,
                 sendMessageController, controller, logoutController);
         view.setUpdateChatChannelController(controller);
@@ -201,12 +200,9 @@ public class ChatChannelViewTestReceiver {
         viewManager.addView(view, "update chat channel");
         viewManager.addView(baseUIView, "baseUIView");
 
-        // 7. Execute
         controller.execute(channelUrl);
 
-        // 8. Create Window
         JFrame frame = new JFrame("TEST CHAT VIEW");
-//        frame.setContentPane(view);
         frame.setContentPane(viewManager);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();

@@ -1,5 +1,6 @@
 package use_case.add_chat_channel;
 
+import SendBirdAPI.ChannelCreator;
 import data_access.ChatChannelDataAccessObject;
 import data_access.ContactDataAccessObject;
 import data_access.UserDataAccessObject;
@@ -22,15 +23,21 @@ public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
     ChatChannelDataAccessObject chatChannelDataAccess;
     UserDataAccessObject userDataAccess;
     Session sessionManager;
+    ChannelCreator channelCreator;
+    private Dotenv dotenv = Dotenv.configure()
+            .directory("./assets")
+            .filename("env")
+            .load();
 
     public AddChatChannelInteractor(AddChatChannelOutputBoundary presenter,
-                                    ChatChannelDataAccessObject chatChannelAccessObject,
+                                    ChatChannelDataAccessObject chatChannelDataAccess,
                                     UserDataAccessObject userDataAccess,
-                                    Session sessionManager) {
+                                    Session sessionManager, ChannelCreator channelCreator) {
         this.presenter = presenter;
         this.chatChannelDataAccess = chatChannelDataAccess;
         this.userDataAccess = userDataAccess;
         this.sessionManager = sessionManager;
+        this.channelCreator = channelCreator;
     }
 
     // TODO: Add chat with Sendbird API as well
@@ -40,10 +47,16 @@ public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
         final User toAdd = userDataAccess.getUserFromID(request.getReceiverID());
         final List<Integer> contactIDs = currentUser.getContactIDs();
 
+        System.out.println("Test");
+
+        String chatUrl = channelCreator.SendbirdChannelCreator(dotenv.get("MSG_TOKEN"), request.getChatName(),
+                request.getSenderID(), request.getReceiverID());
+        System.out.println("chatUrl: " + chatUrl);
+
         //create response model for any new info needed for view
         AddChatChannelOutputData response = new AddChatChannelOutputData(
                 request.getChatName(),
-                "",
+                chatUrl,
                 request.getSenderID(),
                 request.getReceiverID(),
                 contactIDs);
@@ -63,7 +76,7 @@ public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
         if (newChat) {
             //create direct channel entity
             DirectChatChannel newChannel = new DirectChatChannel(request.getChatName(),
-                    currentUser, toAdd, "", new ArrayList<>());
+                    currentUser, toAdd, chatUrl, new ArrayList<>());
 
             //add channel entity to db
             chatChannelDataAccess.addChat(newChannel);

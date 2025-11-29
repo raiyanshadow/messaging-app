@@ -105,7 +105,7 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
             // heading back to baseUI view
             System.out.println("Back button pressed");
             try {
-                baseUIController.displayUI(); // triggers presenter → viewmanager switching
+                baseUIController.displayUI();
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }

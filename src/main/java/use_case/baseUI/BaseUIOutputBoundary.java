@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface BaseUIOutputBoundary {
     void DisplayUI(BaseUIOutputData response);
-    void DisplayAddChat(BaseUIOutputData response);
-    void DisplayFriends(BaseUIOutputData response);
-    void DisplayAddContact(BaseUIOutputData response);
+    void DisplayAddChat();
+    void DisplayFriends();
+    void DisplayAddContact();
 }

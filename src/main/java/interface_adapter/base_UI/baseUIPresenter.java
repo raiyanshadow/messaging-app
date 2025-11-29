@@ -3,11 +3,14 @@ package interface_adapter.base_UI;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.add_chat_channel.AddChatChannelState;
 import interface_adapter.add_chat_channel.AddChatChannelViewModel;
+import interface_adapter.add_contact.AddContactState;
 import interface_adapter.add_contact.AddContactViewModel;
+import interface_adapter.friend_request.FriendRequestState;
 import interface_adapter.friend_request.FriendRequestViewModel;
 import use_case.baseUI.BaseUIOutputBoundary;
 import use_case.baseUI.BaseUIOutputData;
 import view.AddContactView;
+import view.FriendRequestView;
 
 import java.util.Collections;
 
@@ -37,29 +40,28 @@ public class baseUIPresenter implements BaseUIOutputBoundary {
         } else {
             baseUIState.setChatnames(Collections.emptyList());
         }
+        baseUIState.setFriendRequests(response.getFriendRequests());
         this.viewModelbase.firePropertyChange();
         this.viewManagerModel.setState(viewModelbase.getViewName());
         this.viewManagerModel.firePropertyChange();
     }
 
     @Override
-    public void DisplayAddChat(BaseUIOutputData response) {
-
-        AddChatChannelState state = addChatChannelViewModel.getState();
+    public void DisplayAddChat() {
         addChatChannelViewModel.firePropertyChange();
         viewManagerModel.setState(addChatChannelViewModel.getViewName());
         viewManagerModel.firePropertyChange();
     }
 
     @Override
-    public void DisplayFriends(BaseUIOutputData response) {
+    public void DisplayFriends() {
         friendRequestViewModel.firePropertyChange();
         viewManagerModel.setState(friendRequestViewModel.getViewName());
         viewManagerModel.firePropertyChange();
     }
 
     @Override
-    public void DisplayAddContact(BaseUIOutputData response) {
+    public void DisplayAddContact() {
         addContactViewModel.firePropertyChange();
         viewManagerModel.setState(addContactViewModel.getViewName());
         viewManagerModel.firePropertyChange();

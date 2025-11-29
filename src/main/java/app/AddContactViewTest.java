@@ -24,6 +24,7 @@ import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.logout.LogoutViewModel;
+import interface_adapter.profile_edit.ProfileEditViewModel;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
 import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
@@ -88,12 +89,13 @@ public class AddContactViewTest {
         AddChatChannelViewModel addChatChannelViewModel = new AddChatChannelViewModel("addChatChannelViewModel");
         MessageViewModel messageViewModel = new MessageViewModel();
         UpdateChatChannelViewModel updateChatChannelViewModel = new UpdateChatChannelViewModel();
+        ProfileEditViewModel profileEditViewModel = new ProfileEditViewModel();
         AddChatChannelPresenter addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel, addChatChannelViewModel, viewManagerModel);
         FriendRequestViewModel friendRequestViewModel = new FriendRequestViewModel();
         LogoutViewModel logoutViewModel = new LogoutViewModel();
         LoginViewModel loginViewModel = new LoginViewModel();
         AppBuilder appBuilder = new AppBuilder();
-        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel);
+        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel, profileEditViewModel);
         SendMessageOutputBoundary sendMessagePresenter = new ChatChannelPresenter(messageViewModel);
         UpdateChatChannelOutputBoundary updateChatChannelPresenter = new UpdateChatChannelPresenter(updateChatChannelViewModel,
                 sessionManager);

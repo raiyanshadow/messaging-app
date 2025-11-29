@@ -24,6 +24,8 @@ import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.logout.LogoutViewModel;
+import interface_adapter.profile_edit.ProfileEditPresenter;
+import interface_adapter.profile_edit.ProfileEditViewModel;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
 import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
@@ -64,6 +66,7 @@ public class BaseUITest {
         FriendRequestViewModel friendRequestViewModel = new FriendRequestViewModel();
         LogoutViewModel logoutViewModel = new LogoutViewModel();
         LoginViewModel loginViewModel = new LoginViewModel();
+        ProfileEditViewModel profileEditViewModel = new ProfileEditViewModel();
         AppBuilder appBuilder = new AppBuilder();
         MessageViewModel messageViewModel = new MessageViewModel();
         final Dotenv dotenv = Dotenv.configure()
@@ -92,8 +95,9 @@ public class BaseUITest {
                 viewManagerModel, baseUIViewModel);
         AddChatChannelPresenter addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel,
                 addChatChannelViewModel, viewManagerModel);
+        ProfileEditPresenter profileEditPresenter = new ProfileEditPresenter(profileEditViewModel);
 
-        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel);
+        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel, profileEditViewModel);
         SendMessageOutputBoundary sendMessagePresenter = new ChatChannelPresenter(messageViewModel);
         UpdateChatChannelOutputBoundary updateChatChannelPresenter = new UpdateChatChannelPresenter(updateChatChannelViewModel,
                 sessionManager);

@@ -26,6 +26,7 @@ import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.logout.LogoutViewModel;
+import interface_adapter.profile_edit.ProfileEditViewModel;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
 import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
@@ -145,6 +146,7 @@ public class ChatChannelViewTestReceiver {
         ViewManagerModel viewManagerModel = new ViewManagerModel();
         FriendRequestViewModel friendRequestViewModel = new FriendRequestViewModel();
         AddChatChannelViewModel addChatChannelViewModel = new AddChatChannelViewModel("Add Chat Channel"); // TODO: Should this have a string as an argument?
+        ProfileEditViewModel profileEditViewModel = new ProfileEditViewModel();
         AddContactViewModel addContactViewModel = new AddContactViewModel();
         ViewManager viewManager = new ViewManager(viewManagerModel);
         LogoutViewModel logoutViewModel = new LogoutViewModel();
@@ -157,7 +159,7 @@ public class ChatChannelViewTestReceiver {
         sessionManager.setLoggedin(true);
         UpdateChatChannelPresenter presenter = new UpdateChatChannelPresenter(vm, sessionManager);
         ChatChannelPresenter presenter2 = new ChatChannelPresenter(messageViewModel);
-        baseUIPresenter presenter3 = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel);
+        baseUIPresenter presenter3 = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel, profileEditViewModel);
         LogoutPresenter presenter4 = new LogoutPresenter(logoutViewModel, viewManagerModel, loginViewModel, sessionManager, appBuilder);
 
         // 2. DAOs and other variables

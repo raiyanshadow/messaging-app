@@ -9,4 +9,5 @@ public interface BaseUIOutputBoundary {
     void DisplayAddChat();
     void DisplayFriends();
     void DisplayAddContact();
+    void DisplayProfileEditView();
 }

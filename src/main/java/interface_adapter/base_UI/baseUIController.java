@@ -33,4 +33,9 @@ public class baseUIController {
         BaseUIInteractor.switchToAddContact(request);
     }
 
+    public void switchToProfileEdit() throws SQLException {
+        BaseUIInputData request = new BaseUIInputData();
+        BaseUIInteractor.switchToProfileEdit(request);
+    }
+
 }

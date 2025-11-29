@@ -12,10 +12,10 @@ import java.util.Arrays;
 public class ChannelCreator {
 
     private GroupChannelApi groupChannelApi;
-    public String SendbirdChannelCreator(String apiToken, String channelName, User user1, User user2) {
+    public String SendbirdChannelCreator(String apiToken, String channelName, Integer senderId, Integer receiverId) {
         CreateAGroupChannelRequest createChannelRequest = new CreateAGroupChannelRequest(); // The exact class name might be different
         createChannelRequest.setName(channelName);
-        createChannelRequest.setUserIds(Arrays.asList(Integer.toString(user1.getUserID()), Integer.toString(user2.getUserID())));
+        createChannelRequest.setUserIds(Arrays.asList(Integer.toString(senderId), Integer.toString(receiverId)));
 
         try {
             SendbirdGroupChannelDetail channel = groupChannelApi.createAGroupChannel().apiToken(apiToken)
@@ -27,9 +27,7 @@ public class ChannelCreator {
         }
     }
 
-    public ChannelCreator(String appId) {
-        ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("https://api-" + appId + ".sendbird.com");
+    public ChannelCreator(ApiClient defaultClient) {
         this.groupChannelApi = new GroupChannelApi(defaultClient);
     }
 }

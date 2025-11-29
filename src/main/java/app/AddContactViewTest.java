@@ -1,5 +1,6 @@
 package app;
 
+import SendBirdAPI.ChannelCreator;
 import SendBirdAPI.MessageSender;
 import data_access.*;
 import entity.User;
@@ -85,6 +86,7 @@ public class AddContactViewTest {
                 "https://api-" + dotenv.get("MSG_APP_ID") + ".sendbird.com"
         );
         MessageSender messageSender = new MessageSender(defaultClient);
+        ChannelCreator channelCreator = new ChannelCreator(defaultClient);
 
         baseUIViewModel baseUIViewModel = new baseUIViewModel("baseUIView");
         ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("chatChannelViewModel");
@@ -102,7 +104,8 @@ public class AddContactViewTest {
                 sessionManager);
         LogoutOutputBoundary logoutPresenter = new LogoutPresenter(logoutViewModel, viewManagerModel, loginViewModel, sessionManager, appBuilder);
 
-        AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager);
+        AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager,
+                channelCreator);
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager);
         SendMessageInteractor sendMessageInteractor = new SendMessageInteractor(sendMessagePresenter, dummyUserDAO,
                 messageDataAccessObject, sessionManager, messageSender);

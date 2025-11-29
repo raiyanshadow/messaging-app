@@ -32,6 +32,8 @@ public class CreateChatView extends JPanel implements PropertyChangeListener {
                           baseUIViewModel baseUIViewModel,
                           baseUIController baseUIController) {
 
+        System.out.println("Hello");
+
         this.sessionManager = sessionManager;
         this.addChatChannelController = addChatChannelController;
         this.baseUIViewModel = baseUIViewModel;
@@ -85,13 +87,31 @@ public class CreateChatView extends JPanel implements PropertyChangeListener {
         JTextField chatNameField = new JTextField();
         bottomTextPanel.add(chatNameLabel, BorderLayout.NORTH);
         bottomTextPanel.add(chatNameField, BorderLayout.CENTER);
-        add(bottomTextPanel, BorderLayout.SOUTH);
+
+        chatNameField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            private void update() {
+                createChatButton.setEnabled(
+                        contactList.getSelectedIndex() != -1 &&
+                                !chatNameField.getText().trim().isEmpty()
+                );
+            }
+
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { update(); }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { update(); }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { update(); }
+        });
 
         // Create chat button
         createChatButton = new JButton("Create Chat");
-        createChatButton.setEnabled(false);
+        createChatButton.setEnabled(true);
         createChatButton.addActionListener(e -> {
             Contact selectedContact = contactList.getSelectedValue();
+            System.out.println(selectedContact);
             if (selectedContact != null) {
                 User friend = selectedContact.getUser().equals(currentUser) ? selectedContact.getContact() : selectedContact.getUser();
                 try {
@@ -101,6 +121,7 @@ public class CreateChatView extends JPanel implements PropertyChangeListener {
                             currentUser.getUserID(),
                             friend.getUserID()
                     );
+                    System.out.println("Chat Created");
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -115,7 +136,14 @@ public class CreateChatView extends JPanel implements PropertyChangeListener {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(createChatButton);
-        add(buttonPanel, BorderLayout.AFTER_LAST_LINE);
+
+        JPanel southPanel = new JPanel();
+        southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.Y_AXIS));
+
+        southPanel.add(bottomTextPanel);
+        southPanel.add(buttonPanel);
+
+        add(southPanel, BorderLayout.SOUTH);
 
         // Initial contact load
         reloadContacts(currentUser.getContacts());

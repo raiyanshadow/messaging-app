@@ -16,9 +16,9 @@ public class SendbirdUserCreator {
         this.userApi = new UserApi(client);
     }
 
-    public SendbirdUser createUser(String apiToken, String userId, String nickname) {
+    public SendbirdUser createUser(String apiToken, Integer userId, String nickname) {
         CreateAUserRequest req = new CreateAUserRequest();
-        req.setUserId(userId);
+        req.setUserId(Integer.toString(userId));
         req.setNickname(nickname);
 
         try {

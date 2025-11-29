@@ -1,13 +1,7 @@
 package app;
 
-import SendBirdAPI.MessageDeleter;
-import SendBirdAPI.MessageEditor;
-import SendBirdAPI.MessageSender;
-import SendBirdAPI.SendbirdUserCreator;
+import SendBirdAPI.*;
 import data_access.*;
-import entity.DirectChatChannel;
-import entity.User;
-import interface_adapter.base_UI.baseUIState;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
 import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
 import org.sendbird.client.ApiClient;
@@ -39,7 +33,6 @@ import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
 import io.github.cdimascio.dotenv.Dotenv;
-import org.sendbird.client.ApiClient;
 import org.sendbird.client.Configuration;
 import session.SessionManager;
 import use_case.add_chat_channel.AddChatChannelInputBoundary;
@@ -71,7 +64,6 @@ import use_case.update_chat_channel.UpdateChatChannelOutputBoundary;
 import view.*;
 
 import javax.swing.*;
-import java.awt.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -125,6 +117,7 @@ public class AppBuilder {
     ApiClient defaultClient = Configuration.getDefaultApiClient().setBasePath(
             "https://api-" + dotenv.get("MSG_APP_ID") + ".sendbird.com"
     );
+    private ChannelCreator channelCreator = new ChannelCreator(defaultClient);
     private MessageSender messageSender = new MessageSender(defaultClient);
     private MessageEditor messageEditor;
     private MessageDeleter messageDeleter;
@@ -198,7 +191,8 @@ public class AppBuilder {
         SendMessageOutputBoundary sendMessagePresenter = new ChatChannelPresenter(messageViewModel);
 
         AddChatChannelInputBoundary addChatChannelInteractor = new AddChatChannelInteractor(
-                addChatChannelPresenter, chatChannelDataAccessObject, userDataAccessObject, sessionManager
+                addChatChannelPresenter, chatChannelDataAccessObject, userDataAccessObject, sessionManager,
+                channelCreator
         );
         AddContactInputBoundary addContactInteractor = new AddContactInteractor(
                 userDataAccessObject, contactDataAccessObject, addContactPresenter

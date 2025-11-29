@@ -56,12 +56,13 @@ public class SignupInteractor implements SignupInputBoundary {
 
         try {
             user = new User(56, username, password, preferredLanguage); // assume auto-generated ID
-            userDataAccessObject.save(user);
+            Integer userId = userDataAccessObject.save(user);
+
 
             String apiToken = dotenv.get("MSG_TOKEN");
             System.out.println("Sendbird token: " + apiToken);
 
-            SendbirdUser sbUser = sendbirdUserCreator.createUser(apiToken, username, username);
+            SendbirdUser sbUser = sendbirdUserCreator.createUser(apiToken, userId, username);
             System.out.println("Sendbird user created: " + (sbUser != null ? sbUser.getUserId() : "null"));
 
             if (sbUser == null || sbUser.getUserId() == null) {

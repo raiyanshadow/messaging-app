@@ -21,7 +21,7 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
     }
 
     // Save a new user
-    public void save(User user) throws SQLException {
+    public Integer save(User user) throws SQLException {
         String query = "INSERT INTO \"user\" (username, password, preferred_language, created_at) VALUES (?, ?, ?, NOW())";
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, user.getUsername());
@@ -35,6 +35,7 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
                 int generatedId = keys.getInt(1);
                 user.setUserID(generatedId);
             }
+            return keys.getInt(1);
         }
     }
 

@@ -1,15 +1,13 @@
 package app;
 
+import SendBirdAPI.ChannelCreator;
 import SendBirdAPI.MessageSender;
 import data_access.*;
-import entity.Contact;
 import entity.User;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.add_chat_channel.AddChatChannelController;
 import interface_adapter.add_chat_channel.AddChatChannelPresenter;
 import interface_adapter.add_chat_channel.AddChatChannelViewModel;
-import interface_adapter.add_contact.AddContactController;
-import interface_adapter.add_contact.AddContactPresenter;
 import interface_adapter.add_contact.AddContactViewModel;
 import interface_adapter.base_UI.baseUIController;
 import interface_adapter.base_UI.baseUIPresenter;
@@ -33,8 +31,6 @@ import org.sendbird.client.ApiClient;
 import org.sendbird.client.Configuration;
 import session.SessionManager;
 import use_case.add_chat_channel.AddChatChannelInteractor;
-import use_case.add_contact.AddContactInputBoundary;
-import use_case.add_contact.AddContactInteractor;
 import use_case.baseUI.BaseUIInteractor;
 import use_case.friend_request.FriendRequestInputBoundary;
 import use_case.friend_request.FriendRequestInteractor;
@@ -47,7 +43,6 @@ import use_case.update_chat_channel.UpdateChatChannelOutputBoundary;
 import view.*;
 
 import javax.swing.*;
-import java.awt.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -75,6 +70,16 @@ public class FriendRequestViewTest {
         FriendRequestViewModel friendRequestViewModel = new FriendRequestViewModel();
         ViewManagerModel viewManagerModel = new ViewManagerModel();
 
+        final Dotenv dotenv = Dotenv.configure()
+                .directory("./assets")
+                .filename("env")
+                .load();
+        ApiClient defaultClient = Configuration.getDefaultApiClient().setBasePath(
+                "https://api-" + dotenv.get("MSG_APP_ID") + ".sendbird.com"
+        );
+        MessageSender messageSender = new MessageSender(defaultClient);
+        ChannelCreator channelCreator = new ChannelCreator(defaultClient);
+
 
         baseUIViewModel baseUIViewModel = new baseUIViewModel("baseUIView");
         ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("chatChannelViewModel");
@@ -84,7 +89,8 @@ public class FriendRequestViewTest {
                 addChatChannelViewModel, viewManagerModel);
         baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel);
 
-        AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager);
+        AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager,
+                channelCreator);
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager);
 
         AddChatChannelController addChatChannelController = new AddChatChannelController(addChatChannelInteractor);
@@ -99,14 +105,6 @@ public class FriendRequestViewTest {
         friendRequestView.setFriendRequestController(controller);
 
         MessageViewModel messageViewModel = new MessageViewModel();
-        final Dotenv dotenv = Dotenv.configure()
-                .directory("./assets")
-                .filename("env")
-                .load();
-        ApiClient defaultClient = Configuration.getDefaultApiClient().setBasePath(
-                "https://api-" + dotenv.get("MSG_APP_ID") + ".sendbird.com"
-        );
-        MessageSender messageSender = new MessageSender(defaultClient);
         UpdateChatChannelViewModel updateChatChannelViewModel = new UpdateChatChannelViewModel();
 
         DBMessageDataAccessObject messageDataAccessObject = new DBMessageDataAccessObject(conn);

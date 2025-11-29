@@ -1,5 +1,6 @@
 package view;
 
+import entity.Contact;
 import entity.DirectChatChannel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.base_UI.baseUIController;
@@ -19,6 +20,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BaseUIView extends JPanel implements PropertyChangeListener {
 
@@ -217,6 +219,8 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
         logoutButton.addActionListener(e -> {
             logoutController.logoutUser(sessionManager.getMainUser());
         });
+
+        reloadChats(sessionManager.getMainUser().getUserChats());
     }
 
     private void styleRoundedButton(JButton button, Color bg, Color fg, Font font) {
@@ -256,6 +260,15 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
         viewManagerModel.firePropertyChange();
 
     }
+
+    private void reloadChats(List<String> chatNames) {
+        chatListModel.clear();
+        if (chatNames == null) return;
+        for (String chatName : chatNames) {
+            chatListModel.addElement(chatName);
+        }
+    }
+
     public JButton getAddFriendButton() { return addFriendButton; }
     public JButton getFriendRequestsButton() { return friendRequestsButton; }
     public JButton getCreateChatButton() { return createChatButton; }

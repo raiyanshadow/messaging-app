@@ -3,7 +3,7 @@ package app;
 import SendBirdAPI.ChannelCreator;
 import SendBirdAPI.MessageSender;
 import data_access.DBChatChannelDataAccessObject;
-import data_access.DBConnectionFactory;
+import data_access.DbConnectionFactory;
 import data_access.DBUserDataAccessObject;
 import entity.User;
 import interface_adapter.ViewManagerModel;
@@ -24,6 +24,8 @@ import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.logout.LogoutViewModel;
+import interface_adapter.profile_edit.ProfileEditPresenter;
+import interface_adapter.profile_edit.ProfileEditViewModel;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
 import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
@@ -49,24 +51,9 @@ import java.sql.SQLException;
 
 
 import data_access.*;
-        import entity.User;
-import interface_adapter.ViewManagerModel;
-import interface_adapter.add_chat_channel.AddChatChannelController;
-import interface_adapter.add_chat_channel.AddChatChannelPresenter;
-import interface_adapter.add_chat_channel.AddChatChannelViewModel;
-import interface_adapter.base_UI.baseUIController;
-import interface_adapter.base_UI.baseUIPresenter;
-import interface_adapter.base_UI.baseUIViewModel;
 import interface_adapter.chat_channel.ChatChannelViewModel;
-import session.SessionManager;
-import use_case.add_chat_channel.AddChatChannelInteractor;
-import use_case.baseUI.BaseUIInteractor;
 import view.BaseUIView;
 import view.CreateChatView;
-
-import javax.swing.*;
-        import java.sql.Connection;
-import java.sql.SQLException;
 
 public class BaseUITest {
 
@@ -79,6 +66,7 @@ public class BaseUITest {
         FriendRequestViewModel friendRequestViewModel = new FriendRequestViewModel();
         LogoutViewModel logoutViewModel = new LogoutViewModel();
         LoginViewModel loginViewModel = new LoginViewModel();
+        ProfileEditViewModel profileEditViewModel = new ProfileEditViewModel();
         AppBuilder appBuilder = new AppBuilder();
         MessageViewModel messageViewModel = new MessageViewModel();
         final Dotenv dotenv = Dotenv.configure()
@@ -92,7 +80,7 @@ public class BaseUITest {
         ChannelCreator channelCreator = new ChannelCreator(defaultClient);
         UpdateChatChannelViewModel updateChatChannelViewModel = new UpdateChatChannelViewModel();
         ViewManagerModel viewManagerModel = new ViewManagerModel();
-        Connection conn = new DBConnectionFactory().createConnection();
+        Connection conn = new DbConnectionFactory().createConnection();
         DBChatChannelDataAccessObject dbChatChannelDataAccessObject = new DBChatChannelDataAccessObject(conn);
         DBUserDataAccessObject dbUserDataAccessObject = new DBUserDataAccessObject(conn);
         DBContactDataAccessObject dbContactDataAccessObject = new DBContactDataAccessObject(conn);
@@ -107,15 +95,16 @@ public class BaseUITest {
                 viewManagerModel, baseUIViewModel);
         AddChatChannelPresenter addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel,
                 addChatChannelViewModel, viewManagerModel);
+        ProfileEditPresenter profileEditPresenter = new ProfileEditPresenter(profileEditViewModel);
 
-        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel);
+        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel, profileEditViewModel);
         SendMessageOutputBoundary sendMessagePresenter = new ChatChannelPresenter(messageViewModel);
         UpdateChatChannelOutputBoundary updateChatChannelPresenter = new UpdateChatChannelPresenter(updateChatChannelViewModel,
                 sessionManager);
         LogoutOutputBoundary logoutPresenter = new LogoutPresenter(logoutViewModel, viewManagerModel, loginViewModel, sessionManager, appBuilder);
 
 
-        AddContactInteractor addContactInteractor = new AddContactInteractor(dbUserDataAccessObject, dbContactDataAccessObject, addContactPresenter);
+        AddContactInteractor addContactInteractor = new AddContactInteractor(dbUserDataAccessObject, dbContactDataAccessObject, addContactPresenter, sessionManager);
         AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter,
                 dbChatChannelDataAccessObject, dbUserDataAccessObject, sessionManager, channelCreator);
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject,

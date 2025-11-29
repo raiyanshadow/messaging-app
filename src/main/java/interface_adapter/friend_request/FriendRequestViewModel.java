@@ -1,7 +1,6 @@
 package interface_adapter.friend_request;
 
 import interface_adapter.ViewModel;
-import interface_adapter.base_UI.baseUIState;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;

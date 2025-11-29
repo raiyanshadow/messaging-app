@@ -10,5 +10,5 @@ public interface ProfileEditOutputBoundary {
     /**
      * Switches the view to the home page.
      */
-    void switchToHomePageView();
+//    void switchToHomePageView();
 }

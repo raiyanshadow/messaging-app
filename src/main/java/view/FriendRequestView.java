@@ -1,11 +1,7 @@
 package view;
 
-import entity.Contact;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.add_contact.AddContactState;
 import interface_adapter.base_UI.baseUIController;
-import interface_adapter.base_UI.baseUIState;
-import interface_adapter.base_UI.baseUIViewModel;
 import interface_adapter.friend_request.FriendRequestController;
 import interface_adapter.friend_request.FriendRequestState;
 import interface_adapter.friend_request.FriendRequestViewModel;
@@ -16,27 +12,25 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class FriendRequestView extends JPanel implements PropertyChangeListener {
 
-    private final String labelName = "Friend Requests";
     private final FriendRequestViewModel friendRequestViewModel;
     private FriendRequestController friendRequestController = null;
     private final ViewManagerModel viewManagerModel;
-    private final Session sessionmanager;
+    private final Session sessionManager;
     private final baseUIController baseUIController;
-    private DefaultListModel<String> listModel = new DefaultListModel<>();
+    private final DefaultListModel<String> listModel = new DefaultListModel<>();
 
     public FriendRequestView(FriendRequestViewModel friendRequestViewModel, ViewManagerModel viewManagerModel, Session sessionmanager, baseUIController baseUIController) {
         this.friendRequestViewModel = friendRequestViewModel;
         this.viewManagerModel = viewManagerModel;
-        this.sessionmanager = sessionmanager;
+        this.sessionManager = sessionmanager;
         this.baseUIController = baseUIController;
 
         friendRequestViewModel.addPropertyChangeListener(this);
-
         FriendRequestState state = friendRequestViewModel.getState();
+
         // initialize back button
         JButton backButton = new JButton("Back");
         final Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
@@ -49,6 +43,7 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
         // create title panel
         JPanel titlePanel = new JPanel(new BorderLayout());
         titlePanel.setBackground(Color.WHITE);
+        String labelName = "Friend Requests";
         JLabel title = new JLabel(labelName, SwingConstants.CENTER);
         title.setFont(new Font("SansSerif", Font.BOLD, 20));
         titlePanel.add(title, BorderLayout.CENTER);
@@ -59,7 +54,7 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
         backPanel.setBackground(Color.WHITE);
 
 
-        // create top panel
+        // create top panel (add in title panel and back button panel)
         JPanel topPanel = new JPanel(new BorderLayout());
         titlePanel.setPreferredSize(new Dimension(300, 40));
         topPanel.add(titlePanel, BorderLayout.NORTH);
@@ -120,7 +115,7 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
         midPanel.add(scrollPane);
         midPanel.add(accept_or_declinePanel);
 
-
+        // add all the panels
         this.setLayout(new BorderLayout());
         this.add(topPanel, BorderLayout.NORTH);
         this.add(midPanel, BorderLayout.CENTER);
@@ -139,13 +134,12 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
 
         acceptButton.addActionListener(evt -> {
 
-            state.setAcceptee(sessionmanager.getMainUser());
+            // state.setAcceptee(sessionmanager.getMainUser());
             try {
-                String selectedName = state.getAccepted_username();
+                String selectedName = state.getAcceptedUsername();
 
                 friendRequestController.execute(
-                        state.getAcceptee(),
-                        state.getAccepted_username(),
+                        state.getAcceptedUsername(),
                         true
                 );
                 listModel.removeElement(selectedName);
@@ -158,13 +152,12 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
 
         declineButton.addActionListener(evt -> {
 
-            state.setAcceptee(sessionmanager.getMainUser());
+            // state.setAcceptee(sessionmanager.getMainUser());
             try {
-                String selectedName = state.getAccepted_username();
+                String selectedName = state.getAcceptedUsername();
 
                 friendRequestController.execute(
-                        state.getAcceptee(),
-                        state.getAccepted_username(),
+                        state.getAcceptedUsername(),
                         false
                 );
                 listModel.removeElement(selectedName);
@@ -178,7 +171,7 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
 
         scrollableList.addListSelectionListener(e -> {
             // System.out.println(scrollableList.getSelectedValue());
-            state.setAccepted_username(scrollableList.getSelectedValue());
+            state.setAcceptedUsername(scrollableList.getSelectedValue());
         });
     }
 
@@ -186,7 +179,7 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         listModel.clear();
-        for (String fr : sessionmanager.getMainUser().getFriendRequests()) {
+        for (String fr : sessionManager.getMainUser().getFriendRequests()) {
             listModel.addElement(fr);
         }
         FriendRequestState state = (FriendRequestState) evt.getNewValue();
@@ -194,9 +187,9 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
             JOptionPane.showMessageDialog(this, state.getFriendRequestError());
             state.setFriendRequestError(null);
         }
-        if (state.getSuccess_message() != null) {
-            JOptionPane.showMessageDialog(this, state.getSuccess_message());
-            state.setSuccess_message(null);
+        if (state.getSuccessMessage() != null) {
+            JOptionPane.showMessageDialog(this, state.getSuccessMessage());
+            state.setSuccessMessage(null);
         }
     }
 

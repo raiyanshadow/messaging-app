@@ -1,6 +1,5 @@
 package interface_adapter.add_contact;
 
-import entity.User;
 import use_case.add_contact.AddContactInputBoundary;
 import use_case.add_contact.AddContactInputData;
 
@@ -13,8 +12,8 @@ public class AddContactController {
         this.addContactUseCaseInteractor = addContactUseCaseInteractor;
     }
 
-    public void execute(User sender, String receiver_username) throws SQLException {
-        AddContactInputData addContactInputData = new AddContactInputData(sender, receiver_username);
+    public void execute(String receiverUsername) throws SQLException {
+        AddContactInputData addContactInputData = new AddContactInputData(receiverUsername);
         addContactUseCaseInteractor.execute(addContactInputData);
     }
 

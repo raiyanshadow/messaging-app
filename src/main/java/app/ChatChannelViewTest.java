@@ -6,12 +6,9 @@ package app;
 
 import javax.swing.*;
 
-import SendBirdAPI.ChannelCreator;
 import SendBirdAPI.MessageSender;
 import data_access.*;
 import entity.DirectChatChannel;
-import entity.Message;
-import entity.MessageFactory;
 import entity.User;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.add_chat_channel.AddChatChannelViewModel;
@@ -25,14 +22,13 @@ import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.logout.LogoutViewModel;
+import interface_adapter.profile_edit.ProfileEditViewModel;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
 import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
-import interface_adapter.update_chat_channel.UpdateChatChannelState;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.sendbird.client.ApiClient;
 import org.sendbird.client.Configuration;
-import session.Session;
 import session.SessionManager;
 import use_case.baseUI.BaseUIInteractor;
 import use_case.logout.LogoutInteractor;
@@ -45,9 +41,6 @@ import view.ChatChannelView;
 import view.ViewManager;
 
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ChatChannelViewTest {
     public static <DBessageDataAccessObject> void main(String[] args) throws SQLException {
@@ -117,7 +110,7 @@ public class ChatChannelViewTest {
         // Verify
         System.out.println("Fetched Chat Channel: " + chat.getChatName());
         System.out.println("User1: " + chat.getUser1().getUsername() + ", User2: " + chat.getUser2().getUsername());
-        System.out.println("url: " + chat.getChatURL());
+        System.out.println("url: " + chat.getChatUrl());
 
         SessionManager sessionManager = new SessionManager();
         sessionManager.setMainUser(user1);
@@ -131,6 +124,7 @@ public class ChatChannelViewTest {
         ViewManagerModel viewManagerModel = new ViewManagerModel();
         FriendRequestViewModel friendRequestViewModel = new FriendRequestViewModel();
         AddChatChannelViewModel addChatChannelViewModel = new AddChatChannelViewModel("Add Chat Channel"); // TODO: Should this have a string as an argument?
+        ProfileEditViewModel profileEditViewModel = new ProfileEditViewModel();
         AddContactViewModel addContactViewModel = new AddContactViewModel();
         ViewManager viewManager = new ViewManager(viewManagerModel);
         LogoutViewModel logoutViewModel = new LogoutViewModel();
@@ -140,7 +134,7 @@ public class ChatChannelViewTest {
         // 2. Presenter
         UpdateChatChannelPresenter presenter = new UpdateChatChannelPresenter(vm, sessionManager);
         ChatChannelPresenter presenter2 = new ChatChannelPresenter(messageViewModel);
-        baseUIPresenter presenter3 = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel);
+        baseUIPresenter presenter3 = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel, profileEditViewModel);
         SendMessageOutputBoundary sendMessagePresenter = new ChatChannelPresenter(messageViewModel);
         LogoutOutputBoundary logoutPresenter = new LogoutPresenter(logoutViewModel, viewManagerModel, loginViewModel, sessionManager, appBuilder);
 

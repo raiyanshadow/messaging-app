@@ -4,8 +4,6 @@ import interface_adapter.add_contact.AddContactController;
 import interface_adapter.add_contact.AddContactState;
 import interface_adapter.add_contact.AddContactViewModel;
 import interface_adapter.base_UI.baseUIController;
-import interface_adapter.base_UI.baseUIState;
-import interface_adapter.base_UI.baseUIViewModel;
 import interface_adapter.ViewManagerModel;
 import session.Session;
 
@@ -14,14 +12,12 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 
 public class AddContactView extends JPanel implements PropertyChangeListener {
 
-    private final String labelName = "Add Contact";
     private final AddContactViewModel addContactViewModel;
     private final JTextField usernameField =  new JTextField(20);
     private AddContactController addContactController = null;
@@ -60,6 +56,7 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
         // create title panel
         JPanel titlePanel = new JPanel(new BorderLayout());
         titlePanel.setBackground(Color.WHITE);
+        String labelName = "Add Contact";
         JLabel title = new JLabel(labelName, SwingConstants.CENTER);
         title.setFont(new Font("SansSerif", Font.BOLD, 14));
         titlePanel.add(title, BorderLayout.CENTER);
@@ -118,10 +115,9 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
 
         addButton.addActionListener(evt -> {
             AddContactState state = addContactViewModel.getState();
-            state.setSender(sessionmanager.getMainUser());
+            // state.setSender(sessionmanager.getMainUser());
             try {
                 addContactController.execute(
-                        state.getSender(),
                         state.getUsernameInput()
                 );
             }
@@ -182,8 +178,8 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
         if (state.getAddContactError() != null) {
             JOptionPane.showMessageDialog(this, state.getAddContactError());
         }
-        if (state.getSuccess_message() != null) {
-            JOptionPane.showMessageDialog(this, state.getSuccess_message());
+        if (state.getSuccessMessage() != null) {
+            JOptionPane.showMessageDialog(this, state.getSuccessMessage());
         }
     }
 

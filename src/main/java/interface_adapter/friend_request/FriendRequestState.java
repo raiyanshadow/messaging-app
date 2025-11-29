@@ -1,13 +1,9 @@
 package interface_adapter.friend_request;
 
-import entity.User;
-
 public class FriendRequestState {
     private String friendRequestError;
-    private User acceptee;
-    private String accepted_username;
-    private Boolean acceptornot;
-    private String success_message;
+    private String acceptedUsername;
+    private String successMessage;
 
     public String getFriendRequestError() {
         return friendRequestError;
@@ -17,35 +13,19 @@ public class FriendRequestState {
         this.friendRequestError = friendRequestError;
     }
 
-    public User getAcceptee() {
-        return acceptee;
+    public String getAcceptedUsername() {
+        return acceptedUsername;
     }
 
-    public void setAcceptee(User acceptee) {
-        this.acceptee = acceptee;
+    public void setAcceptedUsername(String acceptedUsername) {
+        this.acceptedUsername = acceptedUsername;
     }
 
-    public String getAccepted_username() {
-        return accepted_username;
+    public String getSuccessMessage() {
+        return successMessage;
     }
 
-    public void setAccepted_username(String accepted_username) {
-        this.accepted_username = accepted_username;
-    }
-
-    public Boolean getAcceptornot() {
-        return acceptornot;
-    }
-
-    public void setAcceptornot(Boolean acceptornot) {
-        this.acceptornot = acceptornot;
-    }
-
-    public String getSuccess_message() {
-        return success_message;
-    }
-
-    public void setSuccess_message(String success_message) {
-        this.success_message = success_message;
+    public void setSuccessMessage(String successMessage) {
+        this.successMessage = successMessage;
     }
 }

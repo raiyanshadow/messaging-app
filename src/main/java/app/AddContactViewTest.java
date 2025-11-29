@@ -24,6 +24,7 @@ import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.logout.LogoutViewModel;
+import interface_adapter.profile_edit.ProfileEditViewModel;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
 import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
@@ -36,11 +37,8 @@ import use_case.add_contact.*;
 import use_case.baseUI.BaseUIInteractor;
 import use_case.logout.LogoutInteractor;
 import use_case.logout.LogoutOutputBoundary;
-import use_case.send_message.SendMessageInputBoundary;
 import use_case.send_message.SendMessageInteractor;
 import use_case.send_message.SendMessageOutputBoundary;
-import use_case.signup.SignupOutputBoundary;
-import use_case.signup.SignupOutputData;
 import use_case.update_chat_channel.UpdateChatChannelInteractor;
 import use_case.update_chat_channel.UpdateChatChannelOutputBoundary;
 import view.AddContactView;
@@ -49,9 +47,7 @@ import view.CreateChatView;
 import view.ViewManager;
 
 import javax.swing.*;
-import java.awt.*;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class AddContactViewTest {
@@ -64,7 +60,7 @@ public class AddContactViewTest {
                 .load();
 
         // DAO
-        Connection conn = DBConnectionFactory.createConnection();
+        Connection conn = DbConnectionFactory.createConnection();
         DBUserDataAccessObject dummyUserDAO = new DBUserDataAccessObject(conn);
         DBContactDataAccessObject dummyContactDAO = new DBContactDataAccessObject(conn);
         DBChatChannelDataAccessObject dbChatChannelDataAccessObject = new DBChatChannelDataAccessObject(conn);
@@ -93,12 +89,13 @@ public class AddContactViewTest {
         AddChatChannelViewModel addChatChannelViewModel = new AddChatChannelViewModel("addChatChannelViewModel");
         MessageViewModel messageViewModel = new MessageViewModel();
         UpdateChatChannelViewModel updateChatChannelViewModel = new UpdateChatChannelViewModel();
+        ProfileEditViewModel profileEditViewModel = new ProfileEditViewModel();
         AddChatChannelPresenter addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel, addChatChannelViewModel, viewManagerModel);
         FriendRequestViewModel friendRequestViewModel = new FriendRequestViewModel();
         LogoutViewModel logoutViewModel = new LogoutViewModel();
         LoginViewModel loginViewModel = new LoginViewModel();
         AppBuilder appBuilder = new AppBuilder();
-        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel);
+        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel, profileEditViewModel);
         SendMessageOutputBoundary sendMessagePresenter = new ChatChannelPresenter(messageViewModel);
         UpdateChatChannelOutputBoundary updateChatChannelPresenter = new UpdateChatChannelPresenter(updateChatChannelViewModel,
                 sessionManager);
@@ -130,7 +127,7 @@ public class AddContactViewTest {
                 addChatChannelViewModel);
         AddContactView addContactview = new AddContactView(addContactViewModel, viewManagerModel, sessionManager, baseUIController);
 
-        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, presenter);
+        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, presenter, sessionManager);
         AddContactController controller = new AddContactController(interactor);
         addContactview.setAddContactController(controller);
 

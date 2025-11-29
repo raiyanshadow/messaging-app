@@ -1,6 +1,6 @@
 package interface_adapter.friend_request;
 
-import entity.User;
+
 import interface_adapter.ViewManagerModel;
 import interface_adapter.base_UI.baseUIState;
 import interface_adapter.base_UI.baseUIViewModel;
@@ -23,7 +23,7 @@ public class FriendRequestPresenter implements FriendRequestOutputBoundary {
     public void prepareSuccessView(FriendRequestOutputData friendRequestOutputData) {
         final FriendRequestState state = friendRequestViewModel.getState();
         state.setFriendRequestError(null);
-        state.setSuccess_message("accepted " + friendRequestOutputData.getAcceptedUsername() + " as a contact");
+        state.setSuccessMessage("accepted " + friendRequestOutputData.getAcceptedUsername() + " as a contact");
         friendRequestViewModel.firePropertyChange();
 
         // Use the updated contact list fetched from DAO
@@ -37,7 +37,7 @@ public class FriendRequestPresenter implements FriendRequestOutputBoundary {
     @Override
     public void prepareFailView(String errorMessage) {
         final FriendRequestState state = friendRequestViewModel.getState();
-        state.setSuccess_message(null);
+        state.setSuccessMessage(null);
         state.setFriendRequestError(errorMessage);
         friendRequestViewModel.firePropertyChange();
 

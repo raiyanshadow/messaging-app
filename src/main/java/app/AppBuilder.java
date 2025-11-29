@@ -2,6 +2,9 @@ package app;
 
 import SendBirdAPI.*;
 import data_access.*;
+import interface_adapter.profile_edit.ProfileEditController;
+import interface_adapter.profile_edit.ProfileEditPresenter;
+import interface_adapter.profile_edit.ProfileEditViewModel;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
 import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
 import org.sendbird.client.ApiClient;
@@ -52,6 +55,9 @@ import use_case.login.LoginOutputBoundary;
 import use_case.logout.LogoutInputBoundary;
 import use_case.logout.LogoutInteractor;
 import use_case.logout.LogoutOutputBoundary;
+import use_case.profile_edit.ProfileEditInputBoundary;
+import use_case.profile_edit.ProfileEditInteractor;
+import use_case.profile_edit.ProfileEditOutputBoundary;
 import use_case.send_message.SendMessageInputBoundary;
 import use_case.send_message.SendMessageInteractor;
 import use_case.send_message.SendMessageOutputBoundary;
@@ -97,6 +103,7 @@ public class AppBuilder {
     private FriendRequestView friendRequestView;
     private FriendRequestViewModel friendRequestViewModel;
     private ProfileEditView profileEditView;
+    private ProfileEditViewModel profileEditViewModel;
     private UpdateChatChannelViewModel updateChatChannelViewModel;
     private CreateChatView createChatView;
     private AddChatChannelViewModel addChatChannelViewModel;
@@ -177,11 +184,12 @@ public class AppBuilder {
         messageViewModel = new MessageViewModel();
         friendRequestViewModel = new FriendRequestViewModel();
         logoutViewModel = new LogoutViewModel();
+        profileEditViewModel = new ProfileEditViewModel();
         AddChatChannelOutputBoundary addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel,
                 addChatChannelViewModel, viewManagerModel);
         AddContactOutputBoundary addContactPresenter = new AddContactPresenter(addContactViewModel, viewManagerModel);
         baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel,
-                friendRequestViewModel, addContactViewModel);
+                friendRequestViewModel, addContactViewModel, profileEditViewModel);
         FriendRequestOutputBoundary friendRequestPresenter = new FriendRequestPresenter(friendRequestViewModel,
                 viewManagerModel, baseUIViewModel);
         LogoutOutputBoundary logoutPresenter = new LogoutPresenter(logoutViewModel, viewManagerModel, loginViewModel,
@@ -189,13 +197,14 @@ public class AppBuilder {
         UpdateChatChannelOutputBoundary updatePresenter = new UpdateChatChannelPresenter(updateChatChannelViewModel,
                 sessionManager);
         SendMessageOutputBoundary sendMessagePresenter = new ChatChannelPresenter(messageViewModel);
+        ProfileEditOutputBoundary profileEditPresenter = new ProfileEditPresenter(profileEditViewModel);
 
         AddChatChannelInputBoundary addChatChannelInteractor = new AddChatChannelInteractor(
                 addChatChannelPresenter, chatChannelDataAccessObject, userDataAccessObject, sessionManager,
                 channelCreator
         );
         AddContactInputBoundary addContactInteractor = new AddContactInteractor(
-                userDataAccessObject, contactDataAccessObject, addContactPresenter
+                userDataAccessObject, contactDataAccessObject, addContactPresenter, sessionManager
         );
         FriendRequestInputBoundary friendRequestInteractor = new FriendRequestInteractor(
                 contactDataAccessObject, friendRequestPresenter, sessionManager
@@ -205,6 +214,7 @@ public class AppBuilder {
                 updatePresenter);
         SendMessageInputBoundary sendInteractor = new SendMessageInteractor(sendMessagePresenter,
                 userDataAccessObject, messageDataAccessObject, sessionManager, messageSender);
+        ProfileEditInputBoundary profileEditInteractor = new ProfileEditInteractor(userDataAccessObject, profileEditPresenter, sessionManager);
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, chatChannelDataAccessObject,
                 userDataAccessObject, sessionManager, contactDataAccessObject);
 
@@ -213,12 +223,14 @@ public class AppBuilder {
         FriendRequestController friendRequestController = new FriendRequestController(friendRequestInteractor);
         LogoutController logoutController = new LogoutController(logoutInteractor);
         UpdateChatChannelController updateChatChannelController = new UpdateChatChannelController(updateInteractor);
+        ProfileEditController profileEditController = new ProfileEditController(profileEditInteractor);
         SendMessageController sendMessageController = new SendMessageController(sendInteractor);
         baseUIController = new baseUIController(baseUIInteractor);
 
         createChatView = new CreateChatView(sessionManager, addChatChannelController,
                 baseUIViewModel, baseUIController, addChatChannelViewModel);
         addContactView = new AddContactView(addContactViewModel, viewManagerModel, sessionManager, baseUIController);
+        profileEditView = new ProfileEditView(profileEditViewModel, baseUIController, sessionManager);
 
         try {
             baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
@@ -234,10 +246,12 @@ public class AppBuilder {
         createChatView.setAddChatChannelController(addChatChannelController);
         addContactView.setAddContactController(addContactController);
         friendRequestView.setFriendRequestController(friendRequestController);
+        profileEditView.setProfileEditController(profileEditController);
 
         viewManager.addView(createChatView, addChatChannelViewModel.getViewName());
         viewManager.addView(addContactView, addContactViewModel.getViewName());
         viewManager.addView(friendRequestView, friendRequestViewModel.getViewName());
+        viewManager.addView(profileEditView, profileEditViewModel.getViewName());
         viewManager.addView(baseUIView, baseUIViewModel.getViewName());
 
         // run displayUI off-EDT or in SwingWorker; simple immediate call (acceptable if light)
@@ -257,15 +271,18 @@ public class AppBuilder {
         viewManager.remove(friendRequestView);
         viewManager.remove(addContactView);
         viewManager.remove(createChatView);
+        viewManager.remove(profileEditView);
 
         friendRequestView = null;
         addContactView = null;
         createChatView = null;
+        profileEditView = null;
 
         chatChannelViewModel = null;
         friendRequestViewModel = null;
         addContactViewModel = null;
         addChatChannelViewModel = null;
         updateChatChannelViewModel = null;
+        profileEditViewModel = null;
     }
 }

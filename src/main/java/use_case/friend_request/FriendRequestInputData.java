@@ -1,22 +1,16 @@
 package use_case.friend_request;
 
-import entity.User;
-
 public class FriendRequestInputData {
-    // user1 is the user who sends out add contact request
-    private final User acceptee;
-    // user2 is the user who receives add contact request
-    private final String accepted_username;
-    // true if user2 accepts the request
+    // the username of the person who got accepted/declined
+    private final String acceptedUsername;
+    // true if the accepter accepts the request
     private final boolean accept;
 
-    public FriendRequestInputData(User acceptee, String accepted_username, boolean accept) {
-        this.acceptee = acceptee;
-        this.accepted_username = accepted_username;
+    public FriendRequestInputData(String acceptedUsername, boolean accept) {
+        this.acceptedUsername = acceptedUsername;
         this.accept = accept;
     }
 
-    User getAcceptee() { return acceptee; }
-    String getAccepted_username() { return accepted_username; }
+    String getAcceptedUsername() { return acceptedUsername; }
     boolean getAccept() { return accept; }
 }

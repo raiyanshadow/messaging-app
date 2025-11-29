@@ -128,6 +128,9 @@ public class CreateChatView extends JPanel implements PropertyChangeListener {
                             friend.getUserID()
                     );
                     System.out.println("Chat Created");
+
+                    baseUIController.displayUI();
+
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }

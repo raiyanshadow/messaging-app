@@ -11,21 +11,21 @@ public abstract class Message<T> {
     protected String status;
     protected final Timestamp timestamp;
 
-    protected Message(Long messageID, Long parentMessageID, String channelURL, Integer senderId, Integer receiverId,
+    protected Message(Long messageID, Long parentMessageID, String channelUrl, Integer senderId, Integer receiverId,
                       String status, Timestamp timestamp) {
         this.messageID = messageID;
         this.parentMessageID = parentMessageID;
-        this.channelURL = channelURL;
+        this.channelURL = channelUrl;
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.status = status;
         this.timestamp = timestamp;
     }
 
-    protected Message(Long messageID, String channelURL, Integer senderId, Integer receiverId,
+    protected Message(Long messageID, String channelUrl, Integer senderId, Integer receiverId,
                       String status, Timestamp timestamp) {
         this.messageID = messageID;
-        this.channelURL = channelURL;
+        this.channelURL = channelUrl;
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.status = status;
@@ -36,9 +36,12 @@ public abstract class Message<T> {
         return messageID;
     }
 
-    public Long getParentMessageID() { return parentMessageID; }
+    public Long getParentMessageID() {
 
-    public String getChannelURL() {
+        return parentMessageID;
+    }
+
+    public String getChannelUrl() {
         return channelURL;
     }
 
@@ -63,6 +66,7 @@ public abstract class Message<T> {
     }
 
     public abstract T getContent();
+
     public abstract void setContent(T content);
 
     public abstract String getType();

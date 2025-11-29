@@ -23,6 +23,7 @@ import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.logout.LogoutViewModel;
+import interface_adapter.profile_edit.ProfileEditViewModel;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
 import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
@@ -51,7 +52,7 @@ public class FriendRequestViewTest {
         JFrame frame = new JFrame("friend request testing");
 
         // DAO
-        Connection conn = DBConnectionFactory.createConnection();
+        Connection conn = DbConnectionFactory.createConnection();
         DBContactDataAccessObject dummyContactDAO = new DBContactDataAccessObject(conn);
         DBUserDataAccessObject dummyUserDAO = new DBUserDataAccessObject(conn);
         DBChatChannelDataAccessObject dbChatChannelDataAccessObject = new DBChatChannelDataAccessObject(conn);
@@ -85,9 +86,10 @@ public class FriendRequestViewTest {
         ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("chatChannelViewModel");
         AddChatChannelViewModel addChatChannelViewModel = new AddChatChannelViewModel("addChatChannelViewModel");
         AddContactViewModel addContactViewModel = new AddContactViewModel();
+        ProfileEditViewModel profileEditViewModel = new ProfileEditViewModel();
         AddChatChannelPresenter addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel,
                 addChatChannelViewModel, viewManagerModel);
-        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel);
+        baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel, profileEditViewModel);
 
         AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager,
                 channelCreator);

@@ -51,7 +51,7 @@ public class FriendRequestViewTest {
         JFrame frame = new JFrame("friend request testing");
 
         // DAO
-        Connection conn = DBConnectionFactory.createConnection();
+        Connection conn = DbConnectionFactory.createConnection();
         DBContactDataAccessObject dummyContactDAO = new DBContactDataAccessObject(conn);
         DBUserDataAccessObject dummyUserDAO = new DBUserDataAccessObject(conn);
         DBChatChannelDataAccessObject dbChatChannelDataAccessObject = new DBChatChannelDataAccessObject(conn);

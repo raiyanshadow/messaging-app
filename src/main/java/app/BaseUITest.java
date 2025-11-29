@@ -3,7 +3,7 @@ package app;
 import SendBirdAPI.ChannelCreator;
 import SendBirdAPI.MessageSender;
 import data_access.DBChatChannelDataAccessObject;
-import data_access.DBConnectionFactory;
+import data_access.DbConnectionFactory;
 import data_access.DBUserDataAccessObject;
 import entity.User;
 import interface_adapter.ViewManagerModel;
@@ -49,24 +49,9 @@ import java.sql.SQLException;
 
 
 import data_access.*;
-        import entity.User;
-import interface_adapter.ViewManagerModel;
-import interface_adapter.add_chat_channel.AddChatChannelController;
-import interface_adapter.add_chat_channel.AddChatChannelPresenter;
-import interface_adapter.add_chat_channel.AddChatChannelViewModel;
-import interface_adapter.base_UI.baseUIController;
-import interface_adapter.base_UI.baseUIPresenter;
-import interface_adapter.base_UI.baseUIViewModel;
 import interface_adapter.chat_channel.ChatChannelViewModel;
-import session.SessionManager;
-import use_case.add_chat_channel.AddChatChannelInteractor;
-import use_case.baseUI.BaseUIInteractor;
 import view.BaseUIView;
 import view.CreateChatView;
-
-import javax.swing.*;
-        import java.sql.Connection;
-import java.sql.SQLException;
 
 public class BaseUITest {
 
@@ -92,7 +77,7 @@ public class BaseUITest {
         ChannelCreator channelCreator = new ChannelCreator(defaultClient);
         UpdateChatChannelViewModel updateChatChannelViewModel = new UpdateChatChannelViewModel();
         ViewManagerModel viewManagerModel = new ViewManagerModel();
-        Connection conn = new DBConnectionFactory().createConnection();
+        Connection conn = new DbConnectionFactory().createConnection();
         DBChatChannelDataAccessObject dbChatChannelDataAccessObject = new DBChatChannelDataAccessObject(conn);
         DBUserDataAccessObject dbUserDataAccessObject = new DBUserDataAccessObject(conn);
         DBContactDataAccessObject dbContactDataAccessObject = new DBContactDataAccessObject(conn);

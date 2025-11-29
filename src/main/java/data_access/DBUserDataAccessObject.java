@@ -2,10 +2,8 @@ package data_access;
 
 import entity.Contact;
 import entity.User;
-import entity.UserFactory;
 import use_case.add_contact.AddContactUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +20,7 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
 
     // Save a new user
     public Integer save(User user) throws SQLException {
-        String query = "INSERT INTO \"user\" (username, password, preferred_language, created_at) VALUES (?, ?, ?, NOW())";
+        final String query = "INSERT INTO \"user\" (username, password, preferred_language, created_at) VALUES (?, ?, ?, NOW())";
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, user.getUsername());
             statement.setString(2, user.getPassword());
@@ -30,9 +28,9 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
             statement.executeUpdate();
 
             // Get database-generated ID
-            ResultSet keys = statement.getGeneratedKeys();
+            final ResultSet keys = statement.getGeneratedKeys();
             if (keys.next()) {
-                int generatedId = keys.getInt(1);
+                final int generatedId = keys.getInt(1);
                 user.setUserID(generatedId);
             }
             return keys.getInt(1);
@@ -41,7 +39,7 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
 
     // Delete a user by username (for rollback)
     public void deleteByUsername(String username) throws SQLException {
-        String query = "DELETE FROM \"user\" WHERE username = ?";
+        final String query = "DELETE FROM \"user\" WHERE username = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, username);
             statement.executeUpdate();
@@ -50,43 +48,45 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
 
     // Check if username exists
     public boolean existsByName(String username) throws SQLException {
-        String query = "SELECT 1 FROM \"user\" WHERE username = ?";
+        final String query = "SELECT 1 FROM \"user\" WHERE username = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, username);
-            ResultSet rs = statement.executeQuery();
+            final ResultSet rs = statement.executeQuery();
             return rs.next();
         }
     }
 
     @Override
     public void sendRequest(User sender, String receiver_username) {
-        String query = "INSERT INTO \"contact\" (user_id, contact_id, is_friend_request, created_at) VALUES (?, ?, ?, NOW())";
+        final String query = "INSERT INTO \"contact\" (user_id, contact_id, is_friend_request, created_at) "
+                + "VALUES (?, ?, ?, NOW())";
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.setInt(1, this.getIDFromName(sender.getUsername()));
             statement.setInt(2, this.getIDFromName(receiver_username));
             statement.setBoolean(3, true);
             statement.executeUpdate();
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        }
+        catch (SQLException except) {
+            throw new RuntimeException(except);
         }
     }
 
     // Get a user by ID
     public User getUserFromID(int userId) throws SQLException {
-        String query = "SELECT * FROM \"user\" WHERE id = ?";
+        final String query = "SELECT * FROM \"user\" WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
-            ResultSet rs = statement.executeQuery();
+            final ResultSet rs = statement.executeQuery();
             if (rs.next()) {
-                User user = new User(
+                final User user = new User(
                         rs.getInt("id"),
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("preferred_language")
                 );
-                DBChatChannelDataAccessObject chatChannelDataAccessObject = new DBChatChannelDataAccessObject(connection);
-                List<String> chatUrls = chatChannelDataAccessObject.getChatURLsByUserId(user.getUserID());
+                final DBChatChannelDataAccessObject chatChannelDataAccessObject = new DBChatChannelDataAccessObject(connection);
+                final List<String> chatUrls = chatChannelDataAccessObject.getChatURLsByUserId(user.getUserID());
                 user.setUserChats(chatUrls);
                 return user;
             }
@@ -96,10 +96,10 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
 
     // Get all users
     public List<User> getAllUsers() throws SQLException {
-        List<User> users = new ArrayList<>();
-        String query = "SELECT * FROM \"user\"";
+        final List<User> users = new ArrayList<>();
+        final String query = "SELECT * FROM \"user\"";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            ResultSet rs = statement.executeQuery();
+            final ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 users.add(new User(
                         rs.getInt("id"),
@@ -113,39 +113,41 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
     }
 
     public User getUserFromName(String username) throws SQLException {
-        String query = "SELECT * FROM \"user\" WHERE username = ?";
+        final String query = "SELECT * FROM \"user\" WHERE username = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, username); // use String for name
-            ResultSet rs = statement.executeQuery();
+            final ResultSet rs = statement.executeQuery();
 
             if (rs.next()) {
-                User user = new User(
+                final User user = new User(
                         rs.getInt("id"),
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("preferred_language")
                 );
-                DBChatChannelDataAccessObject chatChannelDataAccessObject = new DBChatChannelDataAccessObject(connection);
-                DBContactDataAccessObject contactDataAccessObject = new DBContactDataAccessObject(connection);
-                List<Contact> contacts = new ArrayList<>();
+                final DBChatChannelDataAccessObject chatChannelDataAccessObject = new DBChatChannelDataAccessObject(connection);
+                final DBContactDataAccessObject contactDataAccessObject = new DBContactDataAccessObject(connection);
+                final List<Contact> contacts = new ArrayList<>();
                 contactDataAccessObject.updateUserContacts(user, contacts);
                 user.setContacts(contacts);
-                List<String> friend_requests = new ArrayList<>();
-                contactDataAccessObject.updateUserFriendRequests(user, friend_requests);
-                user.setFriendRequests(friend_requests);
-                List<String> user_chats = chatChannelDataAccessObject.getChatURLsByUserId(user.getUserID());
-                user.setUserChats(user_chats);
+                final List<String> friendRequests = new ArrayList<>();
+                contactDataAccessObject.updateUserFriendRequests(user, friendRequests);
+                user.setFriendRequests(friendRequests);
+                final List<String> userChats = chatChannelDataAccessObject.getChatURLsByUserId(user.getUserID());
+                user.setUserChats(userChats);
                 return user;
             }
         }
-        return null; // no user found
+        // No user found
+        return null;
     }
 
     public int getIDFromName(String username) throws SQLException {
-        String query = "SELECT * FROM \"user\" WHERE username = ?";
+        final String query = "SELECT * FROM \"user\" WHERE username = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, username); // use String for name
-            ResultSet rs = statement.executeQuery();
+            // use String for name
+            statement.setString(1, username);
+            final ResultSet rs = statement.executeQuery();
 
             if (rs.next()) {
                 return rs.getInt("id");
@@ -155,11 +157,12 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
         return 0;
     }
 
+
     public String getNameFromID(int id) throws SQLException {
-        String query = "SELECT * FROM \"user\" WHERE id = ?";
+        final String query = "SELECT * FROM \"user\" WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, id); // use String for name
-            ResultSet rs = statement.executeQuery();
+            statement.setInt(1, id);
+            final ResultSet rs = statement.executeQuery();
 
             if (rs.next()) {
                 return rs.getString("username");
@@ -171,11 +174,11 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
 
     @Override
     public boolean validateCredentials(String username, String password) throws SQLException {
-        String query = "SELECT * FROM \"user\" WHERE username = ? AND password = ?";
+        final String query = "SELECT * FROM \"user\" WHERE username = ? AND password = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, username);
             statement.setString(2, password);
-            ResultSet rs = statement.executeQuery();
+            final ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 return true;
             }

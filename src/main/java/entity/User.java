@@ -1,7 +1,7 @@
 package entity;
 
-import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class User {
 
@@ -12,9 +12,6 @@ public class User {
     private List<Contact> contacts;
     private List<String> userChats;
     private List<String> friendRequests;
-    private Timestamp createdAt;
-//    private String loginToken;
-//    private String encryptionKey;
 
     public User(int userID, String username, String password, String preferredLanguage) {
         this.userChats = new ArrayList<String>();
@@ -27,20 +24,57 @@ public class User {
         }
         this.username = username;
         this.password = password;
-        this.preferredLanguage = preferredLanguage; // preferred language will default to English
+        this.preferredLanguage = preferredLanguage;
         this.contacts = new ArrayList<>();
         this.friendRequests = new ArrayList<>();
     }
 
+    /**
+     * Adds the inputed User to the contacts of the current User.
+     */
     public void addContact(User user) {
-        Contact to_add = new Contact(this, user);
-        if (!contacts.contains(to_add)) {
-            contacts.add(to_add);
+        final Contact toAdd = new Contact(this, user);
+        if (!contacts.contains(toAdd)) {
+            contacts.add(toAdd);
         }
     }
+
+    /**
+     * Removes the inputed User form the contacs of the current user.
+     */
     public void removeContact(User user) {
-        Contact to_remove = new Contact(this, user);
-        contacts.remove(to_remove);
+        final Contact toRemove = new Contact(this, user);
+        contacts.remove(toRemove);
+    }
+
+    /**
+     * Returns a List of ids that represent the contacts of the user.
+     * @return contactIds
+     */
+    public List<Integer> getContactIds() {
+        final List<Integer> contactIds = new ArrayList<>();
+        for (Contact contact : contacts) {
+            contactIds.add(contact.getContact().getUserID());
+        }
+        return contactIds;
+    }
+
+    /**
+     * Removes Url from User chats.
+     */
+    public void removeChat(String url) {
+        userChats.remove(url);
+    }
+
+    /**
+     * Adds Url to User chats.
+     */
+    public void addChat(String url) {
+        userChats.add(url);
+    }
+
+    public List<String> returnChats() {
+        return userChats;
     }
 
     public int getUserID() {
@@ -54,46 +88,48 @@ public class User {
     public String getPreferredLanguage() {
         return preferredLanguage;
     }
+
     public void setPreferredLanguage(String preferredLanguage) {
         this.preferredLanguage = preferredLanguage;
     }
+
     public String getUsername() {
         return username;
     }
+
     public void setUsername(String username) {
         this.username = username;
     }
+
     public String getPassword() {
         return password;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
-    public void setUserChats(List<String> userChats) {this.userChats = userChats;}
-    public List<Contact> getContacts() { return contacts; }
-    public List<Integer> getContactIDs() {
-        List<Integer> contactIDs = new ArrayList<>();
-        for (Contact contact : contacts) {
-            contactIDs.add(contact.getContact().getUserID());
-        }
-        return contactIDs;
+
+    public void setUserChats(List<String> userChats) {
+        this.userChats = userChats;
     }
+
+    public List<Contact> getContacts() {
+        return contacts;
+    }
+
     public void setContacts(List<Contact> contacts) {
         this.contacts = contacts;
     }
-    public void addChat(String url){
-        userChats.add(url);
-    }
-    public List<String> getUserChats(){
+
+    public List<String> getUserChats() {
         return userChats;
     }
-    public void removeChat(String url){
-        userChats.remove(url);
+
+    public List<String> getFriendRequests() {
+        return this.friendRequests;
     }
-    public List<String> returnChats(){
-        return this.userChats;
-    }
-    public List<String> getFriendRequests(){ return this.friendRequests; }
-    public void setFriendRequests(List<String> friendRequests) { this.friendRequests = friendRequests; }
+
+    public void setFriendRequests(List<String> friendRequests) {
+        this.friendRequests = friendRequests; }
 
 }

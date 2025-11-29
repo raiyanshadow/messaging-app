@@ -2,20 +2,14 @@ package use_case.add_chat_channel;
 
 import SendBirdAPI.ChannelCreator;
 import data_access.ChatChannelDataAccessObject;
-import data_access.ContactDataAccessObject;
 import data_access.UserDataAccessObject;
-import entity.Contact;
 import entity.DirectChatChannel;
-import entity.Message;
 import entity.User;
 import io.github.cdimascio.dotenv.Dotenv;
 import session.Session;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
 public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
@@ -45,7 +39,7 @@ public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
     public void CreateChannel(AddChatChannelInputData request) throws SQLException {
         final User currentUser = sessionManager.getMainUser();
         final User toAdd = userDataAccess.getUserFromID(request.getReceiverID());
-        final List<Integer> contactIDs = currentUser.getContactIDs();
+        final List<Integer> contactIDs = currentUser.getContactIds();
 
         System.out.println("Test");
 

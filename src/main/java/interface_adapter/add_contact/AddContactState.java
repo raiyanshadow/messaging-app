@@ -1,12 +1,9 @@
 package interface_adapter.add_contact;
 
-import entity.User;
 
 public class AddContactState {
     private String usernameInput;
     private String addContactError;
-    private User sender;
-    private String receiver_username;
     private String successMessage;
 
     public String getUsernameInput() {
@@ -16,12 +13,6 @@ public class AddContactState {
     public void setUsername(String usernameInput) {
         this.usernameInput = usernameInput;
     }
-
-    public User getSender() {
-        return sender;
-    }
-
-    public void setSender(User sender) { this.sender = sender; }
 
     public String getAddContactError() {
         return addContactError;

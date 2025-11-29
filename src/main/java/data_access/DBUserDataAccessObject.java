@@ -194,21 +194,6 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
         }
         return false;
     }
-    public List<User> searchUsers(String keyword) throws SQLException {
-        List<User> users = new ArrayList<>();
-        String query = "SELECT * FROM \"user\" WHERE username LIKE ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, "%" + keyword + "%");
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                users.add(new User(
-                        rs.getInt("id"),
-                        rs.getString("username"),
-                        rs.getString("password"),
-                        rs.getString("preferred_language")));
-            }
-        }
-        return users;
-    }
 }
+
 

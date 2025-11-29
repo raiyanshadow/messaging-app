@@ -117,7 +117,7 @@ public class ProfileEditView extends JPanel implements PropertyChangeListener {
                 JButton addButton = new JButton(SearchContactViewModel.ADD_BUTTON_LABEL);
                 addButton.addActionListener(e -> {
                     try {
-                        addContactController.execute(session.getMainUser(), user.getUsername());
+                        addContactController.execute(user.getUsername());
                         JOptionPane.showMessageDialog(this, "Friend request sent to " + user.getUsername());
                     } catch (SQLException ex) {
                         JOptionPane.showMessageDialog(this, "Error sending request: " + ex.getMessage());

@@ -26,6 +26,10 @@ public class AddContactPresenter implements AddContactOutputBoundary{
         addContactViewModel.firePropertyChange();
     }
 
+    /**
+     * failed to send out add contact request
+     * @param errorMessage the error message to display when failed to add contact
+     */
     @Override
     public void prepareFailView(String errorMessage) {
         final AddContactState state = addContactViewModel.getState();

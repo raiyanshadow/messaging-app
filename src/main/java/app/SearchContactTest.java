@@ -1,8 +1,6 @@
 package app;
 
-import data_access.ChatChannelDataAccessObject;
-import data_access.ContactDataAccessObject;
-import data_access.UserDataAccessObject;
+import data_access.*;
 import entity.Contact;
 import entity.DirectChatChannel;
 import entity.Message;
@@ -28,6 +26,7 @@ import use_case.search_contact.SearchContactUserDataAccessInterface;
 import view.ProfileEditView;
 
 import javax.swing.*;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +34,9 @@ import java.util.List;
 public class SearchContactTest {
         public static void main(String[] args) throws SQLException {
                 // 1. Setup Mock Data Access
+                Connection conn = DBConnectionFactory.createConnection();
                 MockDataAccess dataAccess = new MockDataAccess();
+                DBContactDataAccessObject dummyContactDAO = new DBContactDataAccessObject(conn);
 
                 // 2. Setup Session (Mock a logged-in user)
                 User currentUser = new User(1, "testUser", "password", "English");
@@ -57,7 +58,7 @@ public class SearchContactTest {
                 AddContactPresenter addContactPresenter = new AddContactPresenter(addContactViewModel,
                                 viewManagerModel);
                 AddContactInteractor addContactInteractor = new AddContactInteractor(dataAccess, dataAccess,
-                                addContactPresenter);
+                                addContactPresenter, session);
                 AddContactController addContactController = new AddContactController(addContactInteractor);
 
                 // 6. Setup BaseUI Controller
@@ -68,7 +69,7 @@ public class SearchContactTest {
                 baseUIPresenter baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel,
                                 addChatChannelViewModel, friendRequestViewModel, addContactViewModel);
                 BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dataAccess, dataAccess,
-                                session);
+                                session, dummyContactDAO);
                 baseUIController baseUIController = new baseUIController(baseUIInteractor);
 
                 // 7. Create the View
@@ -132,11 +133,17 @@ public class SearchContactTest {
                 }
 
                 @Override
-                public void save(User user) {
+                public Integer save(User user) {
                         users.add(user);
+                        return 0;
                 }
 
-                @Override
+            @Override
+            public void deleteByUsername(String username) throws SQLException {
+
+            }
+
+            @Override
                 public User getUserFromName(String username) {
                         for (User user : users) {
                                 if (user.getUsername().equals(username))

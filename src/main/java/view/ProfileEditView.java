@@ -3,9 +3,12 @@ package view;
 import entity.User;
 import interface_adapter.add_contact.AddContactController;
 import interface_adapter.base_UI.baseUIController;
-import interface_adapter.search_contact.SearchContactController;
-import interface_adapter.search_contact.SearchContactState;
-import interface_adapter.search_contact.SearchContactViewModel;
+import interface_adapter.profile_edit.ProfileEditController;
+import interface_adapter.profile_edit.ProfileEditState;
+import interface_adapter.profile_edit.ProfileEditViewModel;
+//import interface_adapter.search_contact.SearchContactController;
+//import interface_adapter.search_contact.SearchContactState;
+//import interface_adapter.search_contact.SearchContactViewModel;
 import session.Session;
 
 import javax.swing.*;
@@ -19,116 +22,127 @@ import java.util.List;
 
 public class ProfileEditView extends JPanel implements PropertyChangeListener {
 
-    public final String viewName = "search contact";
-    private final SearchContactViewModel searchContactViewModel;
-    private final SearchContactController searchContactController;
-    private final AddContactController addContactController;
+    public final String viewName = "profile edit view";
+    private final ProfileEditViewModel profileEditViewModel;
+    private ProfileEditController profileEditController = null;
     private final baseUIController baseUIController;
     private final Session session;
 
-    private final JTextField searchInputField = new JTextField(20);
-    private final JButton searchButton = new JButton(SearchContactViewModel.SEARCH_BUTTON_LABEL);
-    private final JButton backButton = new JButton(SearchContactViewModel.BACK_BUTTON_LABEL);
-    private final JPanel resultsPanel = new JPanel();
+    private final JLabel usernameLabel = new JLabel("Username:");
+    private final JLabel passwordLabel = new JLabel("Password:");
+    private final JLabel languageLabel = new JLabel("Language:");
+    private final JTextField usernameField = new JTextField(20);;
+    private final JPasswordField passwordField = new JPasswordField(20);
+    private final JComboBox<String> languages = new JComboBox<>(new String[]{"English", "French", "Spanish"});
+    private final JButton saveChanges = new JButton("Save");
+    private final JButton backButton = new JButton("Back");
 
-    public ProfileEditView(SearchContactViewModel searchContactViewModel,
-                           SearchContactController searchContactController,
-                           AddContactController addContactController,
+    public ProfileEditView(ProfileEditViewModel profileEditViewModel,
                            baseUIController baseUIController,
                            Session session) {
-        this.searchContactViewModel = searchContactViewModel;
-        this.searchContactController = searchContactController;
-        this.addContactController = addContactController;
+
+        this.profileEditViewModel = profileEditViewModel;
         this.baseUIController = baseUIController;
         this.session = session;
+        profileEditViewModel.addPropertyChangeListener(this);
 
-        this.searchContactViewModel.addPropertyChangeListener(this);
+        JPanel titlePanel = new JPanel();
+        JLabel title = new JLabel("Edit Profile");
+        title.setFont(new Font("SansSerif", Font.BOLD, 28));
+        titlePanel.setLayout(new GridLayout(1, 3));
+//        backButton.setHorizontalAlignment(JLabel.RIGHT);
+        backButton.setSize(new Dimension(50, 20));
+        backButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        titlePanel.setBackground(Color.WHITE);
+        titlePanel.add(new JLabel(" ")); // Spacer
+        titlePanel.add(title);
+        titlePanel.add(backButton);
 
-        JLabel title = new JLabel(SearchContactViewModel.TITLE_LABEL);
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JPanel usernamePanel = new JPanel();
+        usernameLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
+        usernamePanel.setLayout(new GridLayout(1, 2, 15, 2));
+        usernamePanel.setBackground(Color.WHITE);
+        usernamePanel.add(usernameLabel);
+        usernamePanel.add(usernameField);
 
-        JPanel searchPanel = new JPanel();
-        searchPanel.add(new JLabel("Username:"));
-        searchPanel.add(searchInputField);
-        searchPanel.add(searchButton);
+        JPanel passwordPanel = new JPanel();
+        passwordLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
+        passwordPanel.setLayout(new GridLayout(1, 2, 15, 2));
+        passwordPanel.setBackground(Color.WHITE);
+        passwordPanel.add(passwordLabel);
+        passwordPanel.add(passwordField);
 
-        resultsPanel.setLayout(new BoxLayout(resultsPanel, BoxLayout.Y_AXIS));
-        JScrollPane scrollPane = new JScrollPane(resultsPanel);
-        scrollPane.setPreferredSize(new Dimension(400, 300));
+        JPanel languagesPanel = new JPanel();
+        languageLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
+        languagesPanel.setLayout(new GridLayout(1, 2, 15, 2));
+        languagesPanel.setBackground(Color.WHITE);
+        languagesPanel.add(languageLabel);
+        languagesPanel.add(languages);
+
+        JPanel editProfilePanel = new JPanel(new GridLayout(3, 1, 15, 30));
+        editProfilePanel.setPreferredSize(new Dimension(700, 400));
+        editProfilePanel.setBackground(Color.WHITE);
+        editProfilePanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(220, 220, 220)),
+                BorderFactory.createEmptyBorder(30, 50, 30, 50)
+        ));
+        editProfilePanel.add(usernamePanel);
+        editProfilePanel.add(passwordPanel);
+        editProfilePanel.add(languagesPanel);
 
         JPanel buttons = new JPanel();
-        buttons.add(backButton);
+        buttons.setBackground(Color.WHITE);
+        buttons.add(saveChanges);
 
-        searchButton.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        if (evt.getSource().equals(searchButton)) {
-                            try {
-                                searchContactController.execute(searchInputField.getText());
-                            } catch (SQLException e) {
-                                JOptionPane.showMessageDialog(ProfileEditView.this,
-                                        "Database Error: " + e.getMessage());
-                            }
-                        }
-                    }
-                });
+        // Action Listeners
 
-        backButton.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        if (evt.getSource().equals(backButton)) {
-                            try {
-                                baseUIController.displayUI();
-                            } catch (SQLException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }
-                });
+        languages.addActionListener(e ->
+                profileEditViewModel.getState().setPreferredLanguage((String) languages.getSelectedItem()));
+
+        saveChanges.addActionListener(evt ->
+        {
+            try {
+                profileEditController.editProfile(session.getMainUser().getUserID(), usernameField.getText(),
+                new String(passwordField.getPassword()), (String) languages.getSelectedItem());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        backButton.addActionListener(e -> {
+            try {
+                baseUIController.displayUI();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.add(title);
-        this.add(searchPanel);
-        this.add(scrollPane);
+        this.add(titlePanel);
+        this.add(editProfilePanel);
         this.add(buttons);
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("state")) {
-            SearchContactState state = (SearchContactState) evt
-                    .getNewValue();
+            final ProfileEditState state = (ProfileEditState) evt.getNewValue();
             if (state.getError() != null) {
                 JOptionPane.showMessageDialog(this, state.getError());
-            } else {
-                updateResults(state.getResults());
+            }
+            else {
+                try {
+                    System.out.println("entered");
+                    baseUIController.displayUI();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
 
-    private void updateResults(List<User> users) {
-        resultsPanel.removeAll();
-        if (users != null) {
-            for (User user : users) {
-                JPanel userPanel = new JPanel();
-                userPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-                userPanel.add(new JLabel(user.getUsername()));
-
-                JButton addButton = new JButton(SearchContactViewModel.ADD_BUTTON_LABEL);
-                addButton.addActionListener(e -> {
-                    try {
-                        addContactController.execute(user.getUsername());
-                        JOptionPane.showMessageDialog(this, "Friend request sent to " + user.getUsername());
-                    } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(this, "Error sending request: " + ex.getMessage());
-                    }
-                });
-                userPanel.add(addButton);
-                resultsPanel.add(userPanel);
-            }
-        }
-        resultsPanel.revalidate();
-        resultsPanel.repaint();
+    public void setProfileEditController(ProfileEditController profileEditController) {
+        this.profileEditController = profileEditController;
     }
 }
 

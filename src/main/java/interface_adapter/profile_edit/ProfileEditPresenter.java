@@ -7,25 +7,27 @@ import use_case.profile_edit.ProfileEditOutputBoundary;
 import use_case.profile_edit.ProfileEditOutputData;
 
 public class ProfileEditPresenter implements ProfileEditOutputBoundary {
-    private final ViewManagerModel viewManagerModel;
-    private final HomePageViewModel homePageViewModel;
+//    private final ViewManagerModel viewManagerModel;
+//    private final HomePageViewModel homePageViewModel;
+    private final ProfileEditViewModel profileEditViewModel;
 
-    public ProfileEditPresenter(ViewManagerModel viewManagerModel, HomePageViewModel homePageViewModel) {
-        this.viewManagerModel = viewManagerModel;
-        this.homePageViewModel = homePageViewModel;
+    public ProfileEditPresenter(ProfileEditViewModel profileEditViewModel) {
+        this.profileEditViewModel = profileEditViewModel;
     }
 
     @Override
     public void prepareSuccessView(ProfileEditOutputData profileEditOutputData) {
-        final HomePageState homePageState = homePageViewModel.getState();
-        homePageState.setUser(profileEditOutputData.getUser());
-        homePageViewModel.firePropertyChange();
-        switchToHomePageView();
+        ProfileEditState profileEditState = profileEditViewModel.getState();
+        profileEditState.setUsername(profileEditOutputData.getUser().getUsername());
+        profileEditState.setPassword(profileEditOutputData.getUser().getPassword());
+        profileEditState.setPreferredLanguage(profileEditOutputData.getUser().getPreferredLanguage());
+        profileEditViewModel.firePropertyChange();
+//        switchToHomePageView();
     }
 
-    @Override
-    public void switchToHomePageView() {
-        viewManagerModel.setState(homePageViewModel.getViewName());
-        viewManagerModel.firePropertyChange();
-    }
+//    @Override
+//    public void switchToHomePageView() {
+//        viewManagerModel.setState(homePageViewModel.getViewName());
+//        viewManagerModel.firePropertyChange();
+//    }
 }

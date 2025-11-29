@@ -44,6 +44,7 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
     private final JButton friendRequestsButton = new JButton("Requests");
     private final JButton addFriendButton = new JButton("Add Friend");
     private final JButton logoutButton = new JButton("Logout");
+    private final JButton profileEditButton = new JButton("Profile Edit");
     private final JButton initiateChatButton = new JButton("Initiate Chat");
 
     public BaseUIView(baseUIViewModel viewModel, baseUIController controller,
@@ -115,17 +116,19 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
 
         styleRoundedButton(createChatButton, new Color(70, 130, 180), Color.WHITE, buttonFont);
 
-        // Same styling for friend buttons
+        // Same styling for friend and profile buttons
         Color friendButtonColor = new Color(255, 165, 0);
+        Color profileButtonColor = new Color(130, 255, 100);
         styleRoundedButton(friendRequestsButton, friendButtonColor, Color.WHITE, buttonFont);
         styleRoundedButton(addFriendButton, friendButtonColor, Color.WHITE, buttonFont);
-
+        styleRoundedButton(profileEditButton, profileButtonColor, Color.WHITE, buttonFont);
         styleRoundedButton(logoutButton, new Color(240, 240, 240), Color.BLACK, buttonFont);
 
         // Add in button order
         buttonPanel.add(createChatButton);
         buttonPanel.add(addFriendButton);
         buttonPanel.add(friendRequestsButton);
+        buttonPanel.add(profileEditButton);
         buttonPanel.add(logoutButton);
 
         this.add(buttonPanel, BorderLayout.SOUTH);
@@ -157,6 +160,15 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
+        });
+
+        profileEditButton.addActionListener(e -> {
+           try {
+               controller.switchToProfileEdit();
+           }
+           catch(SQLException ex) {
+               throw new RuntimeException(ex);
+           }
         });
 
         initiateChatButton.addActionListener(e -> {

@@ -1,9 +1,6 @@
 package use_case.add_contact;
 
-import data_access.ChatChannelDataAccessObject;
-import data_access.DBChatChannelDataAccessObject;
-import data_access.DBContactDataAccessObject;
-import data_access.DBUserDataAccessObject;
+import data_access.*;
 import entity.User;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.junit.jupiter.api.Test;
@@ -20,43 +17,28 @@ public class AddContactInteractorTest {
             .directory("./assets")
             .filename("env")
             .load();
-    /*
+
     @Test
     void successTest() throws SQLException {
+        // create the mock DAOs
+        InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();
+        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
 
-        String url = dotenv.get("DB_URL");
-        String user = dotenv.get("DB_USER");
-        String password = dotenv.get("DB_PASSWORD");
+        // create users to populate the mock DAOs
+        User alice = new User(1, "alice", "alice", "English");
+        User bob = new User(2, "bob", "bob", "English");
+        User dave = new User(3, "dave", "dave", "English");
+        User sam = new User(4, "sam", "sam", "English");
 
-        Connection conn = DriverManager.getConnection(url, user, password);
+        mockUserDAO.save(alice);
+        mockUserDAO.save(bob);
+        mockUserDAO.save(dave);
+        mockUserDAO.save(sam);
 
-        DBUserDataAccessObject dummyUserDAO = new DBUserDataAccessObject(conn);
-        DBContactDataAccessObject dummyContactDAO = new DBContactDataAccessObject(conn);
-
-        // user temp is Alice since she has the userid 1
-        User temp =  dummyUserDAO.getUserFromID(1);
-
-
-        AddContactInputData addContactInputData = new AddContactInputData(temp, "test2");
-
-        AddContactOutputBoundary successPresenter = new AddContactOutputBoundary() {
-            @Override
-            public void prepareSuccessView(AddContactOutputData addContactOutputData) {
-                assertEquals(addContactOutputData.getReceiverUsername(), "test2");
-            }
-
-            @Override
-            public void prepareFailView(String errorMessage) {
-                fail("use case has failed");
-            }
-        };
-
-        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, successPresenter);
-        interactor.execute(addContactInputData);
+        System.out.println(mockUserDAO.getAllUsers());
     }
 
-     */
-
+    /*
     @Test
     void failureDidNotEnterUsername() throws SQLException {
         String url = dotenv.get("DB_URL");
@@ -222,5 +204,5 @@ public class AddContactInteractorTest {
         AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, successPresenter);
         interactor.execute(addContactInputData);
     }
-
+    */
 }

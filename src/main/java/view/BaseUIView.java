@@ -205,9 +205,6 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
 
                 @Override
                 protected void done() {
-                    // Now the chat messages are loaded into the view model
-                    // Scroll AFTER the UI fully lays out
-
                     SwingUtilities.invokeLater(() -> {
                         SwingUtilities.invokeLater(() -> {
                             JScrollBar v = newChatChannelView.getScrollPane().getVerticalScrollBar();

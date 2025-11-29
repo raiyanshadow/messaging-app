@@ -86,7 +86,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         this.add(chatPreview);
 
         back.addActionListener(event -> {
-            dispose(); // stop listeners + thread for this view
+            dispose();
             try {
                 baseUIController.displayUI();
             } catch (SQLException e) {
@@ -117,7 +117,6 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         lastRenderedCount = 0;
         firstOpen = true;
 
-        // start thread (unchanged call)
         startThread();
     }
 
@@ -132,14 +131,12 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     }
 
     public void dispose() {
-        // stop thread loop
         running = false;
         if (thread != null) {
             thread.interrupt();
             try { thread.join(50); } catch (InterruptedException ignored) {}
         }
 
-        // remove listeners (only if view model exposes remove)
         try {
             updateChatChannelViewModel.removePropertyChangeListener(this);
         } catch (Exception ignored) {}
@@ -182,7 +179,6 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 } catch (InterruptedException e) {
-                    // exit loop if interrupted
                     break;
                 }
             }
@@ -195,16 +191,13 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private void updateMessage(List<MessageViewModel> messages) {
         if (messages == null) return;
 
-        // If nothing new, do nothing
         if (messages.size() == lastRenderedCount) return;
 
-        // Append only new messages
         for (int i = lastRenderedCount; i < messages.size(); i++) {
             MessageViewModel message = messages.get(i);
             boolean isSelf = (message.getState().getSenderID().equals(this.senderID));
             String name = isSelf ? senderUsername : receiverUsername;
 
-            // Create bubble using your existing MessagePanel API
             MessagePanel messagePanel = new MessagePanel(new JLabel(name),
                     new JLabel(message.getState().getContent()),
                     new JLabel(message.getState().getTimestamp().toString()));
@@ -215,7 +208,6 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
                     isSelf
             );
 
-            // Put bubble in wrapper so alignment works and bubble isn't stretched
             JPanel wrapper = new JPanel();
             wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.X_AXIS));
             wrapper.setOpaque(false);
@@ -255,7 +247,6 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         int extent = sb.getModel().getExtent();
         int max = sb.getMaximum();
 
-        // threshold so tiny scrollbars still work
         return value + extent >= max - 20;
     }
 

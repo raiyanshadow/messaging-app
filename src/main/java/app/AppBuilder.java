@@ -198,7 +198,7 @@ public class AppBuilder {
                 userDataAccessObject, contactDataAccessObject, addContactPresenter
         );
         FriendRequestInputBoundary friendRequestInteractor = new FriendRequestInteractor(
-                contactDataAccessObject, friendRequestPresenter
+                contactDataAccessObject, friendRequestPresenter, sessionManager
         );
         LogoutInputBoundary logoutInteractor = new LogoutInteractor(logoutPresenter);
         UpdateChatChannelInputBoundary updateInteractor = new UpdateChatChannelInteractor(chatChannelDataAccessObject,
@@ -206,7 +206,7 @@ public class AppBuilder {
         SendMessageInputBoundary sendInteractor = new SendMessageInteractor(sendMessagePresenter,
                 userDataAccessObject, messageDataAccessObject, sessionManager, messageSender);
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, chatChannelDataAccessObject,
-                userDataAccessObject, sessionManager);
+                userDataAccessObject, sessionManager, contactDataAccessObject);
 
         AddChatChannelController addChatChannelController = new AddChatChannelController(addChatChannelInteractor);
         AddContactController addContactController = new AddContactController(addContactInteractor);
@@ -217,7 +217,7 @@ public class AppBuilder {
         baseUIController = new baseUIController(baseUIInteractor);
 
         createChatView = new CreateChatView(sessionManager, addChatChannelController,
-                baseUIViewModel, baseUIController);
+                baseUIViewModel, baseUIController, addChatChannelViewModel);
         addContactView = new AddContactView(addContactViewModel, viewManagerModel, sessionManager, baseUIController);
 
         try {

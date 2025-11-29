@@ -91,7 +91,8 @@ public class FriendRequestViewTest {
 
         AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager,
                 channelCreator);
-        BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager);
+        BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager,
+                dummyContactDAO);
 
         AddChatChannelController addChatChannelController = new AddChatChannelController(addChatChannelInteractor);
         baseUIController baseUIController = new baseUIController(baseUIInteractor);
@@ -100,7 +101,7 @@ public class FriendRequestViewTest {
         FriendRequestPresenter presenter = new FriendRequestPresenter(friendRequestViewModel, viewManagerModel, baseUIViewModel);
         FriendRequestView friendRequestView = new FriendRequestView(friendRequestViewModel, viewManagerModel, sessionManager, baseUIController);
 
-        FriendRequestInputBoundary interactor = new FriendRequestInteractor(dummyContactDAO, presenter);
+        FriendRequestInputBoundary interactor = new FriendRequestInteractor(dummyContactDAO, presenter, sessionManager);
         FriendRequestController controller = new FriendRequestController(interactor);
         friendRequestView.setFriendRequestController(controller);
 
@@ -132,7 +133,8 @@ public class FriendRequestViewTest {
         BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
                 chatChannelViewModel,  viewManagerModel, (SessionManager) sessionManager, viewManager,
                 sendMessageController, updateChatChannelController, logoutController);
-        CreateChatView addChatChannelView = new CreateChatView(sessionManager, addChatChannelController, baseUIViewModel, baseUIController);
+        CreateChatView addChatChannelView = new CreateChatView(sessionManager, addChatChannelController, baseUIViewModel, baseUIController,
+                addChatChannelViewModel);
 
         viewManager.addView(friendRequestView, friendRequestViewModel.getViewName());
         viewManager.addView(baseUIView, baseUIViewModel.getViewName());

@@ -10,6 +10,7 @@ import interface_adapter.chat_channel.ChatChannelViewModel;
 import interface_adapter.chat_channel.SendMessageController;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
+import interface_adapter.update_chat_channel.UpdateChatChannelState;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
 import session.SessionManager;
 
@@ -186,6 +187,11 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
                 senderUsername = sessionManager.getMainUser().getUsername();
                 receiverUsername = chat.getUser1().getUsername();
             }
+            if (this.chatChannelView != null) {
+                try { this.chatChannelView.dispose(); } catch (Exception ignored) {}
+            }
+            updateChatChannelViewModel.setState(new UpdateChatChannelState());
+            updateChatChannelViewModel.firePropertyChange();
             ChatChannelView newChatChannelView = new ChatChannelView(updateChatChannelViewModel,
                     senderID, receiverID, senderUsername,
                     receiverUsername, chat.getChatURL(), updateChatChannelController, sendMessageController);

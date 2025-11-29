@@ -4,6 +4,7 @@ import entity.Contact;
 import entity.User;
 import interface_adapter.add_chat_channel.AddChatChannelController;
 import interface_adapter.add_chat_channel.AddChatChannelState;
+import interface_adapter.add_chat_channel.AddChatChannelViewModel;
 import interface_adapter.base_UI.baseUIController;
 import interface_adapter.base_UI.baseUIState;
 import interface_adapter.base_UI.baseUIViewModel;
@@ -21,6 +22,7 @@ public class CreateChatView extends JPanel implements PropertyChangeListener {
     private final Session sessionManager;
     private final JButton createChatButton;
     private AddChatChannelController addChatChannelController = null;
+    private AddChatChannelViewModel addChatChannelViewModel;
     private final baseUIViewModel baseUIViewModel;
     private final baseUIController baseUIController;
 
@@ -30,7 +32,8 @@ public class CreateChatView extends JPanel implements PropertyChangeListener {
     public CreateChatView(Session sessionManager,
                           AddChatChannelController addChatChannelController,
                           baseUIViewModel baseUIViewModel,
-                          baseUIController baseUIController) {
+                          baseUIController baseUIController,
+                          AddChatChannelViewModel addChatChannelViewModel) {
 
         System.out.println("Hello");
 
@@ -38,6 +41,9 @@ public class CreateChatView extends JPanel implements PropertyChangeListener {
         this.addChatChannelController = addChatChannelController;
         this.baseUIViewModel = baseUIViewModel;
         this.baseUIController = baseUIController;
+        this.addChatChannelViewModel = addChatChannelViewModel;
+
+        addChatChannelViewModel.addPropertyChangeListener(this);
 
         User currentUser = sessionManager.getMainUser();
 
@@ -144,29 +150,16 @@ public class CreateChatView extends JPanel implements PropertyChangeListener {
         southPanel.add(buttonPanel);
 
         add(southPanel, BorderLayout.SOUTH);
-
-        // Initial contact load
-        reloadContacts(currentUser.getContacts());
-
-        // Listen for contact updates
-        this.baseUIViewModel.addPropertyChangeListener(evt -> {
-            if ("contacts_updated".equals(evt.getPropertyName())) {
-                baseUIState state = (baseUIState) evt.getNewValue();
-                reloadContacts(state.getContacts());
-            }
-        });
-    }
-
-    private void reloadContacts(List<Contact> contacts) {
-        contactListModel.clear();
-        if (contacts == null) return;
-        for (Contact contact : contacts) {
-            contactListModel.addElement(contact);
-        }
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        contactListModel.clear();
+        List<Contact> contacts = sessionManager.getMainUser().getContacts();
+        if (contacts == null) return;
+        for (Contact contact : contacts) {
+            contactListModel.addElement(contact);
+        }
         if (evt.getNewValue() instanceof AddChatChannelState) {
             AddChatChannelState state = (AddChatChannelState) evt.getNewValue();
             if (state.getErrorMessage() != null) {

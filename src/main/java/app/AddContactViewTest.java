@@ -106,7 +106,8 @@ public class AddContactViewTest {
 
         AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager,
                 channelCreator);
-        BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager);
+        BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager,
+                dummyContactDAO);
         SendMessageInteractor sendMessageInteractor = new SendMessageInteractor(sendMessagePresenter, dummyUserDAO,
                 messageDataAccessObject, sessionManager, messageSender);
         UpdateChatChannelInteractor updateChatChannelInteractor = new UpdateChatChannelInteractor(
@@ -125,7 +126,8 @@ public class AddContactViewTest {
         BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
                 chatChannelViewModel, viewManagerModel, sessionManager, viewManager, sendMessageController,
                 updateChatChannelController, logoutController);
-        CreateChatView addChatChannelView = new CreateChatView(sessionManager, addChatChannelController, baseUIViewModel, baseUIController);
+        CreateChatView addChatChannelView = new CreateChatView(sessionManager, addChatChannelController, baseUIViewModel, baseUIController,
+                addChatChannelViewModel);
         AddContactView addContactview = new AddContactView(addContactViewModel, viewManagerModel, sessionManager, baseUIController);
 
         AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, presenter);

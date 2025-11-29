@@ -10,6 +10,7 @@ public class baseUIState {
     private List<String> chatnames = new ArrayList<>();
     private String errorMessage = null;
     private List<Contact> contacts = new ArrayList<>(); // ensure not null
+    List<String> friendRequests = new ArrayList<>();
 
     public List<DirectChatChannel> getChatEntities() { return chatEntities; }
     public void setChatEntities(List<DirectChatChannel> chatEntities) { this.chatEntities = chatEntities; }
@@ -22,4 +23,7 @@ public class baseUIState {
 
     public List<Contact> getContacts() { return contacts; }
     public void setContacts(List<Contact> contacts) { this.contacts = contacts; }
+
+    public List<String> getFriendRequests() { return friendRequests; }
+    public void setFriendRequests(List<String> friendRequests) { this.friendRequests = friendRequests; }
 }

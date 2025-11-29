@@ -3,6 +3,7 @@ package use_case.friend_request;
 
 import entity.Contact;
 import entity.User;
+import session.SessionManager;
 import use_case.add_contact.AddContactOutputData;
 
 import java.util.List;
@@ -11,11 +12,14 @@ public class FriendRequestInteractor implements FriendRequestInputBoundary {
 
     private final FriendRequestUserDataAccessInterface userDataAccessObject;
     private final FriendRequestOutputBoundary userPresenter;
+    private SessionManager sessionManager;
 
 
-    public FriendRequestInteractor(FriendRequestUserDataAccessInterface friendRequestUserDataAccessInterface, FriendRequestOutputBoundary friendRequestOutputBoundary) {
+    public FriendRequestInteractor(FriendRequestUserDataAccessInterface friendRequestUserDataAccessInterface, FriendRequestOutputBoundary friendRequestOutputBoundary,
+                                   SessionManager sessionManager) {
         this.userDataAccessObject = friendRequestUserDataAccessInterface;
         this.userPresenter = friendRequestOutputBoundary;
+        this.sessionManager = sessionManager;
     }
 
     @Override
@@ -25,7 +29,6 @@ public class FriendRequestInteractor implements FriendRequestInputBoundary {
 
         // decline friend request -> delete for both users
         // did select someone to decline
-        System.out.println(friendRequestInputData.getAccepted_username() + "HELLPPPPPPP");
         if (!friendRequestInputData.getAccept() && friendRequestInputData.getAccepted_username() != null){
             userDataAccessObject.deleteRequest(acceptee, accepted_username);
             userPresenter.prepareFailView("you have declined the friend request from: " + friendRequestInputData.getAccepted_username());
@@ -49,6 +52,8 @@ public class FriendRequestInteractor implements FriendRequestInputBoundary {
             // create output data including full contact list
             final FriendRequestOutputData friendRequestOutputData = new FriendRequestOutputData(acceptee, accepted_username);
             friendRequestOutputData.setUpdatedContactList(updatedContacts);
+
+            sessionManager.getMainUser().setContacts(updatedContacts);
 
             // send to presenter
             userPresenter.prepareSuccessView(friendRequestOutputData);

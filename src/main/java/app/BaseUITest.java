@@ -119,9 +119,9 @@ public class BaseUITest {
         AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter,
                 dbChatChannelDataAccessObject, dbUserDataAccessObject, sessionManager, channelCreator);
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject,
-                dbUserDataAccessObject, sessionManager);
+                dbUserDataAccessObject, sessionManager, dbContactDataAccessObject);
         FriendRequestInteractor friendRequestInteractor = new FriendRequestInteractor(dbContactDataAccessObject,
-                friendRequestPresenter);
+                friendRequestPresenter, sessionManager);
         SendMessageInteractor sendMessageInteractor = new SendMessageInteractor(sendMessagePresenter, dbUserDataAccessObject,
                 messageDataAccessObject, sessionManager, messageSender);
         UpdateChatChannelInteractor updateChatChannelInteractor = new UpdateChatChannelInteractor(
@@ -145,7 +145,7 @@ public class BaseUITest {
                 chatChannelViewModel, viewManagerModel, sessionManager, viewManager, sendMessageController,
                 updateChatChannelController, logoutController);
         CreateChatView addChatChannelView = new CreateChatView(sessionManager, addChatChannelController,
-                baseUIViewModel, baseUIController);
+                baseUIViewModel, baseUIController, addChatChannelViewModel);
         FriendRequestView friendRequestView = new FriendRequestView(friendRequestViewModel, viewManagerModel,
                 sessionManager, baseUIController);
 

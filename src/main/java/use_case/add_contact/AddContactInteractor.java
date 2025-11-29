@@ -79,7 +79,7 @@ public class AddContactInteractor implements AddContactInputBoundary {
         // receiverUsername is already a contact
         else if (inContacts) {
             // System.out.println("The user: " + receiver_username + " is already in your contacts");
-            userPresenter.prepareFailView("This user is already a contact");
+            userPresenter.prepareFailView(receiverUsername + " is already a contact");
         }
 
         // sender has already sent a friend request

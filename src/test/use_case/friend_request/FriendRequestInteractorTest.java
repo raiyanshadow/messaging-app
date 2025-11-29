@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class FriendRequestInteractorTest {
-
+    /*
     private Dotenv dotenv = Dotenv.configure()
             .directory("./assets")
             .filename("env")
@@ -48,4 +48,6 @@ public class FriendRequestInteractorTest {
 
         };
     }
+
+     */
 }

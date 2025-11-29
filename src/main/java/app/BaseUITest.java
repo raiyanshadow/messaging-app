@@ -1,5 +1,6 @@
 package app;
 
+import SendBirdAPI.ChannelCreator;
 import SendBirdAPI.MessageSender;
 import data_access.DBChatChannelDataAccessObject;
 import data_access.DBConnectionFactory;
@@ -88,6 +89,7 @@ public class BaseUITest {
                 "https://api-" + dotenv.get("MSG_APP_ID") + ".sendbird.com"
         );
         MessageSender messageSender = new MessageSender(defaultClient);
+        ChannelCreator channelCreator = new ChannelCreator(defaultClient);
         UpdateChatChannelViewModel updateChatChannelViewModel = new UpdateChatChannelViewModel();
         ViewManagerModel viewManagerModel = new ViewManagerModel();
         Connection conn = new DBConnectionFactory().createConnection();
@@ -115,11 +117,11 @@ public class BaseUITest {
 
         AddContactInteractor addContactInteractor = new AddContactInteractor(dbUserDataAccessObject, dbContactDataAccessObject, addContactPresenter);
         AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter,
-                dbChatChannelDataAccessObject, dbUserDataAccessObject, sessionManager);
+                dbChatChannelDataAccessObject, dbUserDataAccessObject, sessionManager, channelCreator);
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject,
-                dbUserDataAccessObject, sessionManager);
+                dbUserDataAccessObject, sessionManager, dbContactDataAccessObject);
         FriendRequestInteractor friendRequestInteractor = new FriendRequestInteractor(dbContactDataAccessObject,
-                friendRequestPresenter);
+                friendRequestPresenter, sessionManager);
         SendMessageInteractor sendMessageInteractor = new SendMessageInteractor(sendMessagePresenter, dbUserDataAccessObject,
                 messageDataAccessObject, sessionManager, messageSender);
         UpdateChatChannelInteractor updateChatChannelInteractor = new UpdateChatChannelInteractor(
@@ -143,7 +145,7 @@ public class BaseUITest {
                 chatChannelViewModel, viewManagerModel, sessionManager, viewManager, sendMessageController,
                 updateChatChannelController, logoutController);
         CreateChatView addChatChannelView = new CreateChatView(sessionManager, addChatChannelController,
-                baseUIViewModel, baseUIController);
+                baseUIViewModel, baseUIController, addChatChannelViewModel);
         FriendRequestView friendRequestView = new FriendRequestView(friendRequestViewModel, viewManagerModel,
                 sessionManager, baseUIController);
 

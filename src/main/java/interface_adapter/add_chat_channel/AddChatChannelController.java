@@ -19,7 +19,6 @@ public class AddChatChannelController {
         AddChatChannelInputData request = new AddChatChannelInputData(username, chatName,
                 senderID, receiverID);
         addChatChannelInteractor.CreateChannel(request);
-
     }
 
 }

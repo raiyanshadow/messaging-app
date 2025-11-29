@@ -1,5 +1,6 @@
 package view;
 
+import entity.Contact;
 import entity.DirectChatChannel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.base_UI.baseUIController;
@@ -9,6 +10,7 @@ import interface_adapter.chat_channel.ChatChannelViewModel;
 import interface_adapter.chat_channel.SendMessageController;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
+import interface_adapter.update_chat_channel.UpdateChatChannelState;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
 import session.SessionManager;
 
@@ -19,6 +21,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BaseUIView extends JPanel implements PropertyChangeListener {
 
@@ -184,6 +187,11 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
                 senderUsername = sessionManager.getMainUser().getUsername();
                 receiverUsername = chat.getUser1().getUsername();
             }
+            if (this.chatChannelView != null) {
+                try { this.chatChannelView.dispose(); } catch (Exception ignored) {}
+            }
+            updateChatChannelViewModel.setState(new UpdateChatChannelState());
+            updateChatChannelViewModel.firePropertyChange();
             ChatChannelView newChatChannelView = new ChatChannelView(updateChatChannelViewModel,
                     senderID, receiverID, senderUsername,
                     receiverUsername, chat.getChatURL(), updateChatChannelController, sendMessageController);
@@ -197,9 +205,6 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
 
                 @Override
                 protected void done() {
-                    // Now the chat messages are loaded into the view model
-                    // Scroll AFTER the UI fully lays out
-
                     SwingUtilities.invokeLater(() -> {
                         SwingUtilities.invokeLater(() -> {
                             JScrollBar v = newChatChannelView.getScrollPane().getVerticalScrollBar();
@@ -217,6 +222,8 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
         logoutButton.addActionListener(e -> {
             logoutController.logoutUser(sessionManager.getMainUser());
         });
+
+        reloadChats(sessionManager.getMainUser().getUserChats());
     }
 
     private void styleRoundedButton(JButton button, Color bg, Color fg, Font font) {
@@ -256,6 +263,15 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
         viewManagerModel.firePropertyChange();
 
     }
+
+    private void reloadChats(List<String> chatNames) {
+        chatListModel.clear();
+        if (chatNames == null) return;
+        for (String chatName : chatNames) {
+            chatListModel.addElement(chatName);
+        }
+    }
+
     public JButton getAddFriendButton() { return addFriendButton; }
     public JButton getFriendRequestsButton() { return friendRequestsButton; }
     public JButton getCreateChatButton() { return createChatButton; }

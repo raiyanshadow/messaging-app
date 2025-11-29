@@ -1,7 +1,10 @@
 package use_case.baseUI;
 
 import data_access.ChatChannelDataAccessObject;
+import data_access.ContactDataAccessObject;
+import data_access.DBContactDataAccessObject;
 import data_access.UserDataAccessObject;
+import entity.Contact;
 import entity.DirectChatChannel;
 import entity.User;
 import session.Session;
@@ -15,22 +18,22 @@ public class BaseUIInteractor implements BaseUIInputBoundary{
     BaseUIOutputBoundary presenter;
     ChatChannelDataAccessObject chatChannelDataAccess;
     UserDataAccessObject userDataAccess;
+    DBContactDataAccessObject contactDataAccess;
     Session sessionManager;
 
     public BaseUIInteractor(BaseUIOutputBoundary presenter, ChatChannelDataAccessObject chatChannelDataAccess,
-                            UserDataAccessObject userDataAccess, Session sessionManager){
+                            UserDataAccessObject userDataAccess, Session sessionManager, DBContactDataAccessObject contactDataAccess) {
         this.presenter = presenter;
         this.chatChannelDataAccess = chatChannelDataAccess;
         this.userDataAccess = userDataAccess;
         this.sessionManager = sessionManager;
+        this.contactDataAccess = contactDataAccess;
     }
 
     @Override
     public void GetUserChats(BaseUIInputData request) throws SQLException {
-
-        User mainUser = sessionManager.getMainUser();
-        System.out.println("MAIN USER CHATS: " + mainUser.getUserChats());
-        List<String> chatURLs = mainUser.getUserChats();
+        List<String> chatURLs = chatChannelDataAccess.getChatURLsByUserId(sessionManager.getMainUser()
+                .getUserID());
         List<String> chatnames = new ArrayList<>();
         List<DirectChatChannel> chatEntities = new ArrayList<>();
         for (String chatURL : chatURLs){
@@ -38,25 +41,34 @@ public class BaseUIInteractor implements BaseUIInputBoundary{
             chatnames.add(chat.getChatName());
             chatEntities.add(chat);
         }
+        sessionManager.getMainUser().setUserChats(chatnames);
         BaseUIOutputData response = new BaseUIOutputData(chatnames, chatEntities);
         presenter.DisplayUI(response);
     }
 
     @Override
     public void displayAddChat(BaseUIInputData request) {
-        BaseUIOutputData response = new BaseUIOutputData();
-        presenter.DisplayAddChat(response);
+        List<Contact> contacts = contactDataAccess.getContacts(sessionManager.getMainUser());
+        for (Contact contact : contacts){
+            System.out.println(contact.getUser().getUsername() + " with " + contact.getContact().getUsername());
+        }
+        sessionManager.getMainUser().setContacts(contacts);
+        presenter.DisplayAddChat();
     }
 
     @Override
     public void switchToFriendRequestView(BaseUIInputData request) throws SQLException {
-        BaseUIOutputData response = new BaseUIOutputData();
-        presenter.DisplayFriends(response);
+        List<String> friendRequests = new ArrayList<>();
+        contactDataAccess.updateUserFriendRequests(sessionManager.getMainUser(), friendRequests);
+        sessionManager.getMainUser().setFriendRequests(friendRequests);
+        presenter.DisplayFriends();
     }
 
     @Override
     public void switchToAddContact(BaseUIInputData request) throws SQLException {
-        BaseUIOutputData response = new BaseUIOutputData();
-        presenter.DisplayAddContact(response);
+        List<Contact> contacts = new ArrayList<>();
+        contactDataAccess.updateUserContacts(sessionManager.getMainUser(), contacts);
+        sessionManager.getMainUser().setContacts(contacts);
+        presenter.DisplayAddContact();
     }
 }

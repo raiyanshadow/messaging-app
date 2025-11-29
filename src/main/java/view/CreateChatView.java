@@ -4,6 +4,7 @@ import entity.Contact;
 import entity.User;
 import interface_adapter.add_chat_channel.AddChatChannelController;
 import interface_adapter.add_chat_channel.AddChatChannelState;
+import interface_adapter.add_chat_channel.AddChatChannelViewModel;
 import interface_adapter.base_UI.baseUIController;
 import interface_adapter.base_UI.baseUIState;
 import interface_adapter.base_UI.baseUIViewModel;
@@ -14,127 +15,156 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
+import java.util.List;
 
 public class CreateChatView extends JPanel implements PropertyChangeListener {
 
-    private final Session sessionmanager;
+    private final Session sessionManager;
     private final JButton createChatButton;
     private AddChatChannelController addChatChannelController = null;
+    private AddChatChannelViewModel addChatChannelViewModel;
     private final baseUIViewModel baseUIViewModel;
     private final baseUIController baseUIController;
 
-    public CreateChatView(Session sessionmanager,
+    private final DefaultListModel<Contact> contactListModel = new DefaultListModel<>();
+    private final JList<Contact> contactList = new JList<>(contactListModel);
+
+    public CreateChatView(Session sessionManager,
                           AddChatChannelController addChatChannelController,
                           baseUIViewModel baseUIViewModel,
-                          baseUIController baseUIController) {
+                          baseUIController baseUIController,
+                          AddChatChannelViewModel addChatChannelViewModel) {
 
-        this.sessionmanager = sessionmanager;
+        System.out.println("Hello");
+
+        this.sessionManager = sessionManager;
         this.addChatChannelController = addChatChannelController;
         this.baseUIViewModel = baseUIViewModel;
         this.baseUIController = baseUIController;
+        this.addChatChannelViewModel = addChatChannelViewModel;
 
-        final User currentUser = sessionmanager.getMainUser();
+        addChatChannelViewModel.addPropertyChangeListener(this);
+
+        User currentUser = sessionManager.getMainUser();
 
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // BACK BUTTON
+        // Top panel with label and back button
         JButton backButton = new JButton("Back");
+        Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
+        backButton.setFont(buttonFont);
+        backButton.setBackground(new Color(96, 179, 120));
+        backButton.setForeground(Color.WHITE);
+        backButton.setPreferredSize(new Dimension(140, 42));
+        backButton.setBorder(BorderFactory.createLineBorder(new Color(96, 179, 120), 1, true));
+
         backButton.addActionListener(e -> {
             try {
-                baseUIController.displayUI(); // triggers presenter → viewmanager switching
+                baseUIController.displayUI();
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
         });
 
-        // TOP PANEL WITH LABEL + BACK BUTTON
+
         JPanel topPanel = new JPanel(new BorderLayout());
         JLabel label = new JLabel("Select a user to start a chat with:");
         label.setFont(new Font("Arial", Font.BOLD, 16));
-
         topPanel.add(label, BorderLayout.WEST);
         topPanel.add(backButton, BorderLayout.EAST);
-
         add(topPanel, BorderLayout.NORTH);
 
-        // LIST MODELS
-        DefaultListModel<Object> model = new DefaultListModel<>();
-        JList<Object> userList = new JList<>(model);
-
-        DefaultListModel<String> model2 = new DefaultListModel<>();
-
-        for (Contact contact : currentUser.getContacts()) {
-            model.addElement(contact.getContact().getUsername());
-            model.addElement(contact.getUser());
-            model2.addElement(contact.getUser().getUsername());
-        }
-
-        JList<String> userListnames = new JList<>(model2);
-        userListnames.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        JScrollPane scrollPane = new JScrollPane(userList);
+        // Contact list
+        contactList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        contactList.setCellRenderer((list, value, index, isSelected, cellHasFocus) -> {
+            User friend = value.getUser().equals(currentUser) ? value.getContact() : value.getUser();
+            JLabel lbl = new JLabel(friend.getUsername());
+            lbl.setOpaque(true);
+            if (isSelected) lbl.setBackground(list.getSelectionBackground());
+            return lbl;
+        });
+        JScrollPane scrollPane = new JScrollPane(contactList);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Chat Name Field
+        // Chat name panel
         JPanel bottomTextPanel = new JPanel(new BorderLayout());
-        JLabel chatnameLabel = new JLabel("Type your chat name:");
-        JTextField chatname = new JTextField();
-        bottomTextPanel.add(chatnameLabel, BorderLayout.NORTH);
-        bottomTextPanel.add(chatname, BorderLayout.CENTER);
+        JLabel chatNameLabel = new JLabel("Type your chat name:");
+        JTextField chatNameField = new JTextField();
+        bottomTextPanel.add(chatNameLabel, BorderLayout.NORTH);
+        bottomTextPanel.add(chatNameField, BorderLayout.CENTER);
 
-        add(bottomTextPanel, BorderLayout.SOUTH);
+        chatNameField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            private void update() {
+                createChatButton.setEnabled(
+                        contactList.getSelectedIndex() != -1 &&
+                                !chatNameField.getText().trim().isEmpty()
+                );
+            }
 
-        // Create Chat Button
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { update(); }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { update(); }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { update(); }
+        });
+
+        // Create chat button
         createChatButton = new JButton("Create Chat");
-        createChatButton.setEnabled(false);
-
+        createChatButton.setEnabled(true);
         createChatButton.addActionListener(e -> {
-            String selectedUser = userListnames.getSelectedValue();
-            if (selectedUser != null) {
-                User contactUser = null;
-
-                for (int i = 0; i < model.size(); i++) {
-                    if (model.getElementAt(i).equals(selectedUser)) {
-                        contactUser = (User) model.getElementAt(i + 1);
-                        break;
-                    }
-                }
-
+            Contact selectedContact = contactList.getSelectedValue();
+            System.out.println(selectedContact);
+            if (selectedContact != null) {
+                User friend = selectedContact.getUser().equals(currentUser) ? selectedContact.getContact() : selectedContact.getUser();
                 try {
                     addChatChannelController.CreateChannel(
-                            contactUser.getUsername(),
-                            chatname.getText(),
+                            friend.getUsername(),
+                            chatNameField.getText(),
                             currentUser.getUserID(),
-                            contactUser.getUserID()
+                            friend.getUserID()
                     );
+                    System.out.println("Chat Created");
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
             }
         });
 
-        userListnames.addListSelectionListener(e -> {
+        contactList.addListSelectionListener(e -> {
             createChatButton.setEnabled(
-                    !chatname.getText().trim().isEmpty() &&
-                            userListnames.getSelectedIndex() != -1
+                    contactList.getSelectedIndex() != -1 && !chatNameField.getText().trim().isEmpty()
             );
         });
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(createChatButton);
-        add(buttonPanel, BorderLayout.AFTER_LAST_LINE);
+
+        JPanel southPanel = new JPanel();
+        southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.Y_AXIS));
+
+        southPanel.add(bottomTextPanel);
+        southPanel.add(buttonPanel);
+
+        add(southPanel, BorderLayout.SOUTH);
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        final AddChatChannelState state = (AddChatChannelState) evt.getNewValue();
-        if (state.getErrorMessage() != null) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    state.getErrorMessage(),
-                    "Chat Warning",
-                    JOptionPane.WARNING_MESSAGE
-            );
+        contactListModel.clear();
+        List<Contact> contacts = sessionManager.getMainUser().getContacts();
+        if (contacts == null) return;
+        for (Contact contact : contacts) {
+            contactListModel.addElement(contact);
+        }
+        if (evt.getNewValue() instanceof AddChatChannelState) {
+            AddChatChannelState state = (AddChatChannelState) evt.getNewValue();
+            if (state.getErrorMessage() != null) {
+                JOptionPane.showMessageDialog(this, state.getErrorMessage(), "Chat Warning", JOptionPane.WARNING_MESSAGE);
+            }
         }
     }
 

@@ -1,5 +1,7 @@
 package use_case.search_contact;
 
-public interface SearchContactInputBoundary {
+import java.sql.SQLException;
 
+public interface SearchContactInputBoundary {
+    void execute(SearchContactInputData inputData) throws SQLException;
 }

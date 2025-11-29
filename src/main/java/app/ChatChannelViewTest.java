@@ -25,6 +25,7 @@ import interface_adapter.logout.LogoutViewModel;
 import interface_adapter.profile_edit.ProfileEditViewModel;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
 import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
+import interface_adapter.update_chat_channel.UpdateChatChannelState;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.sendbird.client.ApiClient;

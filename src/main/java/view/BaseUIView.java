@@ -192,7 +192,7 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
                 try { this.chatChannelView.dispose(); } catch (Exception ignored) {}
             }
             try {
-                updateChatChannelController.execute(chat.getChatURL());
+                updateChatChannelController.execute(chat.getChatUrl());
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }

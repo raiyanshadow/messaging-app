@@ -43,14 +43,10 @@ public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
 
         System.out.println("Test");
 
-        String chatUrl = channelCreator.SendbirdChannelCreator(dotenv.get("MSG_TOKEN"), request.getChatName(),
-                request.getSenderID(), request.getReceiverID());
-        System.out.println("chatUrl: " + chatUrl);
-
         //create response model for any new info needed for view
         AddChatChannelOutputData response = new AddChatChannelOutputData(
                 request.getChatName(),
-                chatUrl,
+                "",
                 request.getSenderID(),
                 request.getReceiverID(),
                 contactIDs);
@@ -69,6 +65,9 @@ public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
         }
         if (newChat) {
             //create direct channel entity
+            String chatUrl = channelCreator.SendbirdChannelCreator(dotenv.get("MSG_TOKEN"), request.getChatName(),
+                    request.getSenderID(), request.getReceiverID());
+            System.out.println("chatUrl: " + chatUrl);
             DirectChatChannel newChannel = new DirectChatChannel(request.getChatName(),
                     currentUser, toAdd, chatUrl, new ArrayList<>());
 

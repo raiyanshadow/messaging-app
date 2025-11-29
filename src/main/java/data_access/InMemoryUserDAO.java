@@ -21,6 +21,7 @@ public class InMemoryUserDAO implements UserDataAccessObject {
     @Override
     public Integer save(User user) throws SQLException {
         users.add(user);
+        // Must return Integer to match the interface signature
         return user.getUserID();
     }
 

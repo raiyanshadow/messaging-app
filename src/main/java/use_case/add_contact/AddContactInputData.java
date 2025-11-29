@@ -1,23 +1,16 @@
 package use_case.add_contact;
 
-import entity.User;
 
 public class AddContactInputData {
-    // user1 is the user who sends out add contact request
-    private final User sender;
-    // user2 is the user who receives add contact request
-    private final String receiver_username;
+    // the username that the user inputs -> the user who will receive the friend request
+    private final String receiverUsername;
 
-    public AddContactInputData(User sender, String receiver_username) {
-        this.sender = sender;
-        this.receiver_username = receiver_username;
+    public AddContactInputData(String receiverUsername) {
+        this.receiverUsername = receiverUsername;
     }
 
-    User getSender() {
-        return sender;
-    }
     String getReceiverUsername() {
-        return receiver_username;
+        return receiverUsername;
     }
 
 }

@@ -8,17 +8,17 @@ public interface FriendRequestUserDataAccessInterface {
 
     /**
      * Accept a friend request
-     * @param acceptee person who is accepting the request
-     * @param accepted_username person who got accepted
+     * @param accepter person who is accepting the request
+     * @param acceptedUsername person who got accepted
      */
-    void acceptRequest(User acceptee, String accepted_username);
+    void acceptRequest(User accepter, String acceptedUsername);
 
     /**
      * Decline a friend request
-     * @param acceptee person who is declining request
-     * @param accepted_username person whose request got declined
+     * @param decliner user who is declining request
+     * @param acceptedUsername person whose request got declined
      */
-    void deleteRequest(User acceptee, String accepted_username);
+    void deleteRequest(User decliner, String acceptedUsername);
 
     /**
      * Fetch the updated contacts for a user

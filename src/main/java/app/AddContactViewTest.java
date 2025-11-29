@@ -127,7 +127,7 @@ public class AddContactViewTest {
                 addChatChannelViewModel);
         AddContactView addContactview = new AddContactView(addContactViewModel, viewManagerModel, sessionManager, baseUIController);
 
-        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, presenter);
+        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, presenter, sessionManager);
         AddContactController controller = new AddContactController(interactor);
         addContactview.setAddContactController(controller);
 

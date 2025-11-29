@@ -104,7 +104,7 @@ public class BaseUITest {
         LogoutOutputBoundary logoutPresenter = new LogoutPresenter(logoutViewModel, viewManagerModel, loginViewModel, sessionManager, appBuilder);
 
 
-        AddContactInteractor addContactInteractor = new AddContactInteractor(dbUserDataAccessObject, dbContactDataAccessObject, addContactPresenter);
+        AddContactInteractor addContactInteractor = new AddContactInteractor(dbUserDataAccessObject, dbContactDataAccessObject, addContactPresenter, sessionManager);
         AddChatChannelInteractor addChatChannelInteractor = new AddChatChannelInteractor(addChatChannelPresenter,
                 dbChatChannelDataAccessObject, dbUserDataAccessObject, sessionManager, channelCreator);
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject,

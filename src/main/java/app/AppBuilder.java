@@ -204,7 +204,7 @@ public class AppBuilder {
                 channelCreator
         );
         AddContactInputBoundary addContactInteractor = new AddContactInteractor(
-                userDataAccessObject, contactDataAccessObject, addContactPresenter
+                userDataAccessObject, contactDataAccessObject, addContactPresenter, sessionManager
         );
         FriendRequestInputBoundary friendRequestInteractor = new FriendRequestInteractor(
                 contactDataAccessObject, friendRequestPresenter, sessionManager

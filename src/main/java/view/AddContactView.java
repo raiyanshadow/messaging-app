@@ -170,9 +170,8 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
             AddContactState state = addContactViewModel.getState();
             // state.setSender(sessionManager.getMainUser());
             try {
-                addContactController.execute(
-                        state.getUsernameInput()
-                );
+                addContactController.execute(state.getUsernameInput());
+                customEditor.setItem("");
             }
             catch (SQLException e) {
                 throw new RuntimeException(e);

@@ -1,6 +1,7 @@
 package data_access;
 
 import entity.User;
+import use_case.add_contact.AddContactUserDataAccessInterface;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * In-memory implementation of UserDataAccessObject for testing purposes.
  */
-public class InMemoryUserDAO implements UserDataAccessObject {
+public class InMemoryUserDAO implements UserDataAccessObject, AddContactUserDataAccessInterface {
 
     private final List<User> users = new ArrayList<>();
 

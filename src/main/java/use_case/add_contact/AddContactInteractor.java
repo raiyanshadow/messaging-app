@@ -5,18 +5,19 @@ import data_access.UserDataAccessObject;
 import entity.Contact;
 import entity.User;
 import session.Session;
+import use_case.friend_request.FriendRequestUserDataAccessInterface;
 
 import java.sql.SQLException;
 
 public class AddContactInteractor implements AddContactInputBoundary {
 
-    private final UserDataAccessObject userDataAccessObject;
-    private final ContactDataAccessObject contactDataAccessObject;
+    private final AddContactUserDataAccessInterface userDataAccessObject;
+    private final AddContactContactDataAccessInterface contactDataAccessObject;
     private final AddContactOutputBoundary userPresenter;
     private final Session sessionManager;
 
 
-    public AddContactInteractor(UserDataAccessObject userDataAccessObject, ContactDataAccessObject contactDataAccessObject, AddContactOutputBoundary addContactOutputBoundary, Session sessionManager) {
+    public AddContactInteractor(AddContactUserDataAccessInterface userDataAccessObject, AddContactContactDataAccessInterface contactDataAccessObject, AddContactOutputBoundary addContactOutputBoundary, Session sessionManager) {
         this.userDataAccessObject = userDataAccessObject;
         this.contactDataAccessObject = contactDataAccessObject;
         this.userPresenter = addContactOutputBoundary;

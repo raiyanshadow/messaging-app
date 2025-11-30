@@ -1,13 +1,12 @@
 package use_case.update_chat_channel;
 
 import data_access.InMemoryChatDAO;
-import entity.DirectChatChannel;
-import entity.DirectChatChannelFactory;
-import entity.Message;
-import entity.User;
+import entity.*;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,15 @@ public class UpdateChatChannelInteractorTest {
         UpdateChatChannelInputData inputData = new UpdateChatChannelInputData(url);
         User sender = new User(1, "Alice", "abc", "English");
         User receiver = new User(2, "Bob", "def", "English");
-        List<Message<String>> messages = new ArrayList<>();
+        List<Message> messages = new ArrayList<>();
+        messages.add(new TextMessage((long) 1, (long) 1, url, 1, 2, "received",
+                Timestamp.from(Instant.now()), "hi"));
+        List<MessageDTO> messageDTOs = new ArrayList<>();
+        for (Message message: messages) {
+            MessageDTO messageDto = new MessageDTO(message.getChannelUrl(), message.getSenderId(),
+                    message.getReceiverId(), message.getTimestamp(), (String) message.getContent());
+            messageDTOs.add(messageDto);
+        }
         DirectChatChannel chat = new DirectChatChannel("Example Chat", sender, receiver, url, messages);
         mockChatDAO.addChat(chat);
 
@@ -39,7 +46,12 @@ public class UpdateChatChannelInteractorTest {
                 assertEquals(sender.getUserID(), chat.getUser1ID());
                 assertEquals(receiver.getUserID(), chat.getUser2ID());
                 assertEquals("Example Chat", chat.getChatName());
-                assertEquals(messages, chat.getMessages());
+                assertEquals(messageDTOs.size(), chat.getMessages().size());
+                assertEquals(messageDTOs.get(0).getChannelURL(), chat.getMessages().get(0).getChannelURL());
+                assertEquals(messageDTOs.get(0).getSenderID(), chat.getMessages().get(0).getSenderID());
+                assertEquals(messageDTOs.get(0).getReceiverID(), chat.getMessages().get(0).getReceiverID());
+                assertEquals(messageDTOs.get(0).getTimestamp(), chat.getMessages().get(0).getTimestamp());
+                assertEquals(messageDTOs.get(0).getContent(), chat.getMessages().get(0).getContent());
             }
 
             @Override
@@ -80,6 +92,33 @@ public class UpdateChatChannelInteractorTest {
     }
 
     @Test
+    void failureChatURLEmpty() throws SQLException {
+        UpdateChatChannelInputData inputData = new UpdateChatChannelInputData("");
+        List<Message> messages = new ArrayList<>();
+
+        User sender = new User(1, "Alice", "abc", "English");
+        User receiver = new User(2, "Bob", "def", "English");
+        InMemoryChatDAO mockChatDAO = new InMemoryChatDAO();
+        DirectChatChannel chat = DirectChatChannelFactory.createDirectChatChannel("Failure chat empty", sender,
+                receiver, "", messages);
+        mockChatDAO.addChat(chat);
+
+        UpdateChatChannelOutputBoundary failurePresenter = new UpdateChatChannelOutputBoundary() {
+            @Override
+            public void prepareSuccessView(UpdateChatChannelOutputData chat) {
+                fail("Use case success is unexpected");
+            }
+            @Override
+            public void prepareFailView(String errorMessage) {
+                assertEquals("Chat URL is empty", errorMessage);
+            }
+        };
+
+        UpdateChatChannelInputBoundary interactor = new UpdateChatChannelInteractor(mockChatDAO, failurePresenter);
+        interactor.execute(inputData);
+    }
+
+    @Test
     void failureChatURLIsNullTest() throws SQLException {
         UpdateChatChannelInputData inputData = new UpdateChatChannelInputData(null);
         List<Message<String>> messages = new ArrayList<>();
@@ -87,8 +126,8 @@ public class UpdateChatChannelInteractorTest {
         User sender = new User(1, "Alice", "abc", "English");
         User receiver = new User(2, "Bob", "def", "English");
         InMemoryChatDAO mockChatDAO = new InMemoryChatDAO();
-        DirectChatChannelFactory factory = new DirectChatChannelFactory();
-        DirectChatChannel chat = factory.createDirectChatChannel("Failure chat null", sender, receiver, "correctURL", messages);
+        DirectChatChannel chat = DirectChatChannelFactory.createDirectChatChannel("Failure chat null",
+                sender, receiver, "correctURL", messages);
         mockChatDAO.addChat(chat);
 
         UpdateChatChannelOutputBoundary failurePresenter = new UpdateChatChannelOutputBoundary() {

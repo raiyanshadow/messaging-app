@@ -25,6 +25,7 @@ public class CreateChatView extends JPanel implements PropertyChangeListener {
     private AddChatChannelViewModel addChatChannelViewModel;
     private final baseUIViewModel baseUIViewModel;
     private final baseUIController baseUIController;
+    private final boolean isnewchat = true;
 
     private final DefaultListModel<Contact> contactListModel = new DefaultListModel<>();
     private final JList<Contact> contactList = new JList<>(contactListModel);
@@ -157,16 +158,35 @@ public class CreateChatView extends JPanel implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        // Update contact list logic
         contactListModel.clear();
-        List<Contact> contacts = sessionManager.getMainUser().getContacts();
-        if (contacts == null) return;
-        for (Contact contact : contacts) {
-            contactListModel.addElement(contact);
+        if (sessionManager.getMainUser() != null) {
+            List<Contact> contacts = sessionManager.getMainUser().getContacts();
+            if (contacts != null) {
+                for (Contact contact : contacts) {
+                    contactListModel.addElement(contact);
+                }
+            }
         }
-        if (evt.getNewValue() instanceof AddChatChannelState) {
+
+        if (evt.getNewValue() != null) {
             AddChatChannelState state = (AddChatChannelState) evt.getNewValue();
+            System.out.print(state.getErrorMessage());
+            // 1. Handle Error Popup
             if (state.getErrorMessage() != null) {
-                JOptionPane.showMessageDialog(this, state.getErrorMessage(), "Chat Warning", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, state.getErrorMessage(), "Chat Creation Failed", JOptionPane.ERROR_MESSAGE);
+                state.setErrorMessage(null); // Clear error so it doesn't show again unexpectedly
+            }
+
+            // 2. Handle Success -> Switch Screen
+            else if (state.isCreationSuccess()) {
+                state.setCreationSuccess(false); // Reset flag
+                try {
+                    // THIS is where we switch back to the home page
+                    baseUIController.displayUI();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }

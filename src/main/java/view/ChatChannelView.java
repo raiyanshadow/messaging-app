@@ -21,6 +21,7 @@ import java.util.List;
 public class ChatChannelView extends JPanel implements PropertyChangeListener {
     // Variables required for view
     private final UpdateChatChannelViewModel updateChatChannelViewModel;
+    private final String chatURL;
     private UpdateChatChannelController updateChatChannelController = null;
     private final MessageViewModel messageViewModel;
     private baseUIController baseUIController = null;

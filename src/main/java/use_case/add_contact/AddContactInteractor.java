@@ -1,11 +1,10 @@
 package use_case.add_contact;
 
-import data_access.ContactDataAccessObject;
-import data_access.UserDataAccessObject;
+
 import entity.Contact;
 import entity.User;
 import session.Session;
-import use_case.friend_request.FriendRequestUserDataAccessInterface;
+
 
 import java.sql.SQLException;
 

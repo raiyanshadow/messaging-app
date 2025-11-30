@@ -4,14 +4,11 @@ import interface_adapter.add_contact.AddContactController;
 import interface_adapter.add_contact.AddContactState;
 import interface_adapter.add_contact.AddContactViewModel;
 import interface_adapter.base_UI.baseUIController;
-import interface_adapter.ViewManagerModel;
-import session.Session;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
@@ -21,16 +18,11 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
     private final AddContactViewModel addContactViewModel;
     private final JTextField usernameField =  new JTextField(20);
     private AddContactController addContactController = null;
-    private final ViewManagerModel viewManagerModel;
-    private final Session sessionmanager;
-    private final baseUIController baseUIController;
 
 
-    public AddContactView(AddContactViewModel addContactViewModel, ViewManagerModel viewManagerModel, Session sessionmanager, baseUIController baseUIController) {
+
+    public AddContactView(AddContactViewModel addContactViewModel, baseUIController baseUIController) {
         this.addContactViewModel = addContactViewModel;
-        this.viewManagerModel = viewManagerModel;
-        this.sessionmanager = sessionmanager;
-        this.baseUIController = baseUIController;
 
         addContactViewModel.addPropertyChangeListener(this);
 
@@ -87,12 +79,12 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
                 BorderFactory.createEmptyBorder(30, 40, 30, 40)
         ));
 
-        JLabel userinputLabel = new JLabel(AddContactViewModel.USERNAME_LABEL, SwingConstants.CENTER);
-        userinputLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
-        userinputLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel userInputLabel = new JLabel(AddContactViewModel.USERNAME_LABEL, SwingConstants.CENTER);
+        userInputLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
+        userInputLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         midPanel.setLayout(new BoxLayout(midPanel, BoxLayout.Y_AXIS));
         midPanel.add(Box.createVerticalStrut(100));
-        midPanel.add(userinputLabel);
+        midPanel.add(userInputLabel);
         midPanel.add(Box.createVerticalStrut(30));
         midPanel.setBackground(Color.WHITE);
         usernameField.setPreferredSize(new Dimension(100, 30));
@@ -115,7 +107,7 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
 
         addButton.addActionListener(evt -> {
             AddContactState state = addContactViewModel.getState();
-            // state.setSender(sessionmanager.getMainUser());
+            // state.setSender(sessionManager.getMainUser());
             try {
                 addContactController.execute(
                         state.getUsernameInput()
@@ -137,13 +129,7 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
 
     }
 
-    /**
-     * React to a button click that results in evt.
-     * @param evt the ActionEvent to react to
-     */
-    public void actionPerformed(ActionEvent evt) {
-        System.out.println("Click " + evt.getActionCommand());
-    }
+
 
     private void addUsernameListener() {
         usernameField.getDocument().addDocumentListener(new DocumentListener() {

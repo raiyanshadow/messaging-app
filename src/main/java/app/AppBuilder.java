@@ -229,7 +229,7 @@ public class AppBuilder {
 
         createChatView = new CreateChatView(sessionManager, addChatChannelController,
                 baseUIViewModel, baseUIController, addChatChannelViewModel);
-        addContactView = new AddContactView(addContactViewModel, viewManagerModel, sessionManager, baseUIController);
+        addContactView = new AddContactView(addContactViewModel, baseUIController);
         profileEditView = new ProfileEditView(profileEditViewModel, baseUIController, sessionManager);
 
         try {
@@ -239,7 +239,7 @@ public class AppBuilder {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        friendRequestView = new FriendRequestView(friendRequestViewModel, viewManagerModel, sessionManager,
+        friendRequestView = new FriendRequestView(friendRequestViewModel, sessionManager,
                 baseUIController);
         logoutView = new LogoutView();
 

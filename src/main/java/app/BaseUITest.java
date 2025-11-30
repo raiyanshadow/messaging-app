@@ -92,7 +92,7 @@ public class BaseUITest {
         //create needed dependencies
         AddContactPresenter addContactPresenter = new AddContactPresenter(addContactViewModel, viewManagerModel);
         FriendRequestPresenter friendRequestPresenter = new FriendRequestPresenter(friendRequestViewModel,
-                viewManagerModel, baseUIViewModel);
+                viewManagerModel, baseUIViewModel, sessionManager);
         AddChatChannelPresenter addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel,
                 addChatChannelViewModel, viewManagerModel);
         ProfileEditPresenter profileEditPresenter = new ProfileEditPresenter(profileEditViewModel);

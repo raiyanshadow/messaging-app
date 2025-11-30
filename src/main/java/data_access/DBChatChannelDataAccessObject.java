@@ -43,7 +43,7 @@ public class DBChatChannelDataAccessObject implements UpdateChatChannelUserDataA
                 );
             }
             else {
-                return DirectChatChannelFactory.createEmptyChatChannel();
+                return DirectChatChannelFactory.createEmptyChatChannel(); // May change to null
             }
         }
     }

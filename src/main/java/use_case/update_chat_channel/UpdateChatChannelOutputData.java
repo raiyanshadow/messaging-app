@@ -1,10 +1,6 @@
 package use_case.update_chat_channel;
 
-import entity.Message;
-import entity.User;
-
 import java.util.List;
-import java.util.ArrayList;
 
 public class UpdateChatChannelOutputData {
     private String chatName;
@@ -15,8 +11,10 @@ public class UpdateChatChannelOutputData {
 
     public UpdateChatChannelOutputData(String chatName, String chatURL, User user1, User user2, List<Message<String>> messages) {
         this.chatName = chatName;
-        this.user1 = user1;
-        this.user2 = user2;
+        this.user1Username = user1Username;
+        this.user2Username = user2Username;
+        this.user1ID = user1ID;
+        this.user2ID = user2ID;
         this.chatURL = chatURL;
         this.messages = messages;
     }
@@ -24,11 +22,17 @@ public class UpdateChatChannelOutputData {
     public String getChatName() {
         return chatName;
     }
-    public User getUser1() {
-        return user1;
+    public String getUser1Username() {
+        return user1Username;
     }
-    public User getUser2() {
-        return user2;
+    public String getUser2Username() {
+        return user2Username;
+    }
+    public int getUser1ID() {
+        return user1ID;
+    }
+    public int getUser2ID() {
+        return user2ID;
     }
     public String getChatURL() {
         return chatURL;

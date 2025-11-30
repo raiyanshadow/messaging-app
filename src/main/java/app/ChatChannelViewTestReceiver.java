@@ -188,7 +188,9 @@ public class ChatChannelViewTestReceiver {
         updateChatChannelState.setUser1Name("Bob");
         updateChatChannelState.setUser2Name("Alice");
         vm.setState(updateChatChannelState);
-        ChatChannelView view = new ChatChannelView(vm, controller, sendMessageController);
+        ChatChannelView view = new ChatChannelView(vm);
+        view.setUpdateChatChannelController(controller);
+        view.setSendMessageController(sendMessageController);
         ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("Chat");
         BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, vm,
                 chatChannelViewModel, viewManagerModel, (SessionManager) sessionManager, viewManager,

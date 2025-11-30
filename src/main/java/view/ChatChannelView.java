@@ -41,9 +41,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private Thread thread;
     private volatile boolean running = false;
 
-    public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel,
-                           UpdateChatChannelController updateChatChannelController, SendMessageController sendMessageController) {
-        // OLD: Integer senderID, Integer receiverID, String senderUsername, String receiverUsername, String chatURL,
+    public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel) { // OLD: SendMessageController sendMessageController, UpdateChatChannelController updateChatChannelController
         // Initialize variables
         this.updateChatChannelViewModel = updateChatChannelViewModel;
         this.updateChatChannelViewModel.addPropertyChangeListener(this);
@@ -66,7 +64,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         messageContainer.setAlignmentY(Component.TOP_ALIGNMENT);
         messageContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
         scrollPane = new JScrollPane(messageContainer);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);  // <-- ADD THIS
         scrollPane.getVerticalScrollBar().setUnitIncrement(30);
         scrollPane.setPreferredSize(new Dimension(400, 350));
@@ -120,11 +118,15 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
 
         try {
             updateChatChannelViewModel.removePropertyChangeListener(this);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+            // Do nothing if property change listener is not removed
+        }
 
         try {
             if (messageViewModel != null) messageViewModel.removePropertyChangeListener(this);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+            // Do nothing if property change listener is not removed
+        }
     }
 
     @Override
@@ -246,5 +248,10 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
 
     public JScrollPane getScrollPane() {
         return this.scrollPane;
+    }
+
+    public String getViewName() {
+        // Variables required for view
+        return "update chat channel";
     }
 }

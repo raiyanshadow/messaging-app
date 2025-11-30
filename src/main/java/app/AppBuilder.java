@@ -191,7 +191,7 @@ public class AppBuilder {
         baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel,
                 friendRequestViewModel, addContactViewModel, profileEditViewModel);
         FriendRequestOutputBoundary friendRequestPresenter = new FriendRequestPresenter(friendRequestViewModel,
-                viewManagerModel, baseUIViewModel);
+                viewManagerModel, baseUIViewModel, sessionManager);
         LogoutOutputBoundary logoutPresenter = new LogoutPresenter(logoutViewModel, viewManagerModel, loginViewModel,
                 sessionManager, this);
         UpdateChatChannelOutputBoundary updatePresenter = new UpdateChatChannelPresenter(updateChatChannelViewModel,

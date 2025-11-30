@@ -50,7 +50,7 @@ public class FriendRequestInteractor implements FriendRequestInputBoundary {
 
             // create output data including full contact list
             final FriendRequestOutputData friendRequestOutputData = new FriendRequestOutputData(acceptedUsername);
-            friendRequestOutputData.setUpdatedContactList(updatedContacts);
+            // friendRequestOutputData.setUpdatedContactList(updatedContacts);
 
             sessionManager.getMainUser().setContacts(updatedContacts);
 

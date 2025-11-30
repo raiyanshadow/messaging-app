@@ -34,8 +34,10 @@ public class UpdateChatChannelInteractorTest {
             @Override
             public void prepareSuccessView(UpdateChatChannelOutputData chat) {
                 assertEquals(url, chat.getChatURL());
-                assertEquals(sender, chat.getUser1());
-                assertEquals(receiver, chat.getUser2());
+                assertEquals(sender.getUsername(), chat.getUser1Username());
+                assertEquals(receiver.getUsername(), chat.getUser2Username());
+                assertEquals(sender.getUserID(), chat.getUser1ID());
+                assertEquals(receiver.getUserID(), chat.getUser2ID());
                 assertEquals("Example Chat", chat.getChatName());
                 assertEquals(messages, chat.getMessages());
             }
@@ -58,8 +60,8 @@ public class UpdateChatChannelInteractorTest {
         User sender = new User(1, "Alice", "abc", "English");
         User receiver = new User(2, "Bob", "def", "English");
         InMemoryChatDAO mockChatDAO = new InMemoryChatDAO();
-        DirectChatChannelFactory factory = new DirectChatChannelFactory();
-        DirectChatChannel chat = factory.createDirectChatChannel("Failure chat", sender, receiver, "correctURL", messages);
+        DirectChatChannel chat = DirectChatChannelFactory.createDirectChatChannel("Failure chat", sender,
+                receiver, "correctURL", messages);
         mockChatDAO.addChat(chat);
 
         UpdateChatChannelOutputBoundary failurePresenter = new UpdateChatChannelOutputBoundary() {

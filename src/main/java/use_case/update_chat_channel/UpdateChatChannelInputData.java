@@ -1,7 +1,7 @@
 package use_case.update_chat_channel;
 
 public class UpdateChatChannelInputData {
-    private String chatURL;
+    private final String chatURL;
 
     public UpdateChatChannelInputData(String chatURL) {
         this.chatURL = chatURL;

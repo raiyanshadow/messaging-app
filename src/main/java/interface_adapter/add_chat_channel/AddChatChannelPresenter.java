@@ -23,14 +23,16 @@ public class AddChatChannelPresenter implements AddChatChannelOutputBoundary {
     @Override
     public void PresentChat(AddChatChannelOutputData response) throws SQLException {
         if (!response.isNewChat()) {
-            // Update the AddChatChannelViewModel with an error message
             AddChatChannelState state = viewModel2.getState();
             state.setErrorMessage("You already have a chat with this user.");
+            state.setCreationSuccess(false); // Ensure success is false
             viewModel2.firePropertyChange();
-            return;
         } else {
 
             AddChatChannelState successState = new AddChatChannelState();
+            successState.setErrorMessage(null);
+            successState.setCreationSuccess(true);
+
             viewModel2.setState(successState);
             viewModel2.firePropertyChange();
         }

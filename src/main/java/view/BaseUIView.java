@@ -213,8 +213,9 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
                 JOptionPane.showMessageDialog(this, updateChatChannelViewModel.getState().getError());
                 return;
             }
-            ChatChannelView newChatChannelView = new ChatChannelView(updateChatChannelViewModel,
-                    updateChatChannelController, sendMessageController);
+            ChatChannelView newChatChannelView = new ChatChannelView(updateChatChannelViewModel);
+            newChatChannelView.setUpdateChatChannelController(updateChatChannelController);
+            newChatChannelView.setSendMessageController(sendMessageController);
             newChatChannelView.setBaseUIController(controller);
             SwingWorker<Void, Void> worker = new SwingWorker<>() {
                 @Override

@@ -5,13 +5,14 @@ import entity.User;
 import use_case.add_contact.AddContactUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.profile_edit.ProfileEditUserDataAccessInterface;
+import use_case.search_contact.SearchContactUserDataAccessInterface;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DBUserDataAccessObject implements UserDataAccessObject, AddContactUserDataAccessInterface,
-        LoginUserDataAccessInterface, ProfileEditUserDataAccessInterface {
+        LoginUserDataAccessInterface, ProfileEditUserDataAccessInterface, SearchContactUserDataAccessInterface {
 
     private final Connection connection;
 

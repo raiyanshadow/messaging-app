@@ -4,33 +4,32 @@ import interface_adapter.add_contact.AddContactController;
 import interface_adapter.add_contact.AddContactState;
 import interface_adapter.add_contact.AddContactViewModel;
 import interface_adapter.base_UI.baseUIController;
-import interface_adapter.ViewManagerModel;
-import session.Session;
+import interface_adapter.search_contact.SearchContactController;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Vector;
 
 public class AddContactView extends JPanel implements PropertyChangeListener {
 
     private final AddContactViewModel addContactViewModel;
     private final JTextField usernameField =  new JTextField(20);
+    private final CustomEditor customEditor = new CustomEditor();
     private AddContactController addContactController = null;
-    private final ViewManagerModel viewManagerModel;
-    private final Session sessionmanager;
-    private final baseUIController baseUIController;
+    private SearchContactController searchContactController = null;
 
 
-    public AddContactView(AddContactViewModel addContactViewModel, ViewManagerModel viewManagerModel, Session sessionmanager, baseUIController baseUIController) {
+
+    public AddContactView(AddContactViewModel addContactViewModel, baseUIController baseUIController) {
         this.addContactViewModel = addContactViewModel;
-        this.viewManagerModel = viewManagerModel;
-        this.sessionmanager = sessionmanager;
-        this.baseUIController = baseUIController;
 
         addContactViewModel.addPropertyChangeListener(this);
 
@@ -87,18 +86,72 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
                 BorderFactory.createEmptyBorder(30, 40, 30, 40)
         ));
 
-        JLabel userinputLabel = new JLabel(AddContactViewModel.USERNAME_LABEL, SwingConstants.CENTER);
-        userinputLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
-        userinputLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel userInputLabel = new JLabel(AddContactViewModel.USERNAME_LABEL, SwingConstants.CENTER);
+        userInputLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
+        userInputLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         midPanel.setLayout(new BoxLayout(midPanel, BoxLayout.Y_AXIS));
         midPanel.add(Box.createVerticalStrut(100));
-        midPanel.add(userinputLabel);
+        midPanel.add(userInputLabel);
         midPanel.add(Box.createVerticalStrut(30));
         midPanel.setBackground(Color.WHITE);
         usernameField.setPreferredSize(new Dimension(100, 30));
-        midPanel.add(usernameField);
+        // original user input field
+        // midPanel.add(usernameField);
+
+        // try making new JCombo box
+        JComboBox<String> inputBox = new JComboBox<>();
+        inputBox.setEditable(true);
+        // CustomEditor customEditor = new CustomEditor();
+        inputBox.setEditor(customEditor);
+
+
+        midPanel.add(inputBox);
         midPanel.add(Box.createVerticalStrut(100));
 
+
+        // action listener for the inputBox
+        inputBox.addPopupMenuListener(new PopupMenuListener() {
+            @Override
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+
+                String userInput = customEditor.getItem().toString();
+                // System.out.println(userInput);
+                if (userInput != null) {
+                    try {
+
+                        searchContactController.execute(userInput);
+
+                        AddContactState state = addContactViewModel.getState();
+                        inputBox.removeAllItems();
+                        for (String matchingUsername: state.getMatchingUsernames()) {
+                            inputBox.addItem(matchingUsername);
+                        }
+                        customEditor.setItem(userInput);
+
+                    }
+                    catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+
+            }
+
+            @Override
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+                String userInput = customEditor.getItem().toString();
+                customEditor.setItem(userInput);
+
+
+            }
+
+            @Override
+            public void popupMenuCanceled(PopupMenuEvent e) {
+                String userInput = customEditor.getItem().toString();
+                customEditor.setItem(userInput);
+
+
+            }
+        });
 
         // back button action listener
         backButton.addActionListener(e -> {
@@ -115,11 +168,10 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
 
         addButton.addActionListener(evt -> {
             AddContactState state = addContactViewModel.getState();
-            // state.setSender(sessionmanager.getMainUser());
+            // state.setSender(sessionManager.getMainUser());
             try {
-                addContactController.execute(
-                        state.getUsernameInput()
-                );
+                addContactController.execute(state.getUsernameInput());
+                customEditor.setItem("");
             }
             catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -137,16 +189,9 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
 
     }
 
-    /**
-     * React to a button click that results in evt.
-     * @param evt the ActionEvent to react to
-     */
-    public void actionPerformed(ActionEvent evt) {
-        System.out.println("Click " + evt.getActionCommand());
-    }
-
     private void addUsernameListener() {
-        usernameField.getDocument().addDocumentListener(new DocumentListener() {
+        JTextField editorField = (JTextField) customEditor.getEditorComponent();
+        editorField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 updateState();
@@ -162,7 +207,11 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
 
             private void updateState() {
                 AddContactState state = addContactViewModel.getState();
-                state.setUsername(usernameField.getText());
+                //System.out.println(editorField.getText() + "this is what is in the input field");
+                if (editorField.getText().isEmpty()) {
+                    state.setUsername(null);
+                }
+                else { state.setUsername(editorField.getText());}
                 addContactViewModel.setState(state);
             }
         });
@@ -189,4 +238,7 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
         this.addContactController = addContactController;
     }
 
+    public void setSearchContactController(SearchContactController searchContactController) {
+        this.searchContactController = searchContactController;
+    }
 }

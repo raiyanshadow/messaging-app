@@ -3,6 +3,7 @@ package use_case.search_contact;
 import entity.User;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchContactInteractor implements SearchContactInputBoundary {
@@ -23,10 +24,17 @@ public class SearchContactInteractor implements SearchContactInputBoundary {
         }
 
         List<User> users = userDataAccessObject.searchUsers(inputData.getQuery());
+
         if (users.isEmpty()) {
             userPresenter.prepareFailView("No users found.");
-        } else {
-            SearchContactOutputData outputData = new SearchContactOutputData(users, false);
+        }
+        else {
+            List<String> matchingUsernames = new ArrayList<>();
+            for  (User user : users) {
+                matchingUsernames.add(user.getUsername());
+                // System.out.println(user.getUsername());
+            }
+            SearchContactOutputData outputData = new SearchContactOutputData(matchingUsernames, false);
             userPresenter.prepareSuccessView(outputData);
         }
     }

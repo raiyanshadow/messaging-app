@@ -2,6 +2,7 @@ package data_access;
 
 import entity.Contact;
 import entity.User;
+import use_case.add_contact.AddContactContactDataAccessInterface;
 import use_case.friend_request.FriendRequestUserDataAccessInterface;
 
 import java.sql.Connection;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // TODO: Implement updateContacts(List<Contact> contact)
-public class DBContactDataAccessObject implements ContactDataAccessObject, FriendRequestUserDataAccessInterface {
+public class DBContactDataAccessObject implements ContactDataAccessObject, FriendRequestUserDataAccessInterface, AddContactContactDataAccessInterface {
 
     private final Connection conn;
     private final DBUserDataAccessObject userDao;

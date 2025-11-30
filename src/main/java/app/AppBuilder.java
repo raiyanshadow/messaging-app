@@ -5,6 +5,8 @@ import data_access.*;
 import interface_adapter.profile_edit.ProfileEditController;
 import interface_adapter.profile_edit.ProfileEditPresenter;
 import interface_adapter.profile_edit.ProfileEditViewModel;
+import interface_adapter.search_contact.SearchContactController;
+import interface_adapter.search_contact.SearchContactPresenter;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
 import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
 import org.sendbird.client.ApiClient;
@@ -58,6 +60,9 @@ import use_case.logout.LogoutOutputBoundary;
 import use_case.profile_edit.ProfileEditInputBoundary;
 import use_case.profile_edit.ProfileEditInteractor;
 import use_case.profile_edit.ProfileEditOutputBoundary;
+import use_case.search_contact.SearchContactInputBoundary;
+import use_case.search_contact.SearchContactInteractor;
+import use_case.search_contact.SearchContactOutputBoundary;
 import use_case.send_message.SendMessageInputBoundary;
 import use_case.send_message.SendMessageInteractor;
 import use_case.send_message.SendMessageOutputBoundary;
@@ -198,6 +203,7 @@ public class AppBuilder {
                 sessionManager);
         SendMessageOutputBoundary sendMessagePresenter = new ChatChannelPresenter(messageViewModel);
         ProfileEditOutputBoundary profileEditPresenter = new ProfileEditPresenter(profileEditViewModel);
+        SearchContactOutputBoundary searchContactPresenter = new SearchContactPresenter(addContactViewModel, viewManagerModel);
 
         AddChatChannelInputBoundary addChatChannelInteractor = new AddChatChannelInteractor(
                 addChatChannelPresenter, chatChannelDataAccessObject, userDataAccessObject, sessionManager,
@@ -217,6 +223,7 @@ public class AppBuilder {
         ProfileEditInputBoundary profileEditInteractor = new ProfileEditInteractor(userDataAccessObject, profileEditPresenter, sessionManager);
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, chatChannelDataAccessObject,
                 userDataAccessObject, sessionManager, contactDataAccessObject);
+        SearchContactInputBoundary searchContactInteractor = new SearchContactInteractor(userDataAccessObject, searchContactPresenter );
 
         AddChatChannelController addChatChannelController = new AddChatChannelController(addChatChannelInteractor);
         AddContactController addContactController = new AddContactController(addContactInteractor);
@@ -225,11 +232,12 @@ public class AppBuilder {
         UpdateChatChannelController updateChatChannelController = new UpdateChatChannelController(updateInteractor);
         ProfileEditController profileEditController = new ProfileEditController(profileEditInteractor);
         SendMessageController sendMessageController = new SendMessageController(sendInteractor);
+        SearchContactController searchContactController = new SearchContactController(searchContactInteractor);
         baseUIController = new baseUIController(baseUIInteractor);
 
         createChatView = new CreateChatView(sessionManager, addChatChannelController,
                 baseUIViewModel, baseUIController, addChatChannelViewModel);
-        addContactView = new AddContactView(addContactViewModel, viewManagerModel, sessionManager, baseUIController);
+        addContactView = new AddContactView(addContactViewModel, baseUIController);
         profileEditView = new ProfileEditView(profileEditViewModel, baseUIController, sessionManager);
 
         try {
@@ -239,12 +247,13 @@ public class AppBuilder {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        friendRequestView = new FriendRequestView(friendRequestViewModel, viewManagerModel, sessionManager,
+        friendRequestView = new FriendRequestView(friendRequestViewModel, sessionManager,
                 baseUIController);
         logoutView = new LogoutView();
 
         createChatView.setAddChatChannelController(addChatChannelController);
         addContactView.setAddContactController(addContactController);
+        addContactView.setSearchContactController(searchContactController);
         friendRequestView.setFriendRequestController(friendRequestController);
         profileEditView.setProfileEditController(profileEditController);
 

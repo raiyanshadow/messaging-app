@@ -1,22 +1,22 @@
 package use_case.add_contact;
 
-import data_access.ContactDataAccessObject;
-import data_access.UserDataAccessObject;
+
 import entity.Contact;
 import entity.User;
 import session.Session;
+
 
 import java.sql.SQLException;
 
 public class AddContactInteractor implements AddContactInputBoundary {
 
-    private final UserDataAccessObject userDataAccessObject;
-    private final ContactDataAccessObject contactDataAccessObject;
+    private final AddContactUserDataAccessInterface userDataAccessObject;
+    private final AddContactContactDataAccessInterface contactDataAccessObject;
     private final AddContactOutputBoundary userPresenter;
     private final Session sessionManager;
 
 
-    public AddContactInteractor(UserDataAccessObject userDataAccessObject, ContactDataAccessObject contactDataAccessObject, AddContactOutputBoundary addContactOutputBoundary, Session sessionManager) {
+    public AddContactInteractor(AddContactUserDataAccessInterface userDataAccessObject, AddContactContactDataAccessInterface contactDataAccessObject, AddContactOutputBoundary addContactOutputBoundary, Session sessionManager) {
         this.userDataAccessObject = userDataAccessObject;
         this.contactDataAccessObject = contactDataAccessObject;
         this.userPresenter = addContactOutputBoundary;
@@ -67,6 +67,10 @@ public class AddContactInteractor implements AddContactInputBoundary {
         // did not enter a username
         if (receiverUsername == null){
             userPresenter.prepareFailView("Please enter in a username");
+        }
+
+        else if (receiverUsername.equals(sender.getUsername())) {
+            userPresenter.prepareFailView("Can not send request to yourself");
         }
 
         // receiver (user who should receive add contact request) does not exist

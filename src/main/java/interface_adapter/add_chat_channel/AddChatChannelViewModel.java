@@ -6,24 +6,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddChatChannelViewModel extends ViewModel<AddChatChannelState> {
-    private AddChatChannelState state = new AddChatChannelState();
     private String message;
     private String error;
     private Boolean HasError;
-
     public final List<ViewModelListener> listeners = new ArrayList<>();
 
     public AddChatChannelViewModel(String viewName) {
         super(viewName);
+        // Initialize the state in the PARENT class
+        super.setState(new AddChatChannelState());
     }
 
-    public AddChatChannelState getState() {
-        return state;
-    }
-
+    @Override
     public void setState(AddChatChannelState state) {
-        this.state = state;
-        firePropertyChange();
+        super.setState(state); // Update the parent's state variable
+        firePropertyChange();  // Trigger the event using the parent's state
     }
 
     public boolean getHasError() {
@@ -32,12 +29,6 @@ public class AddChatChannelViewModel extends ViewModel<AddChatChannelState> {
 
     public interface ViewModelListener {
         void onViewModelChange(AddChatChannelViewModel viewModel);
-    }
-
-    public AddChatChannelViewModel(String message, String error) {
-        super("add_chat_channel");
-        this.message = message;
-        this.error = error;
     }
 
     public String getMessage() {

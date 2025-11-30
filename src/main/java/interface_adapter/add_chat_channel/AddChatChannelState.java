@@ -1,13 +1,13 @@
 package interface_adapter.add_chat_channel;
 
-import entity.User;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class AddChatChannelState {
     private List<Integer> contactIDs;
     private String errorMessage = null;
+    private boolean creationSuccess = false; // NEW FLAG
+
     public AddChatChannelState() {
         this.contactIDs = new ArrayList<>();
     };
@@ -27,5 +27,12 @@ public class AddChatChannelState {
     }
     public String getErrorMessage(){
         return this.errorMessage;
+    }
+
+    public boolean isCreationSuccess() {
+        return creationSuccess;
+    }
+    public void setCreationSuccess(boolean creationSuccess) {
+        this.creationSuccess = creationSuccess;
     }
 }

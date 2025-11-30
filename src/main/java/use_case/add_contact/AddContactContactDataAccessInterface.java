@@ -1,0 +1,23 @@
+package use_case.add_contact;
+
+import entity.Contact;
+import entity.User;
+
+import java.util.List;
+
+public interface AddContactContactDataAccessInterface {
+    /**
+     * update the given user's contacts list
+     * @param user the user who we want to update their contacts
+     * @param contacts the user's contacts list
+     */
+
+    public void updateUserContacts(User user, List<Contact> contacts);
+
+    /**
+     * update the given user's friend requests list
+     * @param user the user who we want to update their friend requests list
+     * @param friendRequests the user's friend requests list
+     */
+    void updateUserFriendRequests(User user, List<String> friendRequests);
+}

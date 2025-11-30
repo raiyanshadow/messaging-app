@@ -1,6 +1,5 @@
 package view;
 
-import interface_adapter.ViewManagerModel;
 import interface_adapter.base_UI.baseUIController;
 import interface_adapter.friend_request.FriendRequestController;
 import interface_adapter.friend_request.FriendRequestState;
@@ -15,18 +14,12 @@ import java.sql.SQLException;
 
 public class FriendRequestView extends JPanel implements PropertyChangeListener {
 
-    private final FriendRequestViewModel friendRequestViewModel;
     private FriendRequestController friendRequestController = null;
-    private final ViewManagerModel viewManagerModel;
     private final Session sessionManager;
-    private final baseUIController baseUIController;
     private final DefaultListModel<String> listModel = new DefaultListModel<>();
 
-    public FriendRequestView(FriendRequestViewModel friendRequestViewModel, ViewManagerModel viewManagerModel, Session sessionmanager, baseUIController baseUIController) {
-        this.friendRequestViewModel = friendRequestViewModel;
-        this.viewManagerModel = viewManagerModel;
-        this.sessionManager = sessionmanager;
-        this.baseUIController = baseUIController;
+    public FriendRequestView(FriendRequestViewModel friendRequestViewModel, Session sessionManager, baseUIController baseUIController) {
+        this.sessionManager = sessionManager;
 
         friendRequestViewModel.addPropertyChangeListener(this);
         FriendRequestState state = friendRequestViewModel.getState();
@@ -94,7 +87,7 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
         accept_or_declinePanel.add(declineButton);
         accept_or_declinePanel.add(new JLabel());
 
-        for (String friendRequest : sessionmanager.getMainUser().getFriendRequests()) {
+        for (String friendRequest : sessionManager.getMainUser().getFriendRequests()) {
             listModel.addElement(friendRequest);
             System.out.println(friendRequest);
         }
@@ -125,7 +118,7 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
         backButton.addActionListener(e -> {
             System.out.println("Back button pressed");
             try {
-                baseUIController.displayUI(); // triggers presenter → viewmanager switching
+                baseUIController.displayUI(); // triggers presenter → viewManager switching
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
@@ -134,7 +127,7 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
 
         acceptButton.addActionListener(evt -> {
 
-            // state.setAcceptee(sessionmanager.getMainUser());
+            // state.setAcceptee(sessionManager.getMainUser());
             try {
                 String selectedName = state.getAcceptedUsername();
 
@@ -143,7 +136,7 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
                         true
                 );
                 listModel.removeElement(selectedName);
-                sessionmanager.getMainUser().getFriendRequests().remove(selectedName);
+                sessionManager.getMainUser().getFriendRequests().remove(selectedName);
             }
             catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -152,7 +145,7 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
 
         declineButton.addActionListener(evt -> {
 
-            // state.setAcceptee(sessionmanager.getMainUser());
+            // state.setAcceptee(sessionManager.getMainUser());
             try {
                 String selectedName = state.getAcceptedUsername();
 
@@ -161,7 +154,7 @@ public class FriendRequestView extends JPanel implements PropertyChangeListener 
                         false
                 );
                 listModel.removeElement(selectedName);
-                sessionmanager.getMainUser().getFriendRequests().remove(selectedName);
+                sessionManager.getMainUser().getFriendRequests().remove(selectedName);
             }
             catch (SQLException e) {
                 throw new RuntimeException(e);

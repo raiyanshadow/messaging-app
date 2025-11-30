@@ -20,4 +20,10 @@ public interface AddContactUserDataAccessInterface {
      */
     void sendRequest(User sender, String receiver_username);
 
+    /**
+     * get the user of the given username
+     * @param username the username of the user we want to get
+     * @return the user of the corresponding username
+     */
+    User getUserFromName(String username) throws SQLException;
 }

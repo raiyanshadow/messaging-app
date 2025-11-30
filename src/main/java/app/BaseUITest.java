@@ -128,14 +128,14 @@ public class BaseUITest {
         ViewManager viewManager = new ViewManager(viewManagerModel);
 
         // Create actual base view and register it
-        AddContactView addContactView = new AddContactView(addContactViewModel, viewManagerModel, sessionManager, baseUIController);
+        AddContactView addContactView = new AddContactView(addContactViewModel, baseUIController);
         addContactView.setAddContactController(addContactController);
         BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
                 chatChannelViewModel, viewManagerModel, sessionManager, viewManager, sendMessageController,
                 updateChatChannelController, logoutController);
         CreateChatView addChatChannelView = new CreateChatView(sessionManager, addChatChannelController,
                 baseUIViewModel, baseUIController, addChatChannelViewModel);
-        FriendRequestView friendRequestView = new FriendRequestView(friendRequestViewModel, viewManagerModel,
+        FriendRequestView friendRequestView = new FriendRequestView(friendRequestViewModel,
                 sessionManager, baseUIController);
 
         viewManager.addView(baseUIView, baseUIViewModel.getViewName());

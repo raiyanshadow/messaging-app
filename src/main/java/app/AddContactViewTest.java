@@ -41,6 +41,7 @@ import use_case.logout.LogoutInteractor;
 import use_case.logout.LogoutOutputBoundary;
 import use_case.search_contact.SearchContactInputBoundary;
 import use_case.search_contact.SearchContactInteractor;
+import use_case.search_contact.SearchContactOutputBoundary;
 import use_case.send_message.SendMessageInteractor;
 import use_case.send_message.SendMessageOutputBoundary;
 import use_case.update_chat_channel.UpdateChatChannelInteractor;
@@ -137,9 +138,9 @@ public class AddContactViewTest {
 
         // ===================== setup the search contact controller stuff =====================
         // testing to see if this stuff works :((((((((((((((((((((((((((
-        SearchContactPresenter searchContactPresenter = new SearchContactPresenter(addContactViewModel, viewManagerModel);
-        SearchContactInputBoundary searchContactInputBoundary = new SearchContactInteractor(dummyUserDAO, searchContactPresenter );
-        SearchContactController searchContactController = new SearchContactController(searchContactInputBoundary);
+        SearchContactOutputBoundary searchContactPresenter = new SearchContactPresenter(addContactViewModel, viewManagerModel);
+        SearchContactInputBoundary searchContactInteractor = new SearchContactInteractor(dummyUserDAO, searchContactPresenter );
+        SearchContactController searchContactController = new SearchContactController(searchContactInteractor);
         addContactview.setSearchContactController(searchContactController);
         // ======================================================================================
 

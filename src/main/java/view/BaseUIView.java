@@ -1,5 +1,6 @@
 package view;
 
+import entity.Contact;
 import entity.DirectChatChannel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.base_UI.baseUIController;
@@ -19,6 +20,7 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BaseUIView extends JPanel implements PropertyChangeListener {
@@ -120,6 +122,7 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
         styleRoundedButton(friendRequestsButton, friendButtonColor, Color.WHITE, buttonFont);
         styleRoundedButton(addFriendButton, friendButtonColor, Color.WHITE, buttonFont);
         styleRoundedButton(profileEditButton, profileButtonColor, Color.WHITE, buttonFont);
+
         styleRoundedButton(logoutButton, new Color(240, 240, 240), Color.BLACK, buttonFont);
 
         // Add in button order
@@ -161,12 +164,12 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
         });
 
         profileEditButton.addActionListener(e -> {
-           try {
-               controller.switchToProfileEdit();
-           }
-           catch(SQLException ex) {
-               throw new RuntimeException(ex);
-           }
+            try {
+                controller.switchToProfileEdit();
+            }
+            catch(SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         initiateChatButton.addActionListener(e -> {
@@ -181,35 +184,41 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
 
             DirectChatChannel chat = chatEntities.get(index);
 
-            Integer senderID;
-            Integer receiverID;
-            String senderUsername;
-            String receiverUsername;
-            if (chat.getUser1().getUsername().equals(sessionManager.getMainUser().getUsername())) {
-                senderID = sessionManager.getMainUser().getUserID();
-                receiverID = chat.getUser2().getUserID();
-                senderUsername = sessionManager.getMainUser().getUsername();
-                receiverUsername = chat.getUser2().getUsername();
-            }
-            else {
-                senderID = sessionManager.getMainUser().getUserID();
-                receiverID = chat.getUser1().getUserID();
-                senderUsername = sessionManager.getMainUser().getUsername();
-                receiverUsername = chat.getUser1().getUsername();
-            }
+//            Integer senderID;
+//            Integer receiverID;
+//            String senderUsername;
+//            String receiverUsername;
+//            if (chat.getUser1().getUsername().equals(sessionManager.getMainUser().getUsername())) {
+//                senderID = sessionManager.getMainUser().getUserID();
+//                receiverID = chat.getUser2().getUserID();
+//                senderUsername = sessionManager.getMainUser().getUsername();
+//                receiverUsername = chat.getUser2().getUsername();
+//            }
+//            else {
+//                senderID = sessionManager.getMainUser().getUserID();
+//                receiverID = chat.getUser1().getUserID();
+//                senderUsername = sessionManager.getMainUser().getUsername();
+//                receiverUsername = chat.getUser1().getUsername();
+//            }
+
             if (this.chatChannelView != null) {
                 try { this.chatChannelView.dispose(); } catch (Exception ignored) {}
             }
-            updateChatChannelViewModel.setState(new UpdateChatChannelState());
-            updateChatChannelViewModel.firePropertyChange();
+            try {
+                updateChatChannelController.execute(chat.getChatUrl());
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            if (updateChatChannelViewModel.getState().getError() != null) {
+                JOptionPane.showMessageDialog(this, updateChatChannelViewModel.getState().getError());
+                return;
+            }
             ChatChannelView newChatChannelView = new ChatChannelView(updateChatChannelViewModel,
-                    senderID, receiverID, senderUsername,
-                    receiverUsername, chat.getChatUrl(), updateChatChannelController, sendMessageController);
+                    updateChatChannelController, sendMessageController);
             newChatChannelView.setBaseUIController(controller);
             SwingWorker<Void, Void> worker = new SwingWorker<>() {
                 @Override
                 protected Void doInBackground() throws Exception {
-                    updateChatChannelController.execute(chat.getChatUrl());
                     return null;
                 }
 

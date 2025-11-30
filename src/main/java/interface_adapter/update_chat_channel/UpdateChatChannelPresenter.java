@@ -38,12 +38,28 @@ public class UpdateChatChannelPresenter implements UpdateChatChannelOutputBounda
             }
             messageViewModels.add(messageViewModel);
         }
+        Integer senderID;
+        Integer receiverID;
+        String senderUsername;
+        String receiverUsername;
+        if (outputData.getUser1().getUsername().equals(sessionManager.getMainUser().getUsername())) {
+            senderID = sessionManager.getMainUser().getUserID();
+            receiverID = outputData.getUser2().getUserID();
+            senderUsername = sessionManager.getMainUser().getUsername();
+            receiverUsername = outputData.getUser2().getUsername();
+        }
+        else {
+            senderID = sessionManager.getMainUser().getUserID();
+            receiverID = outputData.getUser1().getUserID();
+            senderUsername = sessionManager.getMainUser().getUsername();
+            receiverUsername = outputData.getUser1().getUsername();
+        }
         updateChatChannelState.setChatURL(outputData.getChatURL());
         updateChatChannelState.setChatChannelName(outputData.getChatName());
-        updateChatChannelState.setUser1Name(outputData.getUser1().getUsername());
-        updateChatChannelState.setUser2Name(outputData.getUser2().getUsername());
-        updateChatChannelState.setUser1ID(outputData.getUser1().getUserID());
-        updateChatChannelState.setUser2ID(outputData.getUser2().getUserID());
+        updateChatChannelState.setUser1Name(senderUsername); // NOTE: Convention is user1 is the sender and user2 is the receiver
+        updateChatChannelState.setUser2Name(receiverUsername);
+        updateChatChannelState.setUser1ID(senderID);
+        updateChatChannelState.setUser2ID(receiverID);
         updateChatChannelState.setMessages(messageViewModels);
         updateChatChannelState.setError(null);
         updateChatChannelViewModel.firePropertyChange();

@@ -1,81 +1,74 @@
 package use_case.add_contact;
 
-import data_access.ChatChannelDataAccessObject;
-import data_access.DBChatChannelDataAccessObject;
-import data_access.DBContactDataAccessObject;
-import data_access.DBUserDataAccessObject;
+import data_access.*;
 import entity.User;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.junit.jupiter.api.Test;
+import session.Session;
 import session.SessionManager;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class AddContactInteractorTest {
-    private Dotenv dotenv = Dotenv.configure()
-            .directory("./assets")
-            .filename("env")
-            .load();
-    private SessionManager sessionManager = new SessionManager();
-    /*
     @Test
     void successTest() throws SQLException {
+        // create the mock DAOs
+        InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();
+        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
 
-        String url = dotenv.get("DB_URL");
-        String user = dotenv.get("DB_USER");
-        String password = dotenv.get("DB_PASSWORD");
+        // create users to populate the mock DAOs
+        User alice = new User(1, "alice", "alice", "English");
+        User bob = new User(2, "bob", "bob", "English");
 
-        Connection conn = DriverManager.getConnection(url, user, password);
+        // populate the mockUserDAO
+        mockUserDAO.save(alice);
+        mockUserDAO.save(bob);
 
-        DBUserDataAccessObject dummyUserDAO = new DBUserDataAccessObject(conn);
-        DBContactDataAccessObject dummyContactDAO = new DBContactDataAccessObject(conn);
-
-        // user temp is Alice since she has the userid 1
-        User temp =  dummyUserDAO.getUserFromID(1);
-
-
-        AddContactInputData addContactInputData = new AddContactInputData(temp, "test2");
-
+        AddContactInputData inputData = new AddContactInputData("bob");
         AddContactOutputBoundary successPresenter = new AddContactOutputBoundary() {
             @Override
             public void prepareSuccessView(AddContactOutputData addContactOutputData) {
-                assertEquals(addContactOutputData.getReceiverUsername(), "test2");
+                // alice correctly sent request to bob
+                assertEquals("bob", addContactOutputData.getReceiverUsername());
             }
 
             @Override
             public void prepareFailView(String errorMessage) {
-                fail("use case has failed");
+                fail("use case has failed :((((");
             }
         };
+        // set the current main user as alice
+        SessionManager sessionManager = new SessionManager();
+        sessionManager.setMainUser(alice);
 
-        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, successPresenter);
-        interactor.execute(addContactInputData);
+        AddContactInputBoundary interactor = new AddContactInteractor(mockUserDAO, mockContactDAO, successPresenter, sessionManager);
+        interactor.execute(inputData);
     }
 
-     */
 
     @Test
     void failureDidNotEnterUsername() throws SQLException {
-        String url = dotenv.get("DB_URL");
-        String user = dotenv.get("DB_USER");
-        String password = dotenv.get("DB_PASSWORD");
 
-        Connection conn = DriverManager.getConnection(url, user, password);
+        // create the mock DAOs
+        InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();
+        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
 
-        DBUserDataAccessObject dummyUserDAO = new DBUserDataAccessObject(conn);
-        DBContactDataAccessObject dummyContactDAO = new DBContactDataAccessObject(conn);
+        // create users to populate the mock DAOs
+        User alice = new User(1, "alice", "alice", "English");
+        User bob = new User(2, "bob", "bob", "English");
 
-        // user temp is Alice since she has the userid 1
-        User temp =  dummyUserDAO.getUserFromID(1);
-        this.sessionManager.setMainUser(temp);
+        // populate the mockUserDAO
+        mockUserDAO.save(alice);
+        mockUserDAO.save(bob);
 
-
-        AddContactInputData addContactInputData = new AddContactInputData(null);
+        // no input data
+        AddContactInputData inputData = new AddContactInputData(null);
 
         AddContactOutputBoundary successPresenter = new AddContactOutputBoundary() {
             @Override
@@ -89,28 +82,29 @@ public class AddContactInteractorTest {
             }
         };
 
-        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, successPresenter,
-                sessionManager);
-        interactor.execute(addContactInputData);
+        // set the current main user as alice
+        SessionManager sessionManager = new SessionManager();
+        sessionManager.setMainUser(alice);
+
+        AddContactInputBoundary interactor = new AddContactInteractor(mockUserDAO, mockContactDAO, successPresenter, sessionManager);
+        interactor.execute(inputData);
     }
 
     @Test
     void failureReceiverDoesNotExist() throws SQLException {
-        String url = dotenv.get("DB_URL");
-        String user = dotenv.get("DB_USER");
-        String password = dotenv.get("DB_PASSWORD");
+        // create the mock DAOs
+        InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();
+        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
 
-        Connection conn = DriverManager.getConnection(url, user, password);
+        // create users to populate the mock DAOs
+        User alice = new User(1, "alice", "alice", "English");
+        User bob = new User(2, "bob", "bob", "English");
 
-        DBUserDataAccessObject dummyUserDAO = new DBUserDataAccessObject(conn);
-        DBContactDataAccessObject dummyContactDAO = new DBContactDataAccessObject(conn);
+        // populate the mockUserDAO
+        mockUserDAO.save(alice);
+        mockUserDAO.save(bob);
 
-        // user temp is Alice since she has the userid 1
-        User temp =  dummyUserDAO.getUserFromID(1);
-        this.sessionManager.setMainUser(temp);
-
-
-        AddContactInputData addContactInputData = new AddContactInputData("afiewjaiwejf");
+        AddContactInputData inputData = new AddContactInputData("userDNE");
 
         AddContactOutputBoundary successPresenter = new AddContactOutputBoundary() {
             @Override
@@ -124,28 +118,34 @@ public class AddContactInteractorTest {
             }
         };
 
-        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, successPresenter,
-                sessionManager);
-        interactor.execute(addContactInputData);
+        // set the current main user as alice
+        SessionManager sessionManager = new SessionManager();
+        sessionManager.setMainUser(alice);
+
+        AddContactInputBoundary interactor = new AddContactInteractor(mockUserDAO, mockContactDAO, successPresenter, sessionManager);
+        interactor.execute(inputData);
     }
 
     @Test
-    void failureReceiverAlreadyContact() throws SQLException {
-        String url = dotenv.get("DB_URL");
-        String user = dotenv.get("DB_USER");
-        String password = dotenv.get("DB_PASSWORD");
+    void failureReceiverAlreadyContact1() throws SQLException {
+        // create the mock DAOs
+        InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();
+        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
 
-        Connection conn = DriverManager.getConnection(url, user, password);
+        // create users to populate the mock DAOs
+        User alice = new User(1, "alice", "alice", "English");
+        User bob = new User(2, "bob", "bob", "English");
 
-        DBUserDataAccessObject dummyUserDAO = new DBUserDataAccessObject(conn);
-        DBContactDataAccessObject dummyContactDAO = new DBContactDataAccessObject(conn);
+        // populate the mockUserDAO
+        mockUserDAO.save(alice);
+        mockUserDAO.save(bob);
 
-        // user temp is Alice since she has the userid 1
-        User temp =  dummyUserDAO.getUserFromID(1);
-        this.sessionManager.setMainUser(temp);
+        // populate the mockContactDAO
+        // so now alice and bob are contacts because isFriendRequest is false
+        InMemoryContactDAO.DummyContact tempContact = new InMemoryContactDAO.DummyContact(alice, bob, false);
+        mockContactDAO.addDummyContact(tempContact);
 
-
-        AddContactInputData addContactInputData = new AddContactInputData("Bob");
+        AddContactInputData inputData = new AddContactInputData("bob");
 
         AddContactOutputBoundary successPresenter = new AddContactOutputBoundary() {
             @Override
@@ -155,32 +155,40 @@ public class AddContactInteractorTest {
 
             @Override
             public void prepareFailView(String errorMessage) {
-                assertEquals("This user is already a contact", errorMessage);
+                assertEquals("bob is already a contact", errorMessage);
             }
         };
 
-        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, successPresenter,
-                sessionManager);
-        interactor.execute(addContactInputData);
+        // set the current main user as alice
+        SessionManager sessionManager = new SessionManager();
+        sessionManager.setMainUser(alice);
+
+        AddContactInputBoundary interactor = new AddContactInteractor(mockUserDAO, mockContactDAO, successPresenter, sessionManager);
+        interactor.execute(inputData);
     }
+
+
 
     @Test
     void failureAlreadySentRequest() throws SQLException {
-        String url = dotenv.get("DB_URL");
-        String user = dotenv.get("DB_USER");
-        String password = dotenv.get("DB_PASSWORD");
+        // create the mock DAOs
+        InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();
+        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
 
-        Connection conn = DriverManager.getConnection(url, user, password);
+        // create users to populate the mock DAOs
+        User alice = new User(1, "alice", "alice", "English");
+        User bob = new User(2, "bob", "bob", "English");
 
-        DBUserDataAccessObject dummyUserDAO = new DBUserDataAccessObject(conn);
-        DBContactDataAccessObject dummyContactDAO = new DBContactDataAccessObject(conn);
+        // populate the mockUserDAO
+        mockUserDAO.save(alice);
+        mockUserDAO.save(bob);
 
-        // user temp is Alice since she has the userid 1
-        User temp =  dummyUserDAO.getUserFromID(1);
-        this.sessionManager.setMainUser(temp);
+        // populate the mockContactDAO
+        // so now alice has already sent bob a request
+        InMemoryContactDAO.DummyContact tempContact = new InMemoryContactDAO.DummyContact(alice, bob, true);
+        mockContactDAO.addDummyContact(tempContact);
 
-
-        AddContactInputData addContactInputData = new AddContactInputData("David");
+        AddContactInputData inputData = new AddContactInputData("bob");
 
         AddContactOutputBoundary successPresenter = new AddContactOutputBoundary() {
             @Override
@@ -190,33 +198,39 @@ public class AddContactInteractorTest {
 
             @Override
             public void prepareFailView(String errorMessage) {
-                assertEquals("You have already sent David a friend request", errorMessage);
+                assertEquals("You have already sent bob a friend request", errorMessage);
             }
         };
 
-        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, successPresenter,
-                sessionManager);
-        interactor.execute(addContactInputData);
+        // set the current main user as alice
+        SessionManager sessionManager = new SessionManager();
+        sessionManager.setMainUser(alice);
+
+        AddContactInputBoundary interactor = new AddContactInteractor(mockUserDAO, mockContactDAO, successPresenter, sessionManager);
+        interactor.execute(inputData);
     }
 
 
     @Test
     void failureReceiverHasSentRequest() throws SQLException {
-        String url = dotenv.get("DB_URL");
-        String user = dotenv.get("DB_USER");
-        String password = dotenv.get("DB_PASSWORD");
+        // create the mock DAOs
+        InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();
+        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
 
-        Connection conn = DriverManager.getConnection(url, user, password);
+        // create users to populate the mock DAOs
+        User alice = new User(1, "alice", "alice", "English");
+        User bob = new User(2, "bob", "bob", "English");
 
-        DBUserDataAccessObject dummyUserDAO = new DBUserDataAccessObject(conn);
-        DBContactDataAccessObject dummyContactDAO = new DBContactDataAccessObject(conn);
+        // populate the mockUserDAO
+        mockUserDAO.save(alice);
+        mockUserDAO.save(bob);
 
-        // user temp is Alice since she has the userid 1
-        User temp =  dummyUserDAO.getUserFromID(1);
-        this.sessionManager.setMainUser(temp);
+        // populate the mockContactDAO
+        // so now bob has already sent alice a request
+        InMemoryContactDAO.DummyContact tempContact = new InMemoryContactDAO.DummyContact(bob, alice, true);
+        mockContactDAO.addDummyContact(tempContact);
 
-
-        AddContactInputData addContactInputData = new AddContactInputData("salem");
+        AddContactInputData inputData = new AddContactInputData("bob");
 
         AddContactOutputBoundary successPresenter = new AddContactOutputBoundary() {
             @Override
@@ -226,13 +240,16 @@ public class AddContactInteractorTest {
 
             @Override
             public void prepareFailView(String errorMessage) {
-                assertEquals("salem has sent you a friend request, please go and accept their friend request to add them as a contact", errorMessage);
+                assertEquals("bob has sent you a friend request, please go and accept their friend request to add them as a contact", errorMessage);
             }
         };
 
-        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, successPresenter,
-                sessionManager);
-        interactor.execute(addContactInputData);
+        // set the current main user as alice
+        SessionManager sessionManager = new SessionManager();
+        sessionManager.setMainUser(alice);
+
+        AddContactInputBoundary interactor = new AddContactInteractor(mockUserDAO, mockContactDAO, successPresenter, sessionManager);
+        interactor.execute(inputData);
     }
 
 }

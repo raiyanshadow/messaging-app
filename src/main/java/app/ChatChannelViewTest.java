@@ -25,6 +25,7 @@ import interface_adapter.logout.LogoutViewModel;
 import interface_adapter.profile_edit.ProfileEditViewModel;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
 import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
+import interface_adapter.update_chat_channel.UpdateChatChannelState;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.sendbird.client.ApiClient;
@@ -165,12 +166,17 @@ public class ChatChannelViewTest {
         LogoutController logoutController = new LogoutController(logoutInteractor);
 
         // 6. View
-        ChatChannelView view = new ChatChannelView(vm, user1.getUserID(), user2.getUserID(), user1.getUsername(),
-                user2.getUsername(), channelUrl, updateChatChannelController, sendMessageController);
-        UpdateChatChannelViewModel updateChatChannelViewModel = new UpdateChatChannelViewModel();
+        UpdateChatChannelState updateChatChannelState = vm.getState();
+        updateChatChannelState.setUser1ID(1);
+        updateChatChannelState.setUser2ID(2);
+        updateChatChannelState.setChatURL(channelUrl);
+        updateChatChannelState.setUser1Name("Alice");
+        updateChatChannelState.setUser2Name("Bob");
+        vm.setState(updateChatChannelState);
         ChatChannelViewModel chatChannelViewModel = new ChatChannelViewModel("Chat");
-        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
+        BaseUIView baseUIView = new BaseUIView(baseUIViewModel, baseUIController, vm,
                 chatChannelViewModel, viewManagerModel, sessionManager, viewManager, sendMessageController, updateChatChannelController, logoutController);
+        ChatChannelView view = new ChatChannelView(vm, updateChatChannelController, sendMessageController);
         view.setUpdateChatChannelController(controller);
         view.setBaseUIController(baseUIController);
 

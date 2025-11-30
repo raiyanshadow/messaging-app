@@ -40,18 +40,19 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private Thread thread;
     private volatile boolean running = false;
 
-    public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel, Integer senderID, Integer receiverID, String senderUsername, String receiverUsername, String chatURL,
+    public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel,
                            UpdateChatChannelController updateChatChannelController, SendMessageController sendMessageController) {
+        // OLD: Integer senderID, Integer receiverID, String senderUsername, String receiverUsername, String chatURL,
         // Initialize variables
         this.updateChatChannelViewModel = updateChatChannelViewModel;
         this.updateChatChannelViewModel.addPropertyChangeListener(this);
         this.messageViewModel = new MessageViewModel();
         this.messageViewModel.addPropertyChangeListener(this);
-        this.senderID = senderID;
-        this.receiverID = receiverID;
-        this.senderUsername = senderUsername;
-        this.receiverUsername = receiverUsername;
-        // Variables to call interactors
+        this.senderID = updateChatChannelViewModel.getState().getUser1ID();
+        this.receiverID = updateChatChannelViewModel.getState().getUser2ID();
+        this.senderUsername = updateChatChannelViewModel.getState().getUser1Name();
+        this.receiverUsername = updateChatChannelViewModel.getState().getUser2Name();
+        this.chatURL = updateChatChannelViewModel.getState().getChatURL();
         this.updateChatChannelController = updateChatChannelController;
 
         // Set layout
@@ -129,7 +130,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("state")) {
             final UpdateChatChannelState state = (UpdateChatChannelState) evt.getNewValue();
-            chatName.setText(state.getChatChannelName());
+            chatName.setText(receiverUsername); // success flow
             updateMessage(state.getMessages());
         }
     }
@@ -167,6 +168,8 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         for (int i = lastRenderedCount; i < messages.size(); i++) {
             MessageViewModel message = messages.get(i);
             boolean isSelf = (message.getState().getSenderID().equals(this.senderID));
+            System.out.println(this.senderID);
+            System.out.println(this.receiverID);
             String name = isSelf ? senderUsername : receiverUsername;
 
             MessagePanel messagePanel = new MessagePanel(new JLabel(name),

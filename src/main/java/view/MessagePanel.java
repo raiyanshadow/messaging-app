@@ -29,7 +29,10 @@ public class MessagePanel extends JPanel {
         contentArea.setEditable(false);
         contentArea.setOpaque(false);
         contentArea.setBorder(null);
-        contentArea.setMaximumSize(new Dimension(300, Integer.MAX_VALUE));
+        int bubbleWidth = 300;
+        int minBubbleHeight = 40;
+        contentArea.setMinimumSize(new Dimension(bubbleWidth, minBubbleHeight - 10));
+        bubble.setMinimumSize(new Dimension(bubbleWidth, minBubbleHeight));
         contentArea.setAlignmentX(Component.LEFT_ALIGNMENT); // <--- FIX
 
         // -------- timestamp --------

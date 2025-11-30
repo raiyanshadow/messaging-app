@@ -4,8 +4,8 @@ import java.sql.Timestamp;
 
 public class SendMessageOutputData {
     private Long messageId;
-    private Integer senderID;
-    private Integer receiverID;
+    private final Integer senderID;
+    private final Integer receiverID;
     private String channelUrl;
     private String content;
     private Timestamp timestamp;
@@ -35,8 +35,6 @@ public class SendMessageOutputData {
     public void setContent(String content) {
         this.content = content;
     }
-    public void setSenderID(Integer senderID) { this.senderID = senderID; }
-    public void setReceiverID(Integer receiverID) { this.receiverID = receiverID; }
     public void setChannelUrl(String channelUrl) { this.channelUrl = channelUrl; }
     public void setTimestamp(Timestamp timestamp) { this.timestamp = timestamp; }
 }

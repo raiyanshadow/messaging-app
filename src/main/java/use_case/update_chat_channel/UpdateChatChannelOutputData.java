@@ -3,16 +3,13 @@ package use_case.update_chat_channel;
 import java.util.List;
 
 public class UpdateChatChannelOutputData {
-    private final String chatName;
-    private final String user1Username;
-    private final String user2Username;
-    private final int user1ID;
-    private final int user2ID;
-    private final String chatURL;
-    private final List<MessageDTO> messages;
+    private String chatName;
+    private User user1;
+    private User user2;
+    private String chatURL;
+    private List<Message<String>> messages;
 
-    public UpdateChatChannelOutputData(String chatName, String chatURL, String user1Username, int user1ID,
-            String user2Username, int user2ID, List<MessageDTO> messages) {
+    public UpdateChatChannelOutputData(String chatName, String chatURL, User user1, User user2, List<Message<String>> messages) {
         this.chatName = chatName;
         this.user1Username = user1Username;
         this.user2Username = user2Username;
@@ -40,7 +37,7 @@ public class UpdateChatChannelOutputData {
     public String getChatURL() {
         return chatURL;
     }
-    public List<MessageDTO> getMessages() {
+    public List<Message<String>> getMessages() {
         return messages;
     }
 }

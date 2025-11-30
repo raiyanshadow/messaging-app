@@ -11,7 +11,7 @@ public class DirectChatChannelFactory {
      * @throws IllegalArgumentException if user is null
      */
     public static DirectChatChannel createDirectChatChannel(String chatName, User user1, User user2,
-                                                            String chatURL, List<Message> messages) {
+                                                            String chatURL, List<Message<String>> messages) {
         if (user1 == null || user2 == null) {
             throw new IllegalArgumentException("Users must not be null");
         }

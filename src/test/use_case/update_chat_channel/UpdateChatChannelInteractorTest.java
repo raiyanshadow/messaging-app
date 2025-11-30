@@ -26,7 +26,7 @@ public class UpdateChatChannelInteractorTest {
         UpdateChatChannelInputData inputData = new UpdateChatChannelInputData(url);
         User sender = new User(1, "Alice", "abc", "English");
         User receiver = new User(2, "Bob", "def", "English");
-        List<Message> messages = new ArrayList<>();
+        List<Message<String>> messages = new ArrayList<>();
         DirectChatChannel chat = new DirectChatChannel("Example Chat", sender, receiver, url, messages);
         mockChatDAO.addChat(chat);
 
@@ -55,7 +55,7 @@ public class UpdateChatChannelInteractorTest {
     @Test
     void failureChatURLNotFoundTest() throws SQLException {
         UpdateChatChannelInputData inputData = new UpdateChatChannelInputData("wrongURL");
-        List<Message> messages = new ArrayList<>();
+        List<Message<String>> messages = new ArrayList<>();
 
         User sender = new User(1, "Alice", "abc", "English");
         User receiver = new User(2, "Bob", "def", "English");
@@ -82,7 +82,7 @@ public class UpdateChatChannelInteractorTest {
     @Test
     void failureChatURLIsNullTest() throws SQLException {
         UpdateChatChannelInputData inputData = new UpdateChatChannelInputData(null);
-        List<Message> messages = new ArrayList<>();
+        List<Message<String>> messages = new ArrayList<>();
 
         User sender = new User(1, "Alice", "abc", "English");
         User receiver = new User(2, "Bob", "def", "English");

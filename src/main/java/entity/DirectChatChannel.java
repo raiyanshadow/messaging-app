@@ -5,12 +5,12 @@ import java.util.List;
 
 public class DirectChatChannel {
     private String chatName;
-    private User sender;
-    private User receiver;
+    private final User sender;
+    private final User receiver;
     private String chatUrl;
-    private List<Message> messages;
+    private List<Message<String>> messages;
 
-    public DirectChatChannel(String chatName, User sender, User receiver, String chatUrl, List<Message> messages) {
+    public DirectChatChannel(String chatName, User sender, User receiver, String chatUrl, List<Message<String>> messages) {
         this.chatName = chatName;
         this.sender = sender;
         this.receiver = receiver;
@@ -30,16 +30,8 @@ public class DirectChatChannel {
         return sender;
     }
 
-    public void setUser1(User user1) {
-        this.sender = user1;
-    }
-
     public User getUser2() {
         return receiver;
-    }
-
-    public void setUser2(User recieve) {
-        this.receiver = recieve;
     }
 
     public String getChatUrl() {
@@ -50,19 +42,11 @@ public class DirectChatChannel {
         this.chatUrl = chatUrl;
     }
 
-    public List<Message> getMessages() {
+    public List<Message<String>> getMessages() {
         return messages;
     }
 
-    public List<Long> getMessageIds() {
-        final List<Long> messageIds = new ArrayList<>();
-        for (Message message : messages) {
-            messageIds.add(message.getMessageID());
-        }
-        return messageIds;
-    }
-
-    public void setMessages(List<Message> messages) {
+    public void setMessages(List<Message<String>> messages) {
         this.messages = messages;
     }
 

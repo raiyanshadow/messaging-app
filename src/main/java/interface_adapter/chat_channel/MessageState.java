@@ -11,7 +11,6 @@ public class MessageState {
     private Integer receiverID;
     private String senderName;
     private String error;
-    private boolean shouldGoHome;
     private boolean replied;
     private boolean edited;
 
@@ -59,9 +58,6 @@ public class MessageState {
     }
     public void setError(String error) {
         this.error = error;
-    }
-    public void setShouldGoHome(boolean b) {
-        this.shouldGoHome = b;
     }
     public void setReplied(boolean b) { this.replied = b;}
     public boolean getReplied() { return this.replied; }

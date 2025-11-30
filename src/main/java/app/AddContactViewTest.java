@@ -105,7 +105,7 @@ public class AddContactViewTest {
                 channelCreator);
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, dbChatChannelDataAccessObject, dummyUserDAO, sessionManager,
                 dummyContactDAO);
-        SendMessageInteractor sendMessageInteractor = new SendMessageInteractor(sendMessagePresenter, dummyUserDAO,
+        SendMessageInteractor sendMessageInteractor = new SendMessageInteractor(sendMessagePresenter,
                 messageDataAccessObject, sessionManager, messageSender);
         UpdateChatChannelInteractor updateChatChannelInteractor = new UpdateChatChannelInteractor(
                 dbChatChannelDataAccessObject, updateChatChannelPresenter);

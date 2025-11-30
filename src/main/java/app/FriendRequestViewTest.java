@@ -122,7 +122,7 @@ public class FriendRequestViewTest {
         AppBuilder appBuilder = new AppBuilder();
         LogoutPresenter logoutPresenter = new LogoutPresenter(logoutViewModel, viewManagerModel, loginViewModel, sessionManager, appBuilder);
 
-        SendMessageInteractor sendMessageInteractor = new SendMessageInteractor(sendMessagePresenter, userDataAccessObject,
+        SendMessageInteractor sendMessageInteractor = new SendMessageInteractor(sendMessagePresenter,
                 messageDataAccessObject, sessionManager, messageSender);
         UpdateChatChannelInteractor updateChatChannelInteractor = new UpdateChatChannelInteractor(
                 dbChatChannelDataAccessObject, updateChatChannelPresenter);

@@ -41,15 +41,13 @@ public class Contact {
         }
 
         final Contact that = (Contact) o;
-        final boolean result = user.getUserID() == that.user.getUserID()
-                && contact.getUserID() == that.contact.getUserID();
 
-        return result;
+        return user.getUserID() == that.user.getUserID()
+                && contact.getUserID() == that.contact.getUserID();
     }
 
     @Override
     public int hashCode() {
-
         return Objects.hash(user.getUserID(), contact.getUserID());
     }
 }

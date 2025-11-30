@@ -115,7 +115,7 @@ public class ChatChannelViewTest {
 
         SessionManager sessionManager = new SessionManager();
         sessionManager.setMainUser(user1);
-        sessionManager.setLoggedin(true);
+        sessionManager.setLoggedIn(true);
 
 
         // 1. ViewModel
@@ -150,7 +150,8 @@ public class ChatChannelViewTest {
 
         // 4. Interactor
         UpdateChatChannelInputBoundary interactor = new UpdateChatChannelInteractor(chatDAO, presenter);
-        SendMessageInputBoundary messageInteractor = new SendMessageInteractor(presenter2, userDAO, messageDAO, sessionManager, messageSender);
+        SendMessageInputBoundary messageInteractor = new SendMessageInteractor(presenter2, messageDAO, sessionManager,
+                messageSender);
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(presenter3, chatDAO, userDAO, sessionManager,
                 appBuilder.contactDataAccessObject);
         UpdateChatChannelInteractor updateChatChannelInteractor = new UpdateChatChannelInteractor(
@@ -179,7 +180,6 @@ public class ChatChannelViewTest {
         view.setUpdateChatChannelController(updateChatChannelController);
         view.setSendMessageController(sendMessageController);
         view.setUpdateChatChannelController(controller);
-        view.setSendMessageController(sendMessageController);
         view.setBaseUIController(baseUIController);
 
         // View Manager model

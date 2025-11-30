@@ -4,13 +4,13 @@ import java.sql.SQLException;
 
 public class SessionManager implements Session {
     private User mainUser;
-    private boolean isLoggedin;
+    private boolean isLoggedIn;
 
     public SessionManager() {}
 
-    public SessionManager(User mainUser, boolean isLoggedin) throws SQLException {
+    public SessionManager(User mainUser, boolean isLoggedIn) throws SQLException {
         this.mainUser = mainUser;
-        this.isLoggedin = isLoggedin;
+        this.isLoggedIn = isLoggedIn;
     }
 
     public User getMainUser() {
@@ -20,10 +20,7 @@ public class SessionManager implements Session {
         this.mainUser = mainUser;
     }
 
-    public boolean isLoggedin() {
-        return isLoggedin;
-    }
-    public void setLoggedin(boolean loggedin) {
-        isLoggedin = loggedin;
+    public void setLoggedIn(boolean loggedIn) {
+        isLoggedIn = loggedIn;
     }
 }

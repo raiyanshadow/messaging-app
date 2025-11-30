@@ -21,16 +21,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class SendMessageInteractorTest {
-    private Dotenv dotenv = Dotenv.configure()
+    private final Dotenv dotenv = Dotenv.configure()
             .directory("./assets")
             .filename("env")
             .load();
 
     @Test
     void successTest() throws SQLException {
-        Integer senderId = 1; // Alice's ID
-        Integer receiverId = 2; // Bob's ID
-        Integer channelId = 0; // Example chat channel
+        int senderId = 1; // Alice's ID
+        int receiverId = 2; // Bob's ID
+        int channelId = 0; // Example chat channel
         String url = dotenv.get("DB_URL");
         String user = dotenv.get("DB_USER");
         String password = dotenv.get("DB_PASSWORD");
@@ -41,16 +41,16 @@ class SendMessageInteractorTest {
         DirectChatChannel chatChannel = chatChannelDAO.getDirectChatChannelByID(channelId);
 
         SendMessageInputData inputData = new SendMessageInputData("Test chat", chatChannel.getChatUrl(),
-                senderId, receiverId);
+                receiverId);
 
         SendMessageOutputBoundary successPresenter = new SendMessageOutputBoundary() {
 
             @Override
             public void prepareSendMessageSuccessView(SendMessageOutputData outputData) {
-                assertEquals(outputData.getSenderID(), senderId);
-                assertEquals(outputData.getReceiverID(), receiverId);
-                final List<Message> messages = chatChannel.getMessages();
-                final String message = messages.get(messages.size() - 1).getContent().toString();
+                assertEquals(senderId, outputData.getSenderID());
+                assertEquals(receiverId, outputData.getReceiverID());
+                final List<Message<String>> messages = chatChannel.getMessages();
+                final String message = messages.get(messages.size() - 1).getContent();
                 assertEquals(message, inputData.getMessage());
                 assertEquals(outputData.getChannelUrl(), chatChannel.getChatUrl());
             }
@@ -65,7 +65,7 @@ class SendMessageInteractorTest {
 
         User testMainUser = userDAO.getUserFromID(senderId);
 
-        MessageDataAccessObject messageDAO = new DBMessageDataAccessObject(connection);
+        DBMessageDataAccessObject messageDAO = new DBMessageDataAccessObject(connection);
         Session session = new SessionManager(testMainUser, true);
 
         ApiClient defaultClient = Configuration.getDefaultApiClient().setBasePath(
@@ -73,7 +73,7 @@ class SendMessageInteractorTest {
         );
         MessageSender messageSender = new MessageSender(defaultClient);
 
-        SendMessageInputBoundary interactor = new SendMessageInteractor(successPresenter, userDAO,
+        SendMessageInputBoundary interactor = new SendMessageInteractor(successPresenter,
                 messageDAO, session, messageSender);
         interactor.execute(inputData);
     }

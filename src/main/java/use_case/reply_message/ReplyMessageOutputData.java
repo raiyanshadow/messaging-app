@@ -7,8 +7,8 @@ public class ReplyMessageOutputData {
     private Long childMessageId;
     private String content;
     private String channelUrl;
-    private Integer senderId;
-    private Integer receiverId;
+    private final Integer senderId;
+    private final Integer receiverId;
     private Timestamp timestamp;
 
     public ReplyMessageOutputData(Long parentMessageId,
@@ -50,14 +50,8 @@ public class ReplyMessageOutputData {
     public Integer getSenderId() {
         return senderId;
     }
-    public void setSenderId(Integer senderId) {
-        this.senderId = senderId;
-    }
     public Integer getReceiverId() {
         return receiverId;
-    }
-    public void setReceiverId(Integer receiverId) {
-        this.receiverId = receiverId;
     }
     public Timestamp getTimestamp() {
         return timestamp;

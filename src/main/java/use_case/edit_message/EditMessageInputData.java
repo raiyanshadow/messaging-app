@@ -1,7 +1,7 @@
 package use_case.edit_message;
 
 public class EditMessageInputData {
-    private String newMessage;
+    private final String newMessage;
     private String channelUrl;
     private Long messageId;
 
@@ -13,9 +13,6 @@ public class EditMessageInputData {
 
     public String getNewMessage() {
         return newMessage;
-    }
-    public void setNewMessage(String newMessage) {
-        this.newMessage = newMessage;
     }
     public String getChannelUrl() {
         return channelUrl;

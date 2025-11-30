@@ -1,17 +1,15 @@
 package use_case.edit_message;
 
-import data_access.UserDataAccessObject;
-
 import java.sql.Timestamp;
 
 public class EditMessageOutputData {
     private Long messageId;
     private String channelUrl;
     private String content;
-    private Integer senderId;
-    private Integer receiverId;
-    private Timestamp oldTimestamp;
-    private Timestamp newTimestamp;
+    private final Integer senderId;
+    private final Integer receiverId;
+    private final Timestamp oldTimestamp;
+    private final Timestamp newTimestamp;
 
     public EditMessageOutputData(Long messageId,
                                  String channelUrl,
@@ -50,25 +48,13 @@ public class EditMessageOutputData {
     public Integer getSenderId() {
         return senderId;
     }
-    public void setSenderId(Integer senderId) {
-        this.senderId = senderId;
-    }
     public Integer getReceiverId() {
         return receiverId;
-    }
-    public void setReceiverId(Integer receiverId) {
-        this.receiverId = receiverId;
     }
     public Timestamp getOldTimestamp() {
         return oldTimestamp;
     }
-    public void setOldTimestamp(Timestamp oldTimestamp) {
-        this.oldTimestamp = oldTimestamp;
-    }
     public Timestamp getNewTimestamp() {
         return newTimestamp;
-    }
-    public void setNewTimestamp(Timestamp newTimestamp) {
-        this.newTimestamp = newTimestamp;
     }
 }

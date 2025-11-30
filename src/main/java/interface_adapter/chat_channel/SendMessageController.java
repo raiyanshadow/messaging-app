@@ -10,9 +10,9 @@ public class SendMessageController {
         this.sendMessageUseCaseInteractor = sendMessageUseCaseInteractor;
     }
 
-    public void execute(String message, String channelUrl, Integer senderID, Integer receiverID) {
+    public void execute(String message, String channelUrl, Integer receiverID) {
         final SendMessageInputData sendMessageInputData = new SendMessageInputData(
-                message, channelUrl, senderID, receiverID);
+                message, channelUrl, receiverID);
 
         sendMessageUseCaseInteractor.execute(sendMessageInputData);
     }

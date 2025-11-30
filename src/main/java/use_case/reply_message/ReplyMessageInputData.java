@@ -1,11 +1,11 @@
 package use_case.reply_message;
 
 public class ReplyMessageInputData {
-    private Long parentMessageId;
+    private final Long parentMessageId;
     private String message;
     private String channelUrl;
-    private Integer senderId;
-    private Integer receiverId;
+    private final Integer senderId;
+    private final Integer receiverId;
 
     public ReplyMessageInputData(Long parentMessageId, String message, String channelUrl,
                                  Integer senderId, Integer receiverId) {
@@ -18,9 +18,6 @@ public class ReplyMessageInputData {
 
     public Long getParentMessageId() {
         return parentMessageId;
-    }
-    public void setParentMessageId(Long parentMessageId) {
-        this.parentMessageId = parentMessageId;
     }
     public String getMessage() {
         return message;
@@ -37,13 +34,7 @@ public class ReplyMessageInputData {
     public Integer getSenderId() {
         return senderId;
     }
-    public void setSenderId(Integer senderId) {
-        this.senderId = senderId;
-    }
     public Integer getReceiverId() {
         return receiverId;
-    }
-    public void setReceiverId(Integer receiverId) {
-        this.receiverId = receiverId;
     }
 }

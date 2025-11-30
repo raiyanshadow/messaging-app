@@ -5,6 +5,7 @@ import data_access.DBUserDataAccessObject;
 import entity.User;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.junit.jupiter.api.Test;
+import session.SessionManager;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -19,6 +20,7 @@ public class FriendRequestInteractorTest {
             .directory("./assets")
             .filename("env")
             .load();
+    private SessionManager sessionManager = new SessionManager();
 
     @Test
     void failureDidNotSelect() throws SQLException {
@@ -32,8 +34,9 @@ public class FriendRequestInteractorTest {
         DBContactDataAccessObject dummyContactDAO = new DBContactDataAccessObject(conn);
 
         User temp =  dummyUserDAO.getUserFromID(1);
+        this.sessionManager.setMainUser(temp);
 
-        FriendRequestInputData friendRequestInputData = new FriendRequestInputData(temp, null, true);
+        FriendRequestInputData friendRequestInputData = new FriendRequestInputData(null, true);
         FriendRequestOutputBoundary failurePresenter = new FriendRequestOutputBoundary() {
             @Override
             public void prepareSuccessView(FriendRequestOutputData friendRequestOutputData) {

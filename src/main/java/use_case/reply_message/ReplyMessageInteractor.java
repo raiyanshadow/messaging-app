@@ -1,8 +1,6 @@
 package use_case.reply_message;
 
 import SendBirdAPI.MessageSender;
-import data_access.MessageDataAccessObject;
-import data_access.UserDataAccessObject;
 import entity.Message;
 import entity.MessageFactory;
 import entity.User;
@@ -14,26 +12,23 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class ReplyMessageInteractor implements ReplyMessageInputBoundary {
-    private ReplyMessageOutputBoundary presenter;
-    private MessageDataAccessObject messageDataAccessObject;
-    private MessageSender messageSender;
-    private Session sessionManager;
-    private UserDataAccessObject userDataAccessObject;
-    private Dotenv dotenv = Dotenv.configure()
+    private final ReplyMessageOutputBoundary presenter;
+    private final ReplyMessageDataAccessInterface messageDataAccessObject;
+    private final MessageSender messageSender;
+    private final Session sessionManager;
+    private final Dotenv dotenv = Dotenv.configure()
             .directory("./assets")
             .filename("env")
-            .load();;
+            .load();
 
     public ReplyMessageInteractor(ReplyMessageOutputBoundary presenter,
-                                  MessageDataAccessObject messageDataAccessObject,
-                                  MessageSender messageReplier,
-                                  Session sessionManager,
-                                  UserDataAccessObject userDataAccessObject) {
+                                  ReplyMessageDataAccessInterface messageDataAccessObject,
+                                  MessageSender messageSender,
+                                  Session sessionManager) {
         this.presenter = presenter;
         this.messageDataAccessObject = messageDataAccessObject;
         this.messageSender = messageSender;
         this.sessionManager = sessionManager;
-        this.userDataAccessObject = userDataAccessObject;
     }
 
     @Override
@@ -47,7 +42,7 @@ public class ReplyMessageInteractor implements ReplyMessageInputBoundary {
             return;
         }
 
-        Message message = MessageFactory.createTextMessage(
+        Message<String> message = MessageFactory.createTextMessage(
             messageId, inputData.getParentMessageId(), inputData.getChannelUrl(),
             currentUser.getUserID(), inputData.getReceiverId(), "pending", Timestamp.valueOf(LocalDateTime.now()), inputData.getMessage()
         );

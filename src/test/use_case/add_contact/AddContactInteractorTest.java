@@ -7,6 +7,7 @@ import data_access.DBUserDataAccessObject;
 import entity.User;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.junit.jupiter.api.Test;
+import session.SessionManager;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -20,6 +21,7 @@ public class AddContactInteractorTest {
             .directory("./assets")
             .filename("env")
             .load();
+    private SessionManager sessionManager = new SessionManager();
     /*
     @Test
     void successTest() throws SQLException {
@@ -70,9 +72,10 @@ public class AddContactInteractorTest {
 
         // user temp is Alice since she has the userid 1
         User temp =  dummyUserDAO.getUserFromID(1);
+        this.sessionManager.setMainUser(temp);
 
 
-        AddContactInputData addContactInputData = new AddContactInputData(temp, null);
+        AddContactInputData addContactInputData = new AddContactInputData(null);
 
         AddContactOutputBoundary successPresenter = new AddContactOutputBoundary() {
             @Override
@@ -86,7 +89,8 @@ public class AddContactInteractorTest {
             }
         };
 
-        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, successPresenter);
+        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, successPresenter,
+                sessionManager);
         interactor.execute(addContactInputData);
     }
 
@@ -103,9 +107,10 @@ public class AddContactInteractorTest {
 
         // user temp is Alice since she has the userid 1
         User temp =  dummyUserDAO.getUserFromID(1);
+        this.sessionManager.setMainUser(temp);
 
 
-        AddContactInputData addContactInputData = new AddContactInputData(temp, "afiewjaiwejf");
+        AddContactInputData addContactInputData = new AddContactInputData("afiewjaiwejf");
 
         AddContactOutputBoundary successPresenter = new AddContactOutputBoundary() {
             @Override
@@ -119,7 +124,8 @@ public class AddContactInteractorTest {
             }
         };
 
-        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, successPresenter);
+        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, successPresenter,
+                sessionManager);
         interactor.execute(addContactInputData);
     }
 
@@ -136,9 +142,10 @@ public class AddContactInteractorTest {
 
         // user temp is Alice since she has the userid 1
         User temp =  dummyUserDAO.getUserFromID(1);
+        this.sessionManager.setMainUser(temp);
 
 
-        AddContactInputData addContactInputData = new AddContactInputData(temp, "Bob");
+        AddContactInputData addContactInputData = new AddContactInputData("Bob");
 
         AddContactOutputBoundary successPresenter = new AddContactOutputBoundary() {
             @Override
@@ -152,7 +159,8 @@ public class AddContactInteractorTest {
             }
         };
 
-        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, successPresenter);
+        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, successPresenter,
+                sessionManager);
         interactor.execute(addContactInputData);
     }
 
@@ -169,9 +177,10 @@ public class AddContactInteractorTest {
 
         // user temp is Alice since she has the userid 1
         User temp =  dummyUserDAO.getUserFromID(1);
+        this.sessionManager.setMainUser(temp);
 
 
-        AddContactInputData addContactInputData = new AddContactInputData(temp, "test2");
+        AddContactInputData addContactInputData = new AddContactInputData("David");
 
         AddContactOutputBoundary successPresenter = new AddContactOutputBoundary() {
             @Override
@@ -181,11 +190,12 @@ public class AddContactInteractorTest {
 
             @Override
             public void prepareFailView(String errorMessage) {
-                assertEquals("You have already sent test2 a friend request", errorMessage);
+                assertEquals("You have already sent David a friend request", errorMessage);
             }
         };
 
-        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, successPresenter);
+        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, successPresenter,
+                sessionManager);
         interactor.execute(addContactInputData);
     }
 
@@ -203,9 +213,10 @@ public class AddContactInteractorTest {
 
         // user temp is Alice since she has the userid 1
         User temp =  dummyUserDAO.getUserFromID(1);
+        this.sessionManager.setMainUser(temp);
 
 
-        AddContactInputData addContactInputData = new AddContactInputData(temp, "test4");
+        AddContactInputData addContactInputData = new AddContactInputData("salem");
 
         AddContactOutputBoundary successPresenter = new AddContactOutputBoundary() {
             @Override
@@ -215,11 +226,12 @@ public class AddContactInteractorTest {
 
             @Override
             public void prepareFailView(String errorMessage) {
-                assertEquals("test4 has sent you a friend request, please go and accept their friend request to add them as a contact", errorMessage);
+                assertEquals("salem has sent you a friend request, please go and accept their friend request to add them as a contact", errorMessage);
             }
         };
 
-        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, successPresenter);
+        AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, successPresenter,
+                sessionManager);
         interactor.execute(addContactInputData);
     }
 

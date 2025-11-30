@@ -1,18 +1,16 @@
 package SendBirdAPI;
 
-import entity.User;
 import org.openapitools.client.model.SendAMessageRequest;
 import org.openapitools.client.model.SendbirdMessageResponse;
 import org.sendbird.client.ApiClient;
 import org.sendbird.client.ApiException;
 import org.sendbird.client.api.MessageApi;
+import use_case.send_message.SendMessageAPIAccessInterface;
 
-public class MessageSender {
-    private MessageApi messageApi;
-    private ApiClient defaultClient;
+public class MessageSender implements SendMessageAPIAccessInterface {
+    private final MessageApi messageApi;
 
     public MessageSender(ApiClient defaultClient) {
-        this.defaultClient = defaultClient;
         this.messageApi = new MessageApi(defaultClient);
     }
 

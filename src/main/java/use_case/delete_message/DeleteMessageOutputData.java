@@ -1,7 +1,7 @@
 package use_case.delete_message;
 
 public class DeleteMessageOutputData {
-    private Long messageId;
+    private final Long messageId;
 
     public DeleteMessageOutputData(Long messageId) {
         this.messageId = messageId;

@@ -156,7 +156,7 @@ public class ChatChannelViewTestReceiver {
         // 2. Presenter
         SessionManager sessionManager = new SessionManager();
         sessionManager.setMainUser(user1);
-        sessionManager.setLoggedin(true);
+        sessionManager.setLoggedIn(true);
         UpdateChatChannelPresenter presenter = new UpdateChatChannelPresenter(vm, sessionManager);
         ChatChannelPresenter presenter2 = new ChatChannelPresenter(messageViewModel);
         baseUIPresenter presenter3 = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel, friendRequestViewModel, addContactViewModel, profileEditViewModel);
@@ -173,7 +173,8 @@ public class ChatChannelViewTestReceiver {
 
         // 4. Interactor
         UpdateChatChannelInputBoundary interactor = new UpdateChatChannelInteractor(chatDAO, presenter);
-        SendMessageInputBoundary messageInteractor = new SendMessageInteractor(presenter2, userDAO, messageDAO, sessionManager, messageSender);
+        SendMessageInputBoundary messageInteractor = new SendMessageInteractor(presenter2, messageDAO, sessionManager,
+                messageSender);
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(presenter3, chatDAO, userDAO, sessionManager,
                 appBuilder.contactDataAccessObject);
         LogoutInputBoundary logoutInteractor = new LogoutInteractor(presenter4);
@@ -194,7 +195,6 @@ public class ChatChannelViewTestReceiver {
                 chatChannelViewModel, viewManagerModel, (SessionManager) sessionManager, viewManager,
                 sendMessageController, controller, logoutController);
         view.setUpdateChatChannelController(controller);
-        view.setSendMessageController(sendMessageController);
         view.setBaseUIController(baseUIController);
 
         // View Manager model

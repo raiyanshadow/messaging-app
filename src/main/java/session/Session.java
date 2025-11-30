@@ -7,6 +7,5 @@ public interface Session {
     User getMainUser();
     void setMainUser(User mainUser);
 
-    boolean isLoggedin();
-    void setLoggedin(boolean loggedin);
+    void setLoggedIn(boolean loggedIn);
 }

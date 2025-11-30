@@ -11,9 +11,9 @@ public class UpdateChatChannelOutputData {
     private User user1;
     private User user2;
     private String chatURL;
-    private List<Message> messages;
+    private List<Message<String>> messages;
 
-    public UpdateChatChannelOutputData(String chatName, String chatURL, User user1, User user2, List<Message> messages) {
+    public UpdateChatChannelOutputData(String chatName, String chatURL, User user1, User user2, List<Message<String>> messages) {
         this.chatName = chatName;
         this.user1 = user1;
         this.user2 = user2;
@@ -33,7 +33,7 @@ public class UpdateChatChannelOutputData {
     public String getChatURL() {
         return chatURL;
     }
-    public List<Message> getMessages() {
+    public List<Message<String>> getMessages() {
         return messages;
     }
 }

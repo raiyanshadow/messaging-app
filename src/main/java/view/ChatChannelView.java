@@ -1,7 +1,6 @@
 package view;
 
 import interface_adapter.base_UI.baseUIController;
-import interface_adapter.base_UI.baseUIViewModel;
 import interface_adapter.chat_channel.MessageState;
 import interface_adapter.update_chat_channel.UpdateChatChannelState;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
@@ -14,7 +13,6 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -22,11 +20,9 @@ import java.util.List;
  */
 public class ChatChannelView extends JPanel implements PropertyChangeListener {
     // Variables required for view
-    private final String viewName = "update chat channel";
     private final UpdateChatChannelViewModel updateChatChannelViewModel;
     private UpdateChatChannelController updateChatChannelController = null;
-    private SendMessageController sendMessageController = null;
-    private MessageViewModel messageViewModel;
+    private final MessageViewModel messageViewModel;
     private baseUIController baseUIController = null;
 
     // GUI components
@@ -34,16 +30,11 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private final JPanel messageContainer;
     private final JScrollPane scrollPane;
     private final JTextField content = new JTextField(15);
-    private final JButton send;
-    private final JButton back;
 
-    // Variables to call interactors
-    private String chatURL;
-    private Integer senderID;
-    private Integer receiverID;
-    private String senderUsername;
-    private String receiverUsername;
-    private boolean pending;
+    private final Integer senderID;
+    private final Integer receiverID;
+    private final String senderUsername;
+    private final String receiverUsername;
     private int lastRenderedCount = 0;
     private boolean firstOpen = true;
     private Thread thread;
@@ -60,9 +51,8 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         this.receiverID = receiverID;
         this.senderUsername = senderUsername;
         this.receiverUsername = receiverUsername;
-        this.chatURL = chatURL;
+        // Variables to call interactors
         this.updateChatChannelController = updateChatChannelController;
-        this.sendMessageController = sendMessageController;
 
         // Set layout
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -78,8 +68,8 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);  // <-- ADD THIS
         scrollPane.getVerticalScrollBar().setUnitIncrement(30);
         scrollPane.setPreferredSize(new Dimension(400, 350));
-        send = new JButton("Send");
-        back = new JButton("Back");
+        JButton send = new JButton("Send");
+        JButton back = new JButton("Back");
         ChatPreviewPanel chatPreview = new ChatPreviewPanel(chatName, scrollPane, content, send, back);
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(chatPreview);
@@ -105,7 +95,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
             messageState.setContent(message);
 
             // Execute the controller to send
-            sendMessageController.execute(message, messageState.getChannelURL(), messageState.getSenderID(), messageState.getReceiverID());
+            sendMessageController.execute(message, messageState.getChannelURL(), messageState.getReceiverID());
             content.setText("");
             SwingUtilities.invokeLater(() ->
                     scrollToBottom(scrollPane)
@@ -117,16 +107,6 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         firstOpen = true;
 
         startThread();
-    }
-
-    public void clearMessages() {
-        SwingUtilities.invokeLater(() -> {
-            messageContainer.removeAll();
-            messageContainer.revalidate();
-            messageContainer.repaint();
-        });
-        lastRenderedCount = 0;
-        firstOpen = true;
     }
 
     public void dispose() {
@@ -149,14 +129,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("state")) {
             final UpdateChatChannelState state = (UpdateChatChannelState) evt.getNewValue();
-//            if (chatURL == null) {
-//                chatURL = state.getChatURL();
-//                senderID = state.getUser1ID();
-//                receiverID = state.getUser2ID();
-//                senderUsername = state.getUser1Name();
-//            }
             chatName.setText(state.getChatChannelName());
-//            chatName.setText(state.getChatChannelName());
             updateMessage(state.getMessages());
         }
     }
@@ -171,7 +144,6 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
                         UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
                         if (updateChatChannelState != null && updateChatChannelState.getChatURL() != null) {
                             updateChatChannelController.execute(updateChatChannelState.getChatURL());
-                            pending = false;
                         }
                     }
                     Thread.sleep(200);
@@ -256,44 +228,12 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         });
     }
 
-    private void smoothScrollToBottom(JScrollPane scrollPane) {
-        JScrollBar bar = scrollPane.getVerticalScrollBar();
-        int target = bar.getMaximum();
-
-        final int[] step = {0};
-        final int steps = 10; // number of animation frames (higher = slower/smoother)
-
-        Runnable animator = new Runnable() {
-            @Override
-            public void run() {
-                step[0]++;
-                int current = bar.getValue();
-                int next = current + (target - current) / (steps - step[0] + 1);
-
-                bar.setValue(next);
-
-                if (step[0] < steps) {
-                    SwingUtilities.invokeLater(this);
-                } else {
-                    // force-final align
-                    bar.setValue(target);
-                }
-            }
-        };
-
-        SwingUtilities.invokeLater(animator);
-    }
-
     public void setBaseUIController(baseUIController baseUIController) {
         this.baseUIController = baseUIController;
     }
 
     public void setUpdateChatChannelController(UpdateChatChannelController updateChatChannelController) {
         this.updateChatChannelController = updateChatChannelController;
-    }
-
-    public void setSendMessageController(SendMessageController sendMessageController) {
-        this.sendMessageController = sendMessageController;
     }
 
     public String getContent() {

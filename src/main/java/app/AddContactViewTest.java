@@ -25,6 +25,8 @@ import interface_adapter.logout.LogoutController;
 import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.logout.LogoutViewModel;
 import interface_adapter.profile_edit.ProfileEditViewModel;
+import interface_adapter.search_contact.SearchContactController;
+import interface_adapter.search_contact.SearchContactPresenter;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
 import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
@@ -37,6 +39,8 @@ import use_case.add_contact.*;
 import use_case.baseUI.BaseUIInteractor;
 import use_case.logout.LogoutInteractor;
 import use_case.logout.LogoutOutputBoundary;
+import use_case.search_contact.SearchContactInputBoundary;
+import use_case.search_contact.SearchContactInteractor;
 import use_case.send_message.SendMessageInteractor;
 import use_case.send_message.SendMessageOutputBoundary;
 import use_case.update_chat_channel.UpdateChatChannelInteractor;
@@ -130,6 +134,16 @@ public class AddContactViewTest {
         AddContactInputBoundary interactor = new AddContactInteractor(dummyUserDAO, dummyContactDAO, presenter, sessionManager);
         AddContactController controller = new AddContactController(interactor);
         addContactview.setAddContactController(controller);
+
+        // ===================== setup the search contact controller stuff =====================
+        // testing to see if this stuff works :((((((((((((((((((((((((((
+        SearchContactPresenter searchContactPresenter = new SearchContactPresenter(addContactViewModel, viewManagerModel);
+        SearchContactInputBoundary searchContactInputBoundary = new SearchContactInteractor(dummyUserDAO, searchContactPresenter );
+        SearchContactController searchContactController = new SearchContactController(searchContactInputBoundary);
+        addContactview.setSearchContactController(searchContactController);
+        // ======================================================================================
+
+
 
 
         viewManager.addView(addContactview, addChatChannelViewModel.getViewName());

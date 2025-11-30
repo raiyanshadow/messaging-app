@@ -5,16 +5,16 @@ import entity.User;
 import java.util.List;
 
 public class SearchContactOutputData {
-    private final List<User> results;
+    private final List<String> matchingUsernames;
     private final boolean useCaseFailed;
 
-    public SearchContactOutputData(List<User> results, boolean useCaseFailed) {
-        this.results = results;
+    public SearchContactOutputData(List<String> matchingUsernames, boolean useCaseFailed) {
+        this.matchingUsernames = matchingUsernames;
         this.useCaseFailed = useCaseFailed;
     }
 
-    public List<User> getResults() {
-        return results;
+    public List<String> getMatchingUsernames() {
+        return matchingUsernames;
     }
 
     public boolean isUseCaseFailed() {

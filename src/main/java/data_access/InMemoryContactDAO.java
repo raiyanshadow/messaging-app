@@ -2,11 +2,12 @@ package data_access;
 
 import entity.Contact;
 import entity.User;
+import use_case.friend_request.FriendRequestUserDataAccessInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class InMemoryContactDAO implements ContactDataAccessObject {
+public class InMemoryContactDAO implements ContactDataAccessObject, FriendRequestUserDataAccessInterface {
 
     // to simulate the contact table in the database
     // can't just use the Contact entity because it does not contain the attribute isFriendRequest
@@ -15,7 +16,7 @@ public class InMemoryContactDAO implements ContactDataAccessObject {
     public static class DummyContact {
         private final User user;
         private final User contact;
-        private final Boolean isFriendRequest;
+        private Boolean isFriendRequest;
 
         public DummyContact(User user, User contact, Boolean isFriendRequest) {
             this.user = user;
@@ -35,6 +36,10 @@ public class InMemoryContactDAO implements ContactDataAccessObject {
             return isFriendRequest;
         }
 
+        public void setIsFriendRequest(Boolean isFriendRequest) {
+            this.isFriendRequest = isFriendRequest;
+        }
+
     }
 
 
@@ -42,6 +47,10 @@ public class InMemoryContactDAO implements ContactDataAccessObject {
 
     public void addDummyContact(DummyContact dummyContact) {
         contacts.add(dummyContact);
+    }
+
+    public List<DummyContact> getAllContacts() {
+        return contacts;
     }
 
     @Override
@@ -71,5 +80,26 @@ public class InMemoryContactDAO implements ContactDataAccessObject {
                 friendRequests.add(contact.getUser().getUsername());
             }
         }
+    }
+
+    @Override
+    public void acceptRequest(User accepter, String acceptedUsername) {
+        // format of DummyContact is (user, contact, isFriendRequest)
+        for (DummyContact contact : contacts) {
+            if (contact.getUser().getUsername().equals(acceptedUsername) && contact.getContact().getUserID() == accepter.getUserID() && contact.getIsFriendRequest()) {
+                contact.setIsFriendRequest(false);
+            }
+        }
+    }
+
+    @Override
+    public void deleteRequest(User decliner, String acceptedUsername) {
+        contacts.removeIf(contact -> contact.getUser().getUsername().equals(acceptedUsername) && contact.getContact().getUserID() == decliner.getUserID() && contact.getIsFriendRequest());
+    }
+
+    @Override
+    public List<Contact> getContacts(User user) {
+        updateUserContacts(user, user.getContacts());
+        return user.getContacts();
     }
 }

@@ -4,6 +4,7 @@ package interface_adapter.friend_request;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.base_UI.baseUIState;
 import interface_adapter.base_UI.baseUIViewModel;
+import session.SessionManager;
 import use_case.friend_request.FriendRequestOutputBoundary;
 import use_case.friend_request.FriendRequestOutputData;
 
@@ -11,11 +12,13 @@ public class FriendRequestPresenter implements FriendRequestOutputBoundary {
     private final FriendRequestViewModel friendRequestViewModel;
     private final ViewManagerModel viewManagerModel;
     private final baseUIViewModel baseUIViewModel;
+    private final SessionManager sessionManager;
 
-    public FriendRequestPresenter(FriendRequestViewModel friendRequestViewModel, ViewManagerModel viewManagerModel, baseUIViewModel baseUIViewModel) {
+    public FriendRequestPresenter(FriendRequestViewModel friendRequestViewModel, ViewManagerModel viewManagerModel, baseUIViewModel baseUIViewModel, SessionManager sessionManager) {
         this.friendRequestViewModel = friendRequestViewModel;
         this.viewManagerModel = viewManagerModel;
         this.baseUIViewModel = baseUIViewModel;
+        this.sessionManager = sessionManager;
     }
 
 
@@ -28,7 +31,8 @@ public class FriendRequestPresenter implements FriendRequestOutputBoundary {
 
         // Use the updated contact list fetched from DAO
         baseUIState baseState = baseUIViewModel.getState();
-        baseState.setContacts(friendRequestOutputData.getUpdatedContactList());
+        //baseState.setContacts(friendRequestOutputData.getUpdatedContactList());
+        baseState.setContacts(sessionManager.getMainUser().getContacts());
         baseUIViewModel.firePropertyChange("contacts_updated");
     }
 

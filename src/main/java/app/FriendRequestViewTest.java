@@ -100,7 +100,7 @@ public class FriendRequestViewTest {
         baseUIController baseUIController = new baseUIController(baseUIInteractor);
         ViewManager viewManager = new ViewManager(viewManagerModel);
 
-        FriendRequestPresenter presenter = new FriendRequestPresenter(friendRequestViewModel, viewManagerModel, baseUIViewModel);
+        FriendRequestPresenter presenter = new FriendRequestPresenter(friendRequestViewModel, viewManagerModel, baseUIViewModel, sessionManager);
         FriendRequestView friendRequestView = new FriendRequestView(friendRequestViewModel, viewManagerModel, sessionManager, baseUIController);
 
         FriendRequestInputBoundary interactor = new FriendRequestInteractor(dummyContactDAO, presenter, sessionManager);

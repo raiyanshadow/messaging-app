@@ -3,12 +3,12 @@ package data_access;
 import entity.Contact;
 import entity.User;
 import use_case.add_contact.AddContactContactDataAccessInterface;
-import use_case.friend_request.FriendRequestUserDataAccessInterface;
+import use_case.friend_request.FriendRequestContactDataAccessInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class InMemoryContactDAO implements ContactDataAccessObject, FriendRequestUserDataAccessInterface, AddContactContactDataAccessInterface {
+public class InMemoryContactDAO implements ContactDataAccessObject, FriendRequestContactDataAccessInterface, AddContactContactDataAccessInterface {
 
     // to simulate the contact table in the database
     // can't just use the Contact entity because it does not contain the attribute isFriendRequest

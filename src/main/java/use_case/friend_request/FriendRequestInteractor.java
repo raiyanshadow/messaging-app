@@ -9,14 +9,14 @@ import java.util.List;
 
 public class FriendRequestInteractor implements FriendRequestInputBoundary {
 
-    private final FriendRequestUserDataAccessInterface userDataAccessObject;
+    private final FriendRequestContactDataAccessInterface userDataAccessObject;
     private final FriendRequestOutputBoundary userPresenter;
     private final SessionManager sessionManager;
 
 
-    public FriendRequestInteractor(FriendRequestUserDataAccessInterface friendRequestUserDataAccessInterface, FriendRequestOutputBoundary friendRequestOutputBoundary,
+    public FriendRequestInteractor(FriendRequestContactDataAccessInterface friendRequestContactDataAccessInterface, FriendRequestOutputBoundary friendRequestOutputBoundary,
                                    SessionManager sessionManager) {
-        this.userDataAccessObject = friendRequestUserDataAccessInterface;
+        this.userDataAccessObject = friendRequestContactDataAccessInterface;
         this.userPresenter = friendRequestOutputBoundary;
         this.sessionManager = sessionManager;
     }

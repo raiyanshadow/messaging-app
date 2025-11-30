@@ -91,6 +91,43 @@ public class AddContactInteractorTest {
     }
 
     @Test
+    void failureSendRequestToYourself() throws SQLException {
+        // create the mock DAOs
+        InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();
+        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
+
+        // create users to populate the mock DAOs
+        User alice = new User(1, "alice", "alice", "English");
+        User bob = new User(2, "bob", "bob", "English");
+
+        // populate the mockUserDAO
+        mockUserDAO.save(alice);
+        mockUserDAO.save(bob);
+
+        // no input data
+        AddContactInputData inputData = new AddContactInputData("alice");
+
+        AddContactOutputBoundary successPresenter = new AddContactOutputBoundary() {
+            @Override
+            public void prepareSuccessView(AddContactOutputData addContactOutputData) {
+                fail("use case has failed");
+            }
+
+            @Override
+            public void prepareFailView(String errorMessage) {
+                assertEquals("Can not send request to yourself", errorMessage);
+            }
+        };
+
+        // set the current main user as alice
+        SessionManager sessionManager = new SessionManager();
+        sessionManager.setMainUser(alice);
+
+        AddContactInputBoundary interactor = new AddContactInteractor(mockUserDAO, mockContactDAO, successPresenter, sessionManager);
+        interactor.execute(inputData);
+    }
+
+    @Test
     void failureReceiverDoesNotExist() throws SQLException {
         // create the mock DAOs
         InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();

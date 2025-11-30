@@ -69,6 +69,10 @@ public class AddContactInteractor implements AddContactInputBoundary {
             userPresenter.prepareFailView("Please enter in a username");
         }
 
+        else if (receiverUsername.equals(sender.getUsername())) {
+            userPresenter.prepareFailView("Can not send request to yourself");
+        }
+
         // receiver (user who should receive add contact request) does not exist
         else if (!userDataAccessObject.existsByName(receiverUsername)) {
 

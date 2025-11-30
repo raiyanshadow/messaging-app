@@ -1,13 +1,17 @@
 package use_case.update_chat_channel;
 
 import entity.DirectChatChannel;
+import entity.Message;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UpdateChatChannelInteractor implements UpdateChatChannelInputBoundary{
     private final UpdateChatChannelUserDataAccessInterface updateChatChannelUserDataAccess;
     private final UpdateChatChannelOutputBoundary updateChatChannelPresenter;
-    public UpdateChatChannelInteractor(UpdateChatChannelUserDataAccessInterface userDataAccessInterface, UpdateChatChannelOutputBoundary updateChatChannelOutputBoundary) {
+    public UpdateChatChannelInteractor(UpdateChatChannelUserDataAccessInterface userDataAccessInterface,
+                                       UpdateChatChannelOutputBoundary updateChatChannelOutputBoundary) {
         this.updateChatChannelUserDataAccess = userDataAccessInterface;
         this.updateChatChannelPresenter = updateChatChannelOutputBoundary;
     }
@@ -20,13 +24,26 @@ public class UpdateChatChannelInteractor implements UpdateChatChannelInputBounda
         }
         else {
             final DirectChatChannel chat = updateChatChannelUserDataAccess.getDirectChatChannelByURL(chatURL);
-            if (chat.getChatUrl().equals("")) { // This means that an empty chat was created
+            if (chat == null || chat.getChatUrl().isEmpty()) { // This means that an empty chat was created
                 updateChatChannelPresenter.prepareFailView("Chat not found");
             }
             else {
-                final UpdateChatChannelOutputData outputData = new UpdateChatChannelOutputData(chat.getChatName(), chat.getChatUrl(), chat.getUser1(), chat.getUser2(), chat.getMessages());
+                // Create MessageDTO
+                final UpdateChatChannelOutputData outputData = getUpdateChatChannelOutputData(chat);
                 updateChatChannelPresenter.prepareSuccessView(outputData);
             }
         }
+    }
+
+    private static UpdateChatChannelOutputData getUpdateChatChannelOutputData(DirectChatChannel chat) {
+        List<MessageDTO> messageDTOs = new ArrayList<>();
+        for (Message message : chat.getMessages()) {
+            MessageDTO messageDto = new MessageDTO(message.getChannelUrl(), message.getSenderId(),
+                    message.getReceiverId(), message.getTimestamp(), (String) message.getContent()); // We assume message is a textMessage
+            messageDTOs.add(messageDto);
+        }
+        return new UpdateChatChannelOutputData(chat.getChatName(),
+                chat.getChatUrl(), chat.getUser1().getUsername(), chat.getUser1().getUserID(),
+                chat.getUser2().getUsername(), chat.getUser2().getUserID(), messageDTOs);
     }
 }

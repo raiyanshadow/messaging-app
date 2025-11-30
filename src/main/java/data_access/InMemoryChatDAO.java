@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryChatDAO implements UpdateChatChannelUserDataAccessInterface {
-    private final List<DirectChatChannel> chats = new ArrayList<DirectChatChannel>();
+    private final List<DirectChatChannel> chats = new ArrayList<>();
 
     @Override
     public DirectChatChannel getDirectChatChannelByURL(String chatUrl) throws SQLException {
@@ -20,7 +20,7 @@ public class InMemoryChatDAO implements UpdateChatChannelUserDataAccessInterface
     }
 
     /**
-     * Add the chat channel the the chats List.
+     * Add the chat channel the chats List.
      * @param chat the direct chat channel entity to add to chats
      */
     public void addChat(DirectChatChannel chat) {

@@ -18,11 +18,11 @@ public class BaseUIInteractor implements BaseUIInputBoundary{
     BaseUIOutputBoundary presenter;
     ChatChannelDataAccessObject chatChannelDataAccess;
     UserDataAccessObject userDataAccess;
-    DBContactDataAccessObject contactDataAccess;
+    ContactDataAccessObject contactDataAccess;
     Session sessionManager;
 
     public BaseUIInteractor(BaseUIOutputBoundary presenter, ChatChannelDataAccessObject chatChannelDataAccess,
-                            UserDataAccessObject userDataAccess, Session sessionManager, DBContactDataAccessObject contactDataAccess) {
+                            UserDataAccessObject userDataAccess, Session sessionManager, ContactDataAccessObject contactDataAccess) {
         this.presenter = presenter;
         this.chatChannelDataAccess = chatChannelDataAccess;
         this.userDataAccess = userDataAccess;

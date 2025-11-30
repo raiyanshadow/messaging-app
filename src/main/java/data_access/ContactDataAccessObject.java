@@ -18,4 +18,10 @@ public interface ContactDataAccessObject {
      * @param friendRequests The {@code List<String>} object to be populated with the
      */
     void updateUserFriendRequests(User user, List<String> friendRequests);
+
+    /**
+     * Retrieves the contacts of specific user provided in the parameter.
+     * @param user The {@code User} entity to find contacts for
+     */
+    List<Contact> getContacts(User user);
 }

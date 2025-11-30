@@ -18,7 +18,9 @@ public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
     UserDataAccessObject userDataAccess;
     Session sessionManager;
     ChannelCreator channelCreator;
-    private Dotenv dotenv = Dotenv.configure()
+    String url = "";
+
+    private final Dotenv dotenv = Dotenv.configure()
             .directory("./assets")
             .filename("env")
             .load();
@@ -34,7 +36,7 @@ public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
         this.channelCreator = channelCreator;
     }
 
-    // TODO: Add chat with Sendbird API as well
+
     @Override
     public void CreateChannel(AddChatChannelInputData request) throws SQLException {
         final User currentUser = sessionManager.getMainUser();
@@ -71,12 +73,15 @@ public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
             DirectChatChannel newChannel = new DirectChatChannel(request.getChatName(),
                     currentUser, toAdd, chatUrl, new ArrayList<>());
 
+            url = chatUrl;
+
             //add channel entity to db
             chatChannelDataAccess.addChat(newChannel);
         }else{
             newChat = false;
         }
 
+        response.setChatUrl(url);
         response.setNewChat(newChat);
         //call presenter to update view
         presenter.PresentChat(response);

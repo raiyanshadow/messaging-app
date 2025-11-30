@@ -27,6 +27,9 @@ public class ChannelCreator {
         }
     }
 
+    protected ChannelCreator() {
+    }
+
     public ChannelCreator(ApiClient defaultClient) {
         this.groupChannelApi = new GroupChannelApi(defaultClient);
     }

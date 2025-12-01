@@ -219,8 +219,9 @@ public class AppBuilder {
         UpdateChatChannelInputBoundary updateInteractor = new UpdateChatChannelInteractor(chatChannelDataAccessObject,
                 updatePresenter);
         SendMessageInputBoundary sendInteractor = new SendMessageInteractor(sendMessagePresenter,
-                userDataAccessObject, messageDataAccessObject, sessionManager, messageSender);
-        ProfileEditInputBoundary profileEditInteractor = new ProfileEditInteractor(userDataAccessObject, profileEditPresenter, sessionManager);
+                messageDataAccessObject, sessionManager, messageSender);
+        ProfileEditInputBoundary profileEditInteractor = new ProfileEditInteractor(userDataAccessObject,
+                profileEditPresenter, sessionManager);
         BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, chatChannelDataAccessObject,
                 userDataAccessObject, sessionManager, contactDataAccessObject);
         SearchContactInputBoundary searchContactInteractor = new SearchContactInteractor(userDataAccessObject, searchContactPresenter );

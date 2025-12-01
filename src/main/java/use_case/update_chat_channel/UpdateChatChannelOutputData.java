@@ -12,7 +12,7 @@ public class UpdateChatChannelOutputData {
     private final List<MessageDTO> messages;
 
     public UpdateChatChannelOutputData(String chatName, String chatURL, String user1Username, int user1ID,
-            String user2Username, int user2ID, List<MessageDTO> messages) {
+                                       String user2Username, int user2ID, List<MessageDTO> messages) {
         this.chatName = chatName;
         this.user1Username = user1Username;
         this.user2Username = user2Username;

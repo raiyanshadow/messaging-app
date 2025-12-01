@@ -94,7 +94,6 @@ public class ChatChannelPresenter implements SendMessageOutputBoundary, EditMess
 
     public void prepareReturnToHome() {
         MessageState messageState = messageViewModel.getState();
-        messageState.setShouldGoHome(true);
         messageViewModel.firePropertyChange();
     }
 }

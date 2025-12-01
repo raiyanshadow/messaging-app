@@ -1,22 +1,21 @@
 package use_case.delete_message;
 
 import SendBirdAPI.MessageDeleter;
-import data_access.MessageDataAccessObject;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.sql.SQLException;
 
 public class DeleteMessageInteractor implements DeleteMessageInputBoundary {
-    private DeleteMessageOutputBoundary presenter;
-    private MessageDataAccessObject messageDataAccessObject;
-    private MessageDeleter messageDeleter;
-    private Dotenv dotenv = Dotenv.configure()
+    private final DeleteMessageOutputBoundary presenter;
+    private final DeleteMessageDataAccessInterface messageDataAccessObject;
+    private final MessageDeleter messageDeleter;
+    private final Dotenv dotenv = Dotenv.configure()
             .directory("./assets")
             .filename("env")
             .load();
 
     public DeleteMessageInteractor(DeleteMessageOutputBoundary presenter,
-                                   MessageDataAccessObject messageDataAccessObject,
+                                   DeleteMessageDataAccessInterface messageDataAccessObject,
                                    MessageDeleter messageDeleter) {
         this.presenter = presenter;
         this.messageDataAccessObject = messageDataAccessObject;

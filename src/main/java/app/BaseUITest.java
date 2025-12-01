@@ -111,7 +111,7 @@ public class BaseUITest {
                 dbUserDataAccessObject, sessionManager, dbContactDataAccessObject);
         FriendRequestInteractor friendRequestInteractor = new FriendRequestInteractor(dbContactDataAccessObject,
                 friendRequestPresenter, sessionManager);
-        SendMessageInteractor sendMessageInteractor = new SendMessageInteractor(sendMessagePresenter, dbUserDataAccessObject,
+        SendMessageInteractor sendMessageInteractor = new SendMessageInteractor(sendMessagePresenter,
                 messageDataAccessObject, sessionManager, messageSender);
         UpdateChatChannelInteractor updateChatChannelInteractor = new UpdateChatChannelInteractor(
                 dbChatChannelDataAccessObject, updateChatChannelPresenter);

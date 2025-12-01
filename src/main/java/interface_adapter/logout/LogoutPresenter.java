@@ -2,8 +2,6 @@ package interface_adapter.logout;
 
 import app.AppBuilder;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.home_page.HomePageState;
-import interface_adapter.home_page.HomePageViewModel;
 import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
 import session.SessionManager;
@@ -31,7 +29,7 @@ public class LogoutPresenter implements LogoutOutputBoundary {
         LogoutState logoutState = logoutViewModel.getState();
         logoutState.setLoggedOutSuccessfully(true);
         LoginState loginState = loginViewModel.getState();
-        session.setLoggedin(false);
+        session.setLoggedIn(false);
         appBuilder.destroyPostLogin();
         loginViewModel.firePropertyChange();
         logoutViewModel.firePropertyChange();

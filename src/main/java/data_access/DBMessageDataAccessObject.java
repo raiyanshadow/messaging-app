@@ -2,18 +2,22 @@ package data_access;
 
 import entity.Message;
 import entity.MessageFactory;
+import use_case.delete_message.DeleteMessageDataAccessInterface;
+import use_case.edit_message.EditMessageDataAccessInterface;
+import use_case.reply_message.ReplyMessageDataAccessInterface;
+import use_case.send_message.SendMessageDataAccessInterface;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DBMessageDataAccessObject implements MessageDataAccessObject {
+public class DBMessageDataAccessObject implements MessageDataAccessObject,
+        SendMessageDataAccessInterface, ReplyMessageDataAccessInterface,
+        EditMessageDataAccessInterface, DeleteMessageDataAccessInterface {
     private final Connection connection;
-    private final int error = -404;
-    private final DBUserDataAccessObject userDao;
 
     public DBMessageDataAccessObject(Connection connection) {
         this.connection = connection;
-        this.userDao = new DBUserDataAccessObject(this.connection);
     }
 
     /**
@@ -51,7 +55,7 @@ public class DBMessageDataAccessObject implements MessageDataAccessObject {
      * @return The populated {@code Message} entity, or an empty message entity if the ID is not found.
      * @throws SQLException If a database access error occurs.
      */
-    public Message getMessageFromID(Long messageID) throws SQLException {
+    public Message<String> getMessageFromID(Long messageID) throws SQLException {
         final String query = "SELECT * FROM text_message WHERE message_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, messageID);
@@ -77,9 +81,9 @@ public class DBMessageDataAccessObject implements MessageDataAccessObject {
     /**
      * Inserts a new message record into the database. This implementation currently supports
      * messages of type "text".
-     * @param <T> The type of content the message holds (e.g., String for text).
+     *
+     * @param <T>     The type of content the message holds (e.g., String for text).
      * @param message The {@code Message} entity to be added.
-     * @return The auto-generated {@code Long} message ID if successful, or {@code null} if the
      * @throws SQLException If a database access error occurs or the message could not be added.
      */
     public <T> Long addMessage(Message<T> message) throws SQLException {

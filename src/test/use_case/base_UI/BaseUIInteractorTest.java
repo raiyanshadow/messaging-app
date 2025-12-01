@@ -231,9 +231,14 @@ class BaseUIInteractorTest {
 
     static class MockSession implements Session {
         User mainUser;
+        boolean loggedIn;
         @Override public User getMainUser() { return mainUser; }
         @Override public void setMainUser(User mainUser) { this.mainUser = mainUser; }
-        @Override public boolean isLoggedin() { return true; }
-        @Override public void setLoggedin(boolean loggedin) {}
+
+        @Override
+        public void setLoggedIn(boolean loggedIn) {
+            this.loggedIn = loggedIn;
+        }
+
     }
 }

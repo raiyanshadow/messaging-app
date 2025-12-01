@@ -99,7 +99,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
             messageState.setContent(message);
 
             // Execute the controller to send
-            sendMessageController.execute(message, messageState.getChannelURL(), messageState.getSenderID(), messageState.getReceiverID());
+            sendMessageController.execute(message, messageState.getChannelURL(), messageState.getReceiverID());
             content.setText("");
             SwingUtilities.invokeLater(() ->
                     scrollToBottom(scrollPane)

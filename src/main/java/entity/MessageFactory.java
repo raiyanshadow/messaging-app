@@ -7,7 +7,7 @@ public class MessageFactory {
     /**
      * Returns a new Text Message Entity.
      * @return the Text Message Entity
-     * @throws IllegalArgumentException if any input is unusuable/invalid
+     * @throws IllegalArgumentException if any input is unusable/invalid
      */
     public static TextMessage createTextMessage(Long messageID, Long parentMessageId,
                                                 String channelURL, Integer senderId,
@@ -16,7 +16,7 @@ public class MessageFactory {
         if (senderId == null || receiverId == null) {
             throw new IllegalArgumentException("sender or receiver is null");
         }
-        if (senderId == receiverId) {
+        if (senderId.equals(receiverId)) {
             throw new IllegalArgumentException("User cannot add themselves as receiver");
         }
         if (content == null || content.isEmpty()) {

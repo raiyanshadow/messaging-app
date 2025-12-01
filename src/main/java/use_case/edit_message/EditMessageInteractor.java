@@ -1,7 +1,5 @@
 package use_case.edit_message;
 
-import data_access.MessageDataAccessObject;
-import data_access.UserDataAccessObject;
 import entity.Message;
 import io.github.cdimascio.dotenv.Dotenv;
 import SendBirdAPI.MessageEditor;
@@ -10,22 +8,19 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 public class EditMessageInteractor implements EditMessageInputBoundary {
-    private EditMessageOutputBoundary presenter;
-    private UserDataAccessObject userDataAccessObject;
-    private MessageDataAccessObject messageDataAccessObject;
-    private MessageEditor messageEditor;
+    private final EditMessageOutputBoundary presenter;
+    private final EditMessageDataAccessInterface messageDataAccessObject;
+    private final MessageEditor messageEditor;
 
-    private Dotenv dotenv =  Dotenv.configure()
+    private final Dotenv dotenv =  Dotenv.configure()
             .directory("./assets")
             .filename("env")
             .load();
 
     public EditMessageInteractor(EditMessageOutputBoundary presenter,
-                                 UserDataAccessObject userDataAccessObject,
-                                 MessageDataAccessObject messageDataAccessObject,
+                                 EditMessageDataAccessInterface messageDataAccessObject,
                                  MessageEditor messageEditor) {
         this.presenter = presenter;
-        this.userDataAccessObject = userDataAccessObject;
         this.messageDataAccessObject = messageDataAccessObject;
         this.messageEditor = messageEditor;
     }
@@ -51,7 +46,7 @@ public class EditMessageInteractor implements EditMessageInputBoundary {
             return;
         }
 
-        Message message;
+        Message<String> message;
         try {
             message = messageDataAccessObject.getMessageFromID(messageId);
         } catch (SQLException e) {
@@ -61,7 +56,7 @@ public class EditMessageInteractor implements EditMessageInputBoundary {
 
         EditMessageOutputData outputData = new EditMessageOutputData(message.getMessageID(),
                 message.getChannelUrl(),
-                (String) message.getContent(),
+                message.getContent(),
                 message.getSenderId(),
                 message.getReceiverId(),
                 oldTimestamp,

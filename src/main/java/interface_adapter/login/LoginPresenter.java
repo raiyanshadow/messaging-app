@@ -2,8 +2,6 @@ package interface_adapter.login;
 
 import app.AppBuilder;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.base_UI.baseUIState;
-import interface_adapter.home_page.HomePageState;
 import interface_adapter.base_UI.baseUIViewModel;
 import interface_adapter.signup.SignupViewModel;
 import session.SessionManager;
@@ -33,7 +31,7 @@ public class LoginPresenter implements LoginOutputBoundary {
     @Override
     public void prepareSuccessView(LoginOutputData outputData) {
         session.setMainUser(outputData.getUser());
-        session.setLoggedin(true);
+        session.setLoggedIn(true);
         appBuilder.buildPostLogin();
         LoginState loginState = new LoginState();
         loginState.setUsername(outputData.getUser().getUsername());

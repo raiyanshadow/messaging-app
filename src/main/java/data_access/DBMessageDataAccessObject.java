@@ -26,12 +26,12 @@ public class DBMessageDataAccessObject implements MessageDataAccessObject,
      * @return A {@code List} of {@code Message} entities, ordered by time sent (ascending).
      * @throws SQLException If a database access error occurs.
      */
-    public List<Message<String>> getMessagesFromChannelURL(String channelUrl) throws SQLException {
+    public List<Message> getMessagesFromChannelURL(String channelUrl) throws SQLException {
         final String query = "SELECT * FROM text_message WHERE channel_url = ? ORDER BY time_sent ASC";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, channelUrl);
             final ResultSet resultSet = statement.executeQuery();
-            final List<Message<String>> messages = new ArrayList<>();
+            final List<Message> messages = new ArrayList<>();
             while (resultSet.next()) {
                 messages.add(MessageFactory.createTextMessage(
                         resultSet.getLong("message_id"),

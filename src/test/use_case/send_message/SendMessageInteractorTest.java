@@ -2,19 +2,24 @@ package use_case.send_message;
 
 import SendBirdAPI.MessageSender;
 import data_access.*;
-import entity.DirectChatChannel;
-import entity.Message;
-import entity.User;
+import entity.*;
 import io.github.cdimascio.dotenv.Dotenv;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
+import org.openapitools.client.model.SendbirdMessageResponse;
+import org.openapitools.client.model.SendbirdUser;
 import org.sendbird.client.ApiClient;
 import org.sendbird.client.Configuration;
 import session.Session;
 import session.SessionManager;
+import use_case.update_chat_channel.MessageDTO;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,53 +33,129 @@ class SendMessageInteractorTest {
 
     @Test
     void successTest() throws SQLException {
-        int senderId = 1; // Alice's ID
-        int receiverId = 2; // Bob's ID
-        int channelId = 0; // Example chat channel
-        String url = dotenv.get("DB_URL");
-        String user = dotenv.get("DB_USER");
-        String password = dotenv.get("DB_PASSWORD");
+        String url = "sendbird_group_channel_50257357_374e0405b4e79b2ba44e90858baac40e23f3a397";
+        User sender = new User(1, "Alice", "abc", "English");
+        User receiver = new User(2, "Bob", "def", "English");
 
-        Connection connection = DriverManager.getConnection(url, user, password);
+        List<Message> messages = new ArrayList<>();
+        messages.add(new TextMessage(
+                1L, 1L, url,
+                1, 2, "received",
+                Timestamp.from(Instant.now()),
+                "Test chat"
+        ));
 
-        ChatChannelDataAccessObject chatChannelDAO = new DBChatChannelDataAccessObject(connection);
-        DirectChatChannel chatChannel = chatChannelDAO.getDirectChatChannelByID(channelId);
+        InMemoryMessageDAO messageDAO = new InMemoryMessageDAO();
+        for (Message m : messages) messageDAO.addMessage(m);
 
-        SendMessageInputData inputData = new SendMessageInputData("Test chat", chatChannel.getChatUrl(),
-                receiverId);
+        InMemoryChatDAO chatDAO = new InMemoryChatDAO();
+        DirectChatChannel chatChannel =
+                DirectChatChannelFactory.createDirectChatChannel("Example Chat", sender, receiver, url, messages);
+        chatDAO.addChat(chatChannel);
 
-        SendMessageOutputBoundary successPresenter = new SendMessageOutputBoundary() {
+        SendMessageInputData inputData =
+                new SendMessageInputData("Test chat", url, receiver.getUserID());
 
+        SessionManager sessionManager = new SessionManager();
+        sessionManager.setMainUser(sender);
+        sessionManager.setLoggedIn(true);
+
+        MessageSender mockSender = new MessageSender(new ApiClient()) {
+            @Override
+            public Long sendMessage(String message, String apiToken, String channelUrl, Integer senderId) {
+                return 999L;
+            }
+        };
+
+        SendMessageOutputBoundary presenter = new SendMessageOutputBoundary() {
             @Override
             public void prepareSendMessageSuccessView(SendMessageOutputData outputData) {
-                assertEquals(senderId, outputData.getSenderID());
-                assertEquals(receiverId, outputData.getReceiverID());
-                final List<Message<String>> messages = chatChannel.getMessages();
-                final String message = messages.get(messages.size() - 1).getContent();
-                assertEquals(message, inputData.getMessage());
+                assertEquals(sender.getUserID(), outputData.getSenderID());
+                assertEquals(receiver.getUserID(), outputData.getReceiverID());
+
+                // The interactor MUST have appended a message
+                List<Message> msgs = chatChannel.getMessages();
+                Message last = msgs.get(msgs.size() - 1);
+
+                assertEquals("Test chat", last.getContent());
                 assertEquals(outputData.getChannelUrl(), chatChannel.getChatUrl());
             }
 
             @Override
             public void prepareSendMessageFailView(String error) {
-                fail("Use case failed");
+                fail("Should not fail");
             }
         };
 
-        UserDataAccessObject userDAO = new DBUserDataAccessObject(connection);
+        SendMessageInteractor interactor =
+                new SendMessageInteractor(presenter, messageDAO, sessionManager, mockSender);
 
-        User testMainUser = userDAO.getUserFromID(senderId);
-
-        DBMessageDataAccessObject messageDAO = new DBMessageDataAccessObject(connection);
-        Session session = new SessionManager(testMainUser, true);
-
-        ApiClient defaultClient = Configuration.getDefaultApiClient().setBasePath(
-                "https://api-" + dotenv.get("MSG_APP_ID") + ".sendbird.com"
-        );
-        MessageSender messageSender = new MessageSender(defaultClient);
-
-        SendMessageInputBoundary interactor = new SendMessageInteractor(successPresenter,
-                messageDAO, session, messageSender);
         interactor.execute(inputData);
+    }
+
+    @Test
+    void failureTest() throws SQLException {
+        String url = "sendbird_group_channel_50257357_374e0405b4e79b2ba44e90858baac40e23f3a397";
+        User sender = new User(1, "Alice", "abc", "English");
+        User receiver = new User(2, "Bob", "def", "English");
+
+        List<Message> messages = new ArrayList<>();
+        messages.add(new TextMessage(
+                1L, 1L, url,
+                1, 2,
+                "received",
+                Timestamp.from(Instant.now()),
+                "Initial message"
+        ));
+
+        InMemoryMessageDAO messageDAO = new InMemoryMessageDAO();
+        messageDAO.addMessage(messages.get(0));
+
+        InMemoryChatDAO mockChatDAO = new InMemoryChatDAO();
+        DirectChatChannel chatChannel = DirectChatChannelFactory.createDirectChatChannel(
+                "Example Chat", sender, receiver, url, messages
+        );
+        mockChatDAO.addChat(chatChannel);
+
+        SendMessageInputData inputData = new SendMessageInputData(
+                "Test chat",
+                url,
+                receiver.getUserID()
+        );
+
+        SessionManager sessionManager = new SessionManager();
+        sessionManager.setMainUser(sender);
+        sessionManager.setLoggedIn(true);
+
+        MessageSender failingSender = new MessageSender(new ApiClient()) {
+            @Override
+            public Long sendMessage(String message, String apiToken, String channelUrl, Integer senderId) {
+                return null;   // simulate failure
+            }
+        };
+
+        final boolean[] failCalled = {false};
+
+        SendMessageOutputBoundary failPresenter = new SendMessageOutputBoundary() {
+            @Override
+            public void prepareSendMessageSuccessView(SendMessageOutputData outputData) {
+                fail("Should NOT succeed");
+            }
+
+            @Override
+            public void prepareSendMessageFailView(String error) {
+                failCalled[0] = true;
+                assertEquals("sendbird write fail", error);
+            }
+        };
+
+        SendMessageInteractor interactor = new SendMessageInteractor(
+                failPresenter, messageDAO, sessionManager, failingSender
+        );
+
+        interactor.execute(inputData);
+
+        assertEquals(true, failCalled[0]);
+        assertEquals(1, chatChannel.getMessages().size());  // no new messages
     }
 }

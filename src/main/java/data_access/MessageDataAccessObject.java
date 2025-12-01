@@ -12,5 +12,5 @@ public interface MessageDataAccessObject {
      * @return A list of {@code Message} entities.
      * @throws SQLException If a database access error occurs.
      */
-    List<Message<String>> getMessagesFromChannelURL(String channelUrl) throws SQLException;
+    List<Message> getMessagesFromChannelURL(String channelUrl) throws SQLException;
 }

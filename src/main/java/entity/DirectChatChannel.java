@@ -8,9 +8,9 @@ public class DirectChatChannel {
     private final User sender;
     private final User receiver;
     private String chatUrl;
-    private List<Message<String>> messages;
+    private List<Message> messages;
 
-    public DirectChatChannel(String chatName, User sender, User receiver, String chatUrl, List<Message<String>> messages) {
+    public DirectChatChannel(String chatName, User sender, User receiver, String chatUrl, List<Message> messages) {
         this.chatName = chatName;
         this.sender = sender;
         this.receiver = receiver;
@@ -42,11 +42,11 @@ public class DirectChatChannel {
         this.chatUrl = chatUrl;
     }
 
-    public List<Message<String>> getMessages() {
+    public List<Message> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<Message<String>> messages) {
+    public void setMessages(List<Message> messages) {
         this.messages = messages;
     }
 

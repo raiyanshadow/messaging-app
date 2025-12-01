@@ -1,10 +1,5 @@
 package data_access;
 
-import entity.Contact;
-import entity.User;
-import use_case.add_contact.AddContactContactDataAccessInterface;
-import use_case.friend_request.FriendRequestUserDataAccessInterface;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,8 +8,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Implement updateContacts(List<Contact> contact)
-public class DBContactDataAccessObject implements ContactDataAccessObject, FriendRequestUserDataAccessInterface, AddContactContactDataAccessInterface {
+import entity.Contact;
+import entity.User;
+import use_case.add_contact.AddContactContactDataAccessInterface;
+import use_case.friend_request.FriendRequestUserDataAccessInterface;
+
+public class DBContactDataAccessObject implements ContactDataAccessObject,
+        FriendRequestUserDataAccessInterface, AddContactContactDataAccessInterface {
 
     private final Connection conn;
     private final DBUserDataAccessObject userDao;
@@ -95,7 +95,8 @@ public class DBContactDataAccessObject implements ContactDataAccessObject, Frien
             final ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 // it is only a friend request if the current user's ID is in the contact_id column
-                // because if current user's ID is in the user_id column, it means the current user is the one who sent out the friend request
+                // because if current user's ID is in the user_id column, it means the current user
+                // is the one who sent out the friend request
                 if (rs.getInt("contact_id") == user.getUserID() && rs.getBoolean("is_friend_request")) {
                     final int contactId = rs.getInt("user_id");
                     friendRequests.add(userDao.getNameFromID(contactId));

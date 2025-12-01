@@ -1,11 +1,10 @@
 package use_case.friend_request;
 
+import java.util.List;
 
 import entity.Contact;
 import entity.User;
 import session.SessionManager;
-
-import java.util.List;
 
 public class FriendRequestInteractor implements FriendRequestInputBoundary {
 
@@ -13,8 +12,8 @@ public class FriendRequestInteractor implements FriendRequestInputBoundary {
     private final FriendRequestOutputBoundary userPresenter;
     private final SessionManager sessionManager;
 
-
-    public FriendRequestInteractor(FriendRequestUserDataAccessInterface friendRequestUserDataAccessInterface, FriendRequestOutputBoundary friendRequestOutputBoundary,
+    public FriendRequestInteractor(FriendRequestUserDataAccessInterface friendRequestUserDataAccessInterface,
+                                   FriendRequestOutputBoundary friendRequestOutputBoundary,
                                    SessionManager sessionManager) {
         this.userDataAccessObject = friendRequestUserDataAccessInterface;
         this.userPresenter = friendRequestOutputBoundary;
@@ -28,7 +27,7 @@ public class FriendRequestInteractor implements FriendRequestInputBoundary {
 
         // decline friend request -> delete for both users
         // did select someone to decline
-        if (!friendRequestInputData.getAccept() && acceptedUsername != null){
+        if (!friendRequestInputData.getAccept() && acceptedUsername != null) {
             userDataAccessObject.deleteRequest(acceptee, acceptedUsername);
             userPresenter.prepareFailView("you have declined the friend request from: " + acceptedUsername);
         }
@@ -46,7 +45,7 @@ public class FriendRequestInteractor implements FriendRequestInputBoundary {
             userDataAccessObject.acceptRequest(acceptee, acceptedUsername);
 
             // fetch the updated contact list from the user
-            List<Contact> updatedContacts = userDataAccessObject.getContacts(acceptee);
+            final List<Contact> updatedContacts = userDataAccessObject.getContacts(acceptee);
 
             // create output data including full contact list
             final FriendRequestOutputData friendRequestOutputData = new FriendRequestOutputData(acceptedUsername);

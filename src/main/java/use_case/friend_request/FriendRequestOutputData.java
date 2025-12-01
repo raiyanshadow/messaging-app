@@ -1,10 +1,8 @@
 package use_case.friend_request;
 
-
 public class FriendRequestOutputData {
     // username of the newly accepted friend
     private final String acceptedUsername;
-
 
     // private List<Contact> updatedContactList;
 
@@ -12,7 +10,9 @@ public class FriendRequestOutputData {
         this.acceptedUsername = acceptedUsername;
     }
 
-    public String getAcceptedUsername() { return acceptedUsername; }
+    public String getAcceptedUsername() {
+        return acceptedUsername;
+    }
 
     /*
     public List<Contact> getUpdatedContactList() { return updatedContactList; }

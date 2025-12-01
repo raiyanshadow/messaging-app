@@ -5,7 +5,7 @@ import java.util.List;
 import entity.Contact;
 import entity.User;
 
-public interface FriendRequestUserDataAccessInterface {
+public interface FriendRequestContactDataAccessInterface {
 
     /**
      * Accept a friend request.

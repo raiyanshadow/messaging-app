@@ -1,21 +1,13 @@
 package use_case.send_message;
 
-import SendBirdAPI.MessageSender;
+import sendbirdapi.MessageSender;
 import data_access.*;
 import entity.*;
 import io.github.cdimascio.dotenv.Dotenv;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
-import org.openapitools.client.model.SendbirdMessageResponse;
-import org.openapitools.client.model.SendbirdUser;
 import org.sendbird.client.ApiClient;
-import org.sendbird.client.Configuration;
-import session.Session;
 import session.SessionManager;
-import use_case.update_chat_channel.MessageDTO;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;

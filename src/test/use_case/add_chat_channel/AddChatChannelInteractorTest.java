@@ -1,6 +1,6 @@
 package use_case.add_chat_channel;
 
-import SendBirdAPI.ChannelCreator;
+import sendbirdapi.ChannelCreator;
 import data_access.ChatChannelDataAccessObject;
 import data_access.UserDataAccessObject;
 import entity.DirectChatChannel;
@@ -8,10 +8,6 @@ import entity.Message;
 import entity.User;
 import org.junit.jupiter.api.Test;
 import session.Session;
-import use_case.add_chat_channel.AddChatChannelInputData;
-import use_case.add_chat_channel.AddChatChannelInteractor;
-import use_case.add_chat_channel.AddChatChannelOutputBoundary;
-import use_case.add_chat_channel.AddChatChannelOutputData;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

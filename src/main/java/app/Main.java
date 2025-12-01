@@ -1,9 +1,5 @@
 package app;
 
-import SendBirdAPI.ChannelCreator;
-import entity.User;
-import io.github.cdimascio.dotenv.Dotenv;
-
 import javax.swing.*;
 import java.sql.*;
 

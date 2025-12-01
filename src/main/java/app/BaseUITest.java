@@ -1,7 +1,7 @@
 package app;
 
-import SendBirdAPI.ChannelCreator;
-import SendBirdAPI.MessageSender;
+import sendbirdapi.ChannelCreator;
+import sendbirdapi.MessageSender;
 import data_access.DBChatChannelDataAccessObject;
 import data_access.DbConnectionFactory;
 import data_access.DBUserDataAccessObject;

@@ -1,10 +1,8 @@
-package SendBirdAPI;
+package sendbirdapi;
 
-import entity.User;
 import org.openapitools.client.model.SendbirdGroupChannelDetail;
 import org.sendbird.client.ApiClient;
 import org.sendbird.client.ApiException;
-import org.sendbird.client.Configuration;
 import org.openapitools.client.model.CreateAGroupChannelRequest;
 import org.sendbird.client.api.GroupChannelApi;
 import java.util.Arrays;

@@ -1,9 +1,8 @@
 package use_case.signup;
 
-import SendBirdAPI.SendbirdUserCreator;
+import sendbirdapi.SendbirdUserCreator;
 import data_access.UserDataAccessObject;
 import entity.User;
-import entity.UserFactory;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.openapitools.client.model.SendbirdUser;
 

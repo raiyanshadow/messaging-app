@@ -2,7 +2,7 @@ package use_case.edit_message;
 
 import entity.Message;
 import io.github.cdimascio.dotenv.Dotenv;
-import SendBirdAPI.MessageEditor;
+import sendbirdapi.MessageEditor;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;

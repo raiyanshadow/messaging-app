@@ -1,6 +1,6 @@
 package app;
 
-import SendBirdAPI.*;
+import sendbirdapi.*;
 import data_access.*;
 import interface_adapter.profile_edit.ProfileEditController;
 import interface_adapter.profile_edit.ProfileEditPresenter;

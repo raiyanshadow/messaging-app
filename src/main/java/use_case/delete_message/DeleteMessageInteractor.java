@@ -1,6 +1,6 @@
 package use_case.delete_message;
 
-import SendBirdAPI.MessageDeleter;
+import sendbirdapi.MessageDeleter;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.sql.SQLException;

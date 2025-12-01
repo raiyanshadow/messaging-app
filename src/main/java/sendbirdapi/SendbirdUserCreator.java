@@ -1,4 +1,4 @@
-package SendBirdAPI;
+package sendbirdapi;
 
 import org.openapitools.client.model.CreateAUserRequest;
 import org.openapitools.client.model.SendbirdUser;

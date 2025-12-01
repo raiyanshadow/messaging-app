@@ -1,6 +1,6 @@
 package app;
 
-import SendBirdAPI.SendbirdUserCreator;
+import sendbirdapi.SendbirdUserCreator;
 import data_access.DbConnectionFactory;
 import data_access.DBUserDataAccessObject;
 import interface_adapter.ViewManagerModel;

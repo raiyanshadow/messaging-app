@@ -4,7 +4,7 @@ import data_access.InMemoryUserDAO;
 import entity.User;
 import entity.UserFactory;
 import org.junit.jupiter.api.Test;
-import SendBirdAPI.SendbirdUserCreator;
+import sendbirdapi.SendbirdUserCreator;
 import org.openapitools.client.model.SendbirdUser;
 
 import java.sql.SQLException;

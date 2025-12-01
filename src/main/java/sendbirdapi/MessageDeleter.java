@@ -1,4 +1,4 @@
-package SendBirdAPI;
+package sendbirdapi;
 
 import org.sendbird.client.ApiClient;
 import org.sendbird.client.ApiException;

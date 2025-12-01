@@ -4,7 +4,7 @@ package app;
  * This is just to test the view. will delete after
  */
 
-import SendBirdAPI.MessageSender;
+import sendbirdapi.MessageSender;
 import data_access.DBChatChannelDataAccessObject;
 import data_access.DBMessageDataAccessObject;
 import data_access.DBUserDataAccessObject;

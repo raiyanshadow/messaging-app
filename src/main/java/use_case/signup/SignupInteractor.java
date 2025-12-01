@@ -1,95 +1,148 @@
 package use_case.signup;
 
-import SendBirdAPI.SendbirdUserCreator;
+import sendbirdapi.SendbirdUserCreator;
 import data_access.UserDataAccessObject;
 import entity.User;
-import entity.UserFactory;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.openapitools.client.model.SendbirdUser;
 
 import java.sql.SQLException;
 
+import static java.lang.System.*;
+
+/**
+ * Interactor handling the signup use case, including validation,
+ * user creation, and Sendbird integration.
+ */
 public class SignupInteractor implements SignupInputBoundary {
 
+    /** Magic number replaced with constant. */
+    private static final int DEFAULT_USER_ID = 56;
+
+    /** DAO for user persistence. */
     private final UserDataAccessObject userDataAccessObject;
+
+    /** Presenter for preparing output data. */
     private final SignupOutputBoundary userPresenter;
+
+    /** Creator responsible for interacting with the Sendbird API. */
     private final SendbirdUserCreator sendbirdUserCreator;
+
+    /** Environment variable loader. */
     private final Dotenv dotenv;
 
-    public SignupInteractor(UserDataAccessObject userDataAccessObject,
-                            SignupOutputBoundary userPresenter,
-                            SendbirdUserCreator sendbirdUserCreator) {
+    /**
+     * Constructs a SignupInteractor.
+     *
+     * @param userDataAccessObject the DAO implementation
+     * @param userPresenter the presenter for preparing output
+     * @param sendbirdUserCreator the Sendbird API helper
+     */
+    public SignupInteractor(final UserDataAccessObject userDataAccessObject,
+                            final SignupOutputBoundary userPresenter,
+                            final SendbirdUserCreator sendbirdUserCreator) {
+
         this.userDataAccessObject = userDataAccessObject;
         this.userPresenter = userPresenter;
         this.sendbirdUserCreator = sendbirdUserCreator;
+
         this.dotenv = Dotenv.configure()
-                .directory("./assets") // adjust if your env file is elsewhere
+                .directory("./assets")
                 .filename("env")
                 .load();
     }
 
+    /**
+     * Executes the signup process.
+     *
+     * @param inputData the input signup data
+     * @throws SQLException thrown when database errors occur
+     */
     @Override
-    public void execute(SignupInputData inputData) throws SQLException {
-        String username = inputData.getUsername();
-        String password = inputData.getPassword();
-        String repeatPassword = inputData.getRepeatPassword();
-        String preferredLanguage = inputData.getPreferredLanguage();
+    public void execute(final SignupInputData inputData) throws SQLException {
+
+        final String username = inputData.getUsername();
+        final String password = inputData.getPassword();
+        final String repeatPassword = inputData.getRepeatPassword();
+        final String preferredLanguage = inputData.getPreferredLanguage();
 
         if (username.isEmpty()) {
-            userPresenter.prepareFailView("Username cannot be empty");
+            this.userPresenter.prepareFailView("Username cannot be empty");
             return;
         }
         if (password.isEmpty()) {
-            userPresenter.prepareFailView("Password cannot be empty");
+            this.userPresenter.prepareFailView("Password cannot be empty");
             return;
         }
         if (!password.equals(repeatPassword)) {
-            userPresenter.prepareFailView("Passwords don't match.");
+            this.userPresenter.prepareFailView("Passwords don't match.");
             return;
         }
-        if (userDataAccessObject.existsByName(username)) {
-            userPresenter.prepareFailView("User already exists.");
+        if (this.userDataAccessObject.existsByName(username)) {
+            this.userPresenter.prepareFailView("User already exists.");
             return;
         }
 
         User user = null;
 
         try {
-            user = new User(56, username, password, preferredLanguage); // assume auto-generated ID
-            Integer userId = userDataAccessObject.save(user);
+            user =
+                    new User(DEFAULT_USER_ID, username, password,
+                            preferredLanguage);
 
+            final Integer userId = this.userDataAccessObject.save(user);
 
-            String apiToken = dotenv.get("MSG_TOKEN");
-            System.out.println("Sendbird token: " + apiToken);
+            final String apiToken = this.dotenv.get("MSG_TOKEN");
+            out.println("Sendbird token: " + apiToken);
 
-            SendbirdUser sbUser = sendbirdUserCreator.createUser(apiToken, userId, username);
-            System.out.println("Sendbird user created: " + (sbUser != null ? sbUser.getUserId() : "null"));
+            final SendbirdUser sbUser =
+                    this.sendbirdUserCreator.createUser(apiToken, userId,
+                            username);
 
-            if (sbUser == null || sbUser.getUserId() == null) {
-                // Sendbird creation failed, rollback DB
-                userDataAccessObject.deleteByUsername(username);
-                userPresenter.prepareFailView("Sendbird signup failed");
+            out.println(
+                    "Sendbird user created: "
+                            + (sbUser != null ? sbUser.getUserId() : "null")
+            );
+
+            if (sbUser == null) {
+                this.userDataAccessObject.deleteByUsername(username);
+                this.userPresenter.prepareFailView(
+                        "Sendbird signup failed");
                 return;
             }
 
-            userPresenter.prepareSuccessView(new SignupOutputData(user.getUsername()));
+            final SignupOutputData outputData =
+                    new SignupOutputData(user.getUsername());
+            this.userPresenter.prepareSuccessView(outputData);
 
         } catch (SQLException e) {
-            userPresenter.prepareFailView("Database error: " + e.getMessage());
+
+            this.userPresenter.prepareFailView(
+                    "Database error: " + e.getMessage());
+
         } catch (Exception e) {
+
             if (user != null) {
                 try {
-                    userDataAccessObject.deleteByUsername(username);
+                    this.userDataAccessObject.deleteByUsername(username);
                 } catch (SQLException ex) {
-                    System.err.println("Failed to rollback DB user: " + ex.getMessage());
+                    err.println(
+                            "Failed to rollback DB user: "
+                                    + ex.getMessage());
                 }
             }
-            userPresenter.prepareFailView("Signup failed: " + e.getMessage());
+
+            this.userPresenter.prepareFailView(
+                    "Signup failed: " + e.getMessage());
         }
     }
 
+    /**
+     * Switches to the login view.
+     * Intended to be overridden in subclasses if needed.
+     */
     @Override
     public void switchToLoginView() {
-        userPresenter.switchToLoginView();
+        this.userPresenter.switchToLoginView();
     }
 }

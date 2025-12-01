@@ -1,6 +1,6 @@
 package use_case.reply_message;
 
-import SendBirdAPI.MessageSender;
+import sendbirdapi.MessageSender;
 import entity.Message;
 import entity.MessageFactory;
 import entity.User;

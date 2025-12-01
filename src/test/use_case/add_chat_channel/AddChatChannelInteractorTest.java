@@ -1,6 +1,6 @@
 package use_case.add_chat_channel;
 
-import SendBirdAPI.ChannelCreator;
+import sendbirdapi.ChannelCreator;
 import data_access.ChatChannelDataAccessObject;
 import data_access.UserDataAccessObject;
 import entity.DirectChatChannel;

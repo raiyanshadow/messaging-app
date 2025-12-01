@@ -12,21 +12,40 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 
+/**
+ * Signup view panel for user registration.
+ * <p>
+ * Displays input fields for username, password, repeat password, and preferred language.
+ * Communicates with the SignupController and updates the SignupViewModel.
+ */
 public class SignupView extends JPanel implements PropertyChangeListener {
 
+    /** Name identifier for this view. */
     private final String viewName = "signup";
 
+    /** The view model storing the state of the signup form. */
     private final SignupViewModel signupViewModel;
+
+    /** Input fields. */
     private final JTextField usernameInputField = new JTextField(20);
     private final JPasswordField passwordInputField = new JPasswordField(20);
     private final JPasswordField repeatPasswordInputField = new JPasswordField(20);
-    private final JComboBox<String> languageDropdown = new JComboBox<>(new String[]{"English", "French", "Spanish"});
+    private final JComboBox<String> languageDropdown =
+            new JComboBox<>(new String[]{"English", "French", "Spanish"});
+
+    /** Controller for executing signup actions. */
     private SignupController signupController = null;
 
+    /** Buttons. */
     private final JButton signUp;
     private final JButton toLogin;
 
-    public SignupView(SignupViewModel signupViewModel) {
+    /**
+     * Constructs the SignupView with the provided view model.
+     *
+     * @param signupViewModel the signup view model
+     */
+    public SignupView(final SignupViewModel signupViewModel) {
         this.signupViewModel = signupViewModel;
         signupViewModel.addPropertyChangeListener(this);
 
@@ -39,36 +58,45 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         this.setBackground(new Color(245, 248, 250));
         this.setBorder(BorderFactory.createEmptyBorder(40, 80, 40, 80));
 
-        // itle
-        JLabel title = new JLabel(SignupViewModel.TITLE_LABEL, SwingConstants.CENTER);
+        // Title
+        final JLabel title = new JLabel(SignupViewModel.TITLE_LABEL,
+                SwingConstants.CENTER);
         title.setFont(new Font("SansSerif", Font.BOLD, 28));
 
         // Form panel
-        JPanel formPanel = new JPanel(new GridLayout(4, 1, 15, 15));
+        final JPanel formPanel = new JPanel(new GridLayout(4, 1, 15, 15));
         formPanel.setBackground(Color.WHITE);
         formPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(220, 220, 220)),
                 BorderFactory.createEmptyBorder(30, 50, 30, 50)
         ));
 
-        formPanel.add(createLabelField(SignupViewModel.USERNAME_LABEL, usernameInputField));
-        formPanel.add(createLabelField(SignupViewModel.PASSWORD_LABEL, passwordInputField));
-        formPanel.add(createLabelField(SignupViewModel.REPEAT_PASSWORD_LABEL, repeatPasswordInputField));
-        formPanel.add(createLabelField("Preferred Language", languageDropdown));
+        formPanel.add(createLabelField(SignupViewModel.USERNAME_LABEL,
+                usernameInputField));
+        formPanel.add(createLabelField(SignupViewModel.PASSWORD_LABEL,
+                passwordInputField));
+        formPanel.add(createLabelField(SignupViewModel.REPEAT_PASSWORD_LABEL,
+                repeatPasswordInputField));
+        formPanel.add(createLabelField("Preferred Language",
+                languageDropdown));
 
         // Default language in state
-        signupViewModel.getState().setPreferredLanguage((String) languageDropdown.getSelectedItem());
+        signupViewModel.getState().setPreferredLanguage(
+                (String) languageDropdown.getSelectedItem());
 
         languageDropdown.addActionListener(e -> {
-            signupViewModel.getState().setPreferredLanguage((String) languageDropdown.getSelectedItem());
+            final SignupState state = signupViewModel.getState();
+            state.setPreferredLanguage(
+                    (String) languageDropdown.getSelectedItem());
             signupViewModel.firePropertyChange();
         });
 
         // Button panel
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        final JPanel buttonPanel = new JPanel(new FlowLayout(
+                FlowLayout.CENTER, 20, 10));
         buttonPanel.setBackground(new Color(245, 248, 250));
 
-        Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
+        final Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
 
         signUp.setFont(buttonFont);
         toLogin.setFont(buttonFont);
@@ -92,7 +120,7 @@ public class SignupView extends JPanel implements PropertyChangeListener {
 
         // Action listeners
         signUp.addActionListener(evt -> {
-            SignupState state = signupViewModel.getState();
+            final SignupState state = signupViewModel.getState();
             try {
                 signupController.execute(
                         state.getUsername(),
@@ -100,7 +128,7 @@ public class SignupView extends JPanel implements PropertyChangeListener {
                         state.getRepeatPassword(),
                         (String) languageDropdown.getSelectedItem()
                 );
-            } catch (SQLException e) {
+            } catch (final SQLException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -113,10 +141,18 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         addRepeatPasswordListener();
     }
 
-    private JPanel createLabelField(String labelText, JComponent inputField) {
-        JPanel panel = new JPanel(new BorderLayout());
+    /**
+     * Creates a panel containing a label and input field.
+     *
+     * @param labelText  the text for the label
+     * @param inputField the input field component
+     * @return a JPanel containing the label and input
+     */
+    private JPanel createLabelField(final String labelText,
+                                    final JComponent inputField) {
+        final JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
-        JLabel label = new JLabel(labelText);
+        final JLabel label = new JLabel(labelText);
         label.setFont(new Font("SansSerif", Font.PLAIN, 16));
         inputField.setFont(new Font("SansSerif", Font.PLAIN, 16));
         inputField.setPreferredSize(new Dimension(250, 30));
@@ -128,55 +164,68 @@ public class SignupView extends JPanel implements PropertyChangeListener {
     private void addUsernameListener() {
         usernameInputField.getDocument().addDocumentListener(new DocumentListener() {
             private void updateState() {
-                SignupState state = signupViewModel.getState();
+                final SignupState state = signupViewModel.getState();
                 state.setUsername(usernameInputField.getText());
                 signupViewModel.setState(state);
             }
 
-            @Override public void insertUpdate(DocumentEvent e) { updateState(); }
-            @Override public void removeUpdate(DocumentEvent e) { updateState(); }
-            @Override public void changedUpdate(DocumentEvent e) { updateState(); }
+            @Override public void insertUpdate(final DocumentEvent e) { updateState(); }
+            @Override public void removeUpdate(final DocumentEvent e) { updateState(); }
+            @Override public void changedUpdate(final DocumentEvent e) { updateState(); }
         });
     }
 
     private void addPasswordListener() {
         passwordInputField.getDocument().addDocumentListener(new DocumentListener() {
             private void updateState() {
-                SignupState state = signupViewModel.getState();
+                final SignupState state = signupViewModel.getState();
                 state.setPassword(new String(passwordInputField.getPassword()));
                 signupViewModel.setState(state);
             }
 
-            @Override public void insertUpdate(DocumentEvent e) { updateState(); }
-            @Override public void removeUpdate(DocumentEvent e) { updateState(); }
-            @Override public void changedUpdate(DocumentEvent e) { updateState(); }
+            @Override public void insertUpdate(final DocumentEvent e) { updateState(); }
+            @Override public void removeUpdate(final DocumentEvent e) { updateState(); }
+            @Override public void changedUpdate(final DocumentEvent e) { updateState(); }
         });
     }
 
     private void addRepeatPasswordListener() {
-        repeatPasswordInputField.getDocument().addDocumentListener(new DocumentListener() {
-            private void updateState() {
-                SignupState state = signupViewModel.getState();
-                state.setRepeatPassword(new String(repeatPasswordInputField.getPassword()));
-                signupViewModel.setState(state);
-            }
+        repeatPasswordInputField.getDocument().addDocumentListener(
+                new DocumentListener() {
+                    private void updateState() {
+                        final SignupState state = signupViewModel.getState();
+                        state.setRepeatPassword(
+                                new String(repeatPasswordInputField.getPassword()));
+                        signupViewModel.setState(state);
+                    }
 
-            @Override public void insertUpdate(DocumentEvent e) { updateState(); }
-            @Override public void removeUpdate(DocumentEvent e) { updateState(); }
-            @Override public void changedUpdate(DocumentEvent e) { updateState(); }
-        });
+                    @Override public void insertUpdate(final DocumentEvent e) { updateState(); }
+                    @Override public void removeUpdate(final DocumentEvent e) { updateState(); }
+                    @Override public void changedUpdate(final DocumentEvent e) { updateState(); }
+                });
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        SignupState state = (SignupState) evt.getNewValue();
+    public void propertyChange(final PropertyChangeEvent evt) {
+        final SignupState state = (SignupState) evt.getNewValue();
         if (state.getUsernameError() != null) {
             JOptionPane.showMessageDialog(this, state.getUsernameError());
         }
     }
 
+    /**
+     * Returns the name of this view.
+     *
+     * @return view name
+     */
     public String getViewName() { return viewName; }
 
-    public void setSignupController(SignupController controller) { this.signupController = controller; }
-
+    /**
+     * Sets the signup controller.
+     *
+     * @param controller the SignupController instance
+     */
+    public void setSignupController(final SignupController controller) {
+        this.signupController = controller;
+    }
 }

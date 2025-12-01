@@ -104,6 +104,9 @@ public class ProfileEditView extends JPanel implements PropertyChangeListener {
             try {
                 profileEditController.editProfile(session.getMainUser().getUserID(), usernameField.getText(),
                 new String(passwordField.getPassword()), (String) languages.getSelectedItem());
+                if (profileEditViewModel.getState().getError() != null) {
+                    JOptionPane.showMessageDialog(this, profileEditViewModel.getState().getError());
+                }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -127,12 +130,8 @@ public class ProfileEditView extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("state")) {
             final ProfileEditState state = (ProfileEditState) evt.getNewValue();
-            if (state.getError() != null) {
-                JOptionPane.showMessageDialog(this, state.getError());
-            }
-            else {
+            if (state.getError() == null) {
                 try {
-                    System.out.println("entered");
                     baseUIController.displayUI();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

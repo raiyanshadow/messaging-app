@@ -21,8 +21,15 @@ public class ProfileEditPresenter implements ProfileEditOutputBoundary {
         profileEditState.setUsername(profileEditOutputData.getUser().getUsername());
         profileEditState.setPassword(profileEditOutputData.getUser().getPassword());
         profileEditState.setPreferredLanguage(profileEditOutputData.getUser().getPreferredLanguage());
+        profileEditState.setError(null);
         profileEditViewModel.firePropertyChange();
 //        switchToHomePageView();
+    }
+
+    public void prepareFailView(String message) {
+        ProfileEditState profileEditState = profileEditViewModel.getState();
+        profileEditState.setError(message);
+        profileEditViewModel.firePropertyChange();
     }
 
 //    @Override

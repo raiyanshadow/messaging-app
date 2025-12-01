@@ -30,8 +30,6 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private final JPanel messageContainer;
     private final JScrollPane scrollPane;
     private final JTextField content = new JTextField(15);
-    private final JButton send;
-    private final JButton back;
 
     // Variables to call interactors
     private final String chatURL;
@@ -55,8 +53,6 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         this.senderUsername = updateChatChannelViewModel.getState().getUser1Name();
         this.receiverUsername = updateChatChannelViewModel.getState().getUser2Name();
         this.chatURL = updateChatChannelViewModel.getState().getChatURL();
-//        this.updateChatChannelController = updateChatChannelController;
-//        this.sendMessageController = sendMessageController;
 
         // Set layout
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -72,8 +68,8 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);  // <-- ADD THIS
         scrollPane.getVerticalScrollBar().setUnitIncrement(30);
         scrollPane.setPreferredSize(new Dimension(400, 350));
-        send = new JButton("Send");
-        back = new JButton("Back");
+        JButton send = new JButton("Send");
+        JButton back = new JButton("Back");
         ChatPreviewPanel chatPreview = new ChatPreviewPanel(chatName, scrollPane, content, send, back);
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(chatPreview);
@@ -247,34 +243,6 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
             sb.setValue(sb.getMaximum());
         });
     }
-
-//    private void smoothScrollToBottom(JScrollPane scrollPane) {
-//        JScrollBar bar = scrollPane.getVerticalScrollBar();
-//        int target = bar.getMaximum();
-//
-//        final int[] step = {0};
-//        final int steps = 10; // number of animation frames (higher = slower/smoother)
-//
-//        Runnable animator = new Runnable() {
-//            @Override
-//            public void run() {
-//                step[0]++;
-//                int current = bar.getValue();
-//                int next = current + (target - current) / (steps - step[0] + 1);
-//
-//                bar.setValue(next);
-//
-//                if (step[0] < steps) {
-//                    SwingUtilities.invokeLater(this);
-//                } else {
-//                    // force-final align
-//                    bar.setValue(target);
-//                }
-//            }
-//        };
-//
-//        SwingUtilities.invokeLater(animator);
-//    }
 
     public void setBaseUIController(baseUIController baseUIController) {
         this.baseUIController = baseUIController;

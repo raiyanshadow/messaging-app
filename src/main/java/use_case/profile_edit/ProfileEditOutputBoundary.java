@@ -2,13 +2,15 @@ package use_case.profile_edit;
 
 public interface ProfileEditOutputBoundary {
     /**
-     * Called when signup is successful.
-     * @param signupOutputData the data to present to the user
+     * Called when profile edit is successful.
+     * @param profileEditOutputData the data to present to the user
      */
-    void prepareSuccessView(ProfileEditOutputData signupOutputData);
+    void prepareSuccessView(ProfileEditOutputData profileEditOutputData);
 
     /**
-     * Switches the view to the home page.
+     * Called when profile edit is not successful.
+     * @param message the error message
      */
+    void prepareFailView(String message);
 //    void switchToHomePageView();
 }

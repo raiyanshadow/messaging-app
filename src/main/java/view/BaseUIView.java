@@ -1,6 +1,5 @@
 package view;
 
-import entity.Contact;
 import entity.DirectChatChannel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.base_UI.baseUIController;
@@ -10,7 +9,6 @@ import interface_adapter.chat_channel.ChatChannelViewModel;
 import interface_adapter.chat_channel.SendMessageController;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.update_chat_channel.UpdateChatChannelController;
-import interface_adapter.update_chat_channel.UpdateChatChannelState;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
 import session.SessionManager;
 
@@ -20,7 +18,6 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BaseUIView extends JPanel implements PropertyChangeListener {
@@ -183,23 +180,6 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
             System.out.println(chatnames);
 
             DirectChatChannel chat = chatEntities.get(index);
-
-//            Integer senderID;
-//            Integer receiverID;
-//            String senderUsername;
-//            String receiverUsername;
-//            if (chat.getUser1().getUsername().equals(sessionManager.getMainUser().getUsername())) {
-//                senderID = sessionManager.getMainUser().getUserID();
-//                receiverID = chat.getUser2().getUserID();
-//                senderUsername = sessionManager.getMainUser().getUsername();
-//                receiverUsername = chat.getUser2().getUsername();
-//            }
-//            else {
-//                senderID = sessionManager.getMainUser().getUserID();
-//                receiverID = chat.getUser1().getUserID();
-//                senderUsername = sessionManager.getMainUser().getUsername();
-//                receiverUsername = chat.getUser1().getUsername();
-//            }
 
             if (this.chatChannelView != null) {
                 try { this.chatChannelView.dispose(); } catch (Exception ignored) {}

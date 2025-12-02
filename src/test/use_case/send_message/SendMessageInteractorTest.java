@@ -3,7 +3,6 @@ package use_case.send_message;
 import sendbirdapi.MessageSender;
 import data_access.*;
 import entity.*;
-import io.github.cdimascio.dotenv.Dotenv;
 import org.junit.jupiter.api.Test;
 import org.sendbird.client.ApiClient;
 import session.SessionManager;
@@ -17,10 +16,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SendMessageInteractorTest {
-    private final Dotenv dotenv = Dotenv.configure()
-            .directory("./assets")
-            .filename("env")
-            .load();
 
     @Test
     void successTest() throws SQLException {
@@ -146,7 +141,7 @@ class SendMessageInteractorTest {
 
         interactor.execute(inputData);
 
-        assertEquals(true, failCalled[0]);
+        assertTrue(failCalled[0]);
         assertEquals(1, chatChannel.getMessages().size());  // no new messages
     }
 

@@ -2,9 +2,6 @@ package data_access;
 
 import entity.Message;
 import entity.MessageFactory;
-import use_case.delete_message.DeleteMessageDataAccessInterface;
-import use_case.edit_message.EditMessageDataAccessInterface;
-import use_case.reply_message.ReplyMessageDataAccessInterface;
 import use_case.send_message.SendMessageDataAccessInterface;
 
 import java.sql.*;
@@ -12,8 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBMessageDataAccessObject implements MessageDataAccessObject,
-        SendMessageDataAccessInterface, ReplyMessageDataAccessInterface,
-        EditMessageDataAccessInterface, DeleteMessageDataAccessInterface {
+        SendMessageDataAccessInterface {
     private final Connection connection;
 
     public DBMessageDataAccessObject(Connection connection) {

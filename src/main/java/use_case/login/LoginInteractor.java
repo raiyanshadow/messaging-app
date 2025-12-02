@@ -5,8 +5,6 @@ import entity.DirectChatChannel;
 import entity.User;
 import interface_adapter.base_UI.baseUIState;
 import interface_adapter.base_UI.baseUIViewModel;
-import interface_adapter.chat_channel.ChatChannelViewModel;
-import use_case.profile_edit.ProfileEditOutputBoundary;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -46,33 +44,38 @@ public class LoginInteractor implements LoginInputBoundary {
                 userPresenter.prepareFailureView("DB read fail");
                 return;
             }
+
             List<String> chatUrls;
             try {
                 chatUrls = chatChannelDataAccessObject.getChatURLsByUserId(user.getUserID());
             } catch (SQLException e) {
-                e.printStackTrace();
                 userPresenter.prepareFailureView("DB read fail");
                 return;
             }
+
             List<DirectChatChannel> chatEntities = new ArrayList<>();
             List<String> chatNames = new ArrayList<>();
-            for (int i = 0; i < chatUrls.size(); i++) {
+
+            for (String url : chatUrls) {
                 try {
-                    chatEntities.add(chatChannelDataAccessObject.getDirectChatChannelByURL(chatUrls.get(i)));
-                    chatNames.add(chatEntities.get(i).getChatName());
+                    DirectChatChannel channel = chatChannelDataAccessObject.getDirectChatChannelByURL(url);
+                    chatEntities.add(channel);
+                    chatNames.add(channel.getChatName());
                 } catch (SQLException e) {
-                    e.printStackTrace();
                     userPresenter.prepareFailureView("DB read fail");
                     return;
                 }
             }
+
             baseUIState state = new baseUIState();
             state.setChatnames(chatNames);
             state.setChatEntities(chatEntities);
             baseUIViewModel.setState(state);
             baseUIViewModel.firePropertyChange();
+
             LoginOutputData outputData = new LoginOutputData(user);
             userPresenter.prepareSuccessView(outputData);
+
         } else {
             userPresenter.prepareFailureView("Invalid username or password.");
         }

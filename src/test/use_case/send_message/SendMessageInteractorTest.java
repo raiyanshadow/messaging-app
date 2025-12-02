@@ -3,6 +3,7 @@ package use_case.send_message;
 import sendbirdapi.MessageSender;
 import data_access.*;
 import entity.*;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.junit.jupiter.api.Test;
 import org.sendbird.client.ApiClient;
 import session.SessionManager;

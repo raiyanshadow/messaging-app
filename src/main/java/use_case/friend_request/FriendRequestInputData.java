@@ -11,6 +11,11 @@ public class FriendRequestInputData {
         this.accept = accept;
     }
 
-    String getAcceptedUsername() { return acceptedUsername; }
-    boolean getAccept() { return accept; }
+    String getAcceptedUsername() {
+        return acceptedUsername;
+    }
+
+    boolean getAccept() {
+        return accept;
+    }
 }

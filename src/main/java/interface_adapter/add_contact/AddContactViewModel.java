@@ -1,9 +1,9 @@
 package interface_adapter.add_contact;
 
-import interface_adapter.ViewModel;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+
+import interface_adapter.ViewModel;
 
 public class AddContactViewModel extends ViewModel<AddContactState> {
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
@@ -19,7 +19,9 @@ public class AddContactViewModel extends ViewModel<AddContactState> {
         super("add contact");
         setState(new AddContactState());
     }
-    public AddContactState getState() { return state; }
+    public AddContactState getState() {
+        return state;
+    }
 
     public void setState(AddContactState state) {
         this.state = state;

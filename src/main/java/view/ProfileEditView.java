@@ -115,6 +115,9 @@ public class ProfileEditView extends JPanel implements PropertyChangeListener {
         backButton.addActionListener(e -> {
             try {
                 baseUIController.displayUI();
+                usernameField.setText("");
+                passwordField.setText("");
+                languages.setSelectedIndex(0);
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
@@ -133,6 +136,9 @@ public class ProfileEditView extends JPanel implements PropertyChangeListener {
             if (state.getError() == null) {
                 try {
                     baseUIController.displayUI();
+                    usernameField.setText("");
+                    passwordField.setText("");
+                    languages.setSelectedIndex(0);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }

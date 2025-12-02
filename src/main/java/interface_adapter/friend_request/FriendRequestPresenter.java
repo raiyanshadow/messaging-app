@@ -10,17 +10,14 @@ import use_case.friend_request.FriendRequestOutputData;
 
 public class FriendRequestPresenter implements FriendRequestOutputBoundary {
     private final FriendRequestViewModel friendRequestViewModel;
-    private final ViewManagerModel viewManagerModel;
     private final baseUIViewModel baseUIViewModel;
     private final SessionManager sessionManager;
 
     public FriendRequestPresenter(FriendRequestViewModel friendRequestViewModel, ViewManagerModel viewManagerModel, baseUIViewModel baseUIViewModel, SessionManager sessionManager) {
         this.friendRequestViewModel = friendRequestViewModel;
-        this.viewManagerModel = viewManagerModel;
         this.baseUIViewModel = baseUIViewModel;
         this.sessionManager = sessionManager;
     }
-
 
     @Override
     public void prepareSuccessView(FriendRequestOutputData friendRequestOutputData) {
@@ -30,13 +27,11 @@ public class FriendRequestPresenter implements FriendRequestOutputBoundary {
         friendRequestViewModel.firePropertyChange();
 
         // Use the updated contact list fetched from DAO
-        baseUIState baseState = baseUIViewModel.getState();
-        //baseState.setContacts(friendRequestOutputData.getUpdatedContactList());
+        final baseUIState baseState = baseUIViewModel.getState();
+        // baseState.setContacts(friendRequestOutputData.getUpdatedContactList());
         baseState.setContacts(sessionManager.getMainUser().getContacts());
         baseUIViewModel.firePropertyChange("contacts_updated");
     }
-
-
 
     @Override
     public void prepareFailView(String errorMessage) {

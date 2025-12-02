@@ -1,9 +1,9 @@
 package interface_adapter.friend_request;
 
-import interface_adapter.ViewModel;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+
+import interface_adapter.ViewModel;
 
 public class FriendRequestViewModel extends ViewModel<FriendRequestState> {
 
@@ -15,7 +15,9 @@ public class FriendRequestViewModel extends ViewModel<FriendRequestState> {
         super("friend request");
     }
 
-    public FriendRequestState getState() { return state; }
+    public FriendRequestState getState() {
+        return state;
+    }
 
     public void setState(FriendRequestState state) {
         this.state = state;

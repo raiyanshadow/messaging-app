@@ -214,8 +214,6 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
             return true;
         }
         catch (SQLException e) {
-//            e.printStackTrace();
-//            throw new RuntimeException(e);
             return false;
         }
     }

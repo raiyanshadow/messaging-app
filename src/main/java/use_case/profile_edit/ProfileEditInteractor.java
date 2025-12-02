@@ -41,7 +41,6 @@ public class ProfileEditInteractor implements ProfileEditInputBoundary {
         }
 
         User user = userDataAccessObject.getUserFromID(userId);
-        System.out.println(user.getUsername());
         sessionManager.setMainUser(user);
         ProfileEditOutputData outputData = new ProfileEditOutputData(user);
         userPresenter.prepareSuccessView(outputData);

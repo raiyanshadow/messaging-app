@@ -42,7 +42,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private Thread thread;
     private volatile boolean running = false;
 
-    public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel) { // OLD: SendMessageController sendMessageController, UpdateChatChannelController updateChatChannelController
+    public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel) {
         // Initialize variables
         this.updateChatChannelViewModel = updateChatChannelViewModel;
         this.updateChatChannelViewModel.addPropertyChangeListener(this);
@@ -65,16 +65,16 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         messageContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
         scrollPane = new JScrollPane(messageContainer);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);  // <-- ADD THIS
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(30);
-        scrollPane.setPreferredSize(new Dimension(400, 350));
-        JButton send = new JButton("Send");
-        JButton back = new JButton("Back");
-        ChatPreviewPanel chatPreview = new ChatPreviewPanel(chatName, scrollPane, content, send, back);
+        scrollPane.setPreferredSize(new Dimension(400, 430));
+        JButton sendButton = new JButton("Send");
+        JButton backButton = new JButton("Back");
+        ChatPreviewPanel chatPreview = new ChatPreviewPanel(chatName, scrollPane, content, sendButton, backButton);
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(chatPreview);
 
-        back.addActionListener(event -> {
+        backButton.addActionListener(event -> {
             dispose();
             try {
                 baseUIController.displayUI();
@@ -84,7 +84,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         });
 
         // Send button
-        send.addActionListener(evt -> {
+        sendButton.addActionListener(evt -> {
             // Set new message state
             String message = content.getText();
             MessageState messageState = new MessageState();

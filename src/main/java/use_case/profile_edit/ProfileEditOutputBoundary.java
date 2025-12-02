@@ -12,5 +12,4 @@ public interface ProfileEditOutputBoundary {
      * @param message the error message
      */
     void prepareFailView(String message);
-//    void switchToHomePageView();
 }

@@ -15,8 +15,9 @@ class ProfileEditInteractorTest {
             private User user = new User(1, "OldUsername", "OldPassword", "English");
 
             @Override
-            public void updateUsername(int userId, String username) {
+            public boolean updateUsername(int userId, String username) {
                 user.setUsername(username);
+                return true;
             }
 
             @Override
@@ -42,6 +43,11 @@ class ProfileEditInteractorTest {
                 assertEquals("NewPassword", outputData.getUser().getPassword());
                 assertEquals("French", outputData.getUser().getPreferredLanguage());
             }
+
+            @Override
+            public void prepareFailView(String message) {
+                fail("Use case failure is unexpected");
+            }
         };
 
         SessionManager sessionManager = new SessionManager();
@@ -57,8 +63,9 @@ class ProfileEditInteractorTest {
             private User user = new User(1, "OldUsername", "password", "English");
 
             @Override
-            public void updateUsername(int userId, String username) {
+            public boolean updateUsername(int userId, String username) {
                 user.setUsername(username);
+                return true;
             }
 
             @Override
@@ -82,6 +89,11 @@ class ProfileEditInteractorTest {
                 assertEquals("password", outputData.getUser().getPassword());
                 assertEquals("English", outputData.getUser().getPreferredLanguage());
             }
+
+            @Override
+            public void prepareFailView(String message) {
+                fail("Use case failure is unexpected");
+            }
         };
 
         SessionManager sessionManager = new SessionManager();
@@ -97,7 +109,8 @@ class ProfileEditInteractorTest {
             private User user = new User(1, "username", "OldPassword", "English");
 
             @Override
-            public void updateUsername(int userId, String username) {
+            public boolean updateUsername(int userId, String username) {
+                return true;
             }
 
             @Override
@@ -122,6 +135,11 @@ class ProfileEditInteractorTest {
                 assertEquals("NewPassword", outputData.getUser().getPassword());
                 assertEquals("English", outputData.getUser().getPreferredLanguage());
             }
+
+            @Override
+            public void prepareFailView(String message) {
+                fail("Use case failure is unexpected");
+            }
         };
 
         SessionManager sessionManager = new SessionManager();
@@ -137,7 +155,8 @@ class ProfileEditInteractorTest {
             private User user = new User(1, "username", "password", "English");
 
             @Override
-            public void updateUsername(int userId, String username) {
+            public boolean updateUsername(int userId, String username) {
+                return true;
             }
 
             @Override
@@ -162,6 +181,10 @@ class ProfileEditInteractorTest {
                 assertEquals("password", outputData.getUser().getPassword());
                 assertEquals("Spanish", outputData.getUser().getPreferredLanguage());
             }
+            @Override
+            public void prepareFailView(String message) {
+                fail("Use case failure is unexpected");
+            }
         };
 
         SessionManager sessionManager = new SessionManager();
@@ -177,7 +200,8 @@ class ProfileEditInteractorTest {
             private User user = new User(1, "username", "password", "English");
 
             @Override
-            public void updateUsername(int userId, String username) {
+            public boolean updateUsername(int userId, String username) {
+                return true;
             }
 
             @Override
@@ -200,6 +224,50 @@ class ProfileEditInteractorTest {
                 assertEquals("username", outputData.getUser().getUsername());
                 assertEquals("password", outputData.getUser().getPassword());
                 assertEquals("English", outputData.getUser().getPreferredLanguage());
+            }
+            @Override
+            public void prepareFailView(String message) {
+                fail("Use case failure is unexpected");
+            }
+        };
+
+        SessionManager sessionManager = new SessionManager();
+        ProfileEditInputBoundary interactor = new ProfileEditInteractor(userDataAccess, successPresenter, sessionManager);
+        interactor.execute(inputData);
+    }
+
+    @Test
+    void failDuplicate() throws Exception {
+        ProfileEditInputData inputData = new ProfileEditInputData(1, "Alice", "", "");
+        ProfileEditUserDataAccessInterface userDataAccess = new ProfileEditUserDataAccessInterface() {
+            private User user = new User(1, "username", "password", "English");
+
+            @Override
+            public boolean updateUsername(int userId, String username) {
+                return false;
+            }
+
+            @Override
+            public void updatePassword(int userId, String password) {
+            }
+
+            @Override
+            public void updatePreferredLanguage(int userId, String preferredLanguage) {
+            }
+
+            @Override
+            public User getUserFromID(int userId) {
+                return user;
+            }
+        };
+        ProfileEditOutputBoundary successPresenter = new ProfileEditOutputBoundary() {
+            @Override
+            public void prepareSuccessView(ProfileEditOutputData outputData) {
+                fail("Use case success is unexpected");
+            }
+            @Override
+            public void prepareFailView(String message) {
+                assertEquals("Username already exists", message);
             }
         };
 

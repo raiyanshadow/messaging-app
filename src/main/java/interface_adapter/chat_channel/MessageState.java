@@ -5,14 +5,11 @@ import java.sql.Timestamp;
 public class MessageState {
     private String content;
     private Timestamp timestamp;
-    private Timestamp editedTimestamp;
     private String channelURL;
     private Integer senderID;
     private Integer receiverID;
     private String senderName;
     private String error;
-    private boolean replied;
-    private boolean edited;
 
     public String getContent() {
         return content;
@@ -27,8 +24,6 @@ public class MessageState {
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
     }
-    public Timestamp getEditedTimestamp() { return timestamp; }
-    public void setEditedTimestamp(Timestamp editedTimestamp) { this.editedTimestamp = editedTimestamp; }
     public String getChannelURL() {
         return channelURL;
     }
@@ -59,8 +54,4 @@ public class MessageState {
     public void setError(String error) {
         this.error = error;
     }
-    public void setReplied(boolean b) { this.replied = b;}
-    public boolean getReplied() { return this.replied; }
-    public void setEdited(boolean b) { this.edited = b;}
-    public boolean getEdited() { return this.edited; }
 }

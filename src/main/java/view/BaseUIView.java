@@ -196,7 +196,7 @@ public class BaseUIView extends JPanel implements PropertyChangeListener {
             ChatChannelView newChatChannelView = new ChatChannelView(updateChatChannelViewModel);
             newChatChannelView.setUpdateChatChannelController(updateChatChannelController);
             newChatChannelView.setSendMessageController(sendMessageController);
-            newChatChannelView.setBaseUIController(controller);
+            newChatChannelView.setBaseUiController(controller);
             SwingWorker<Void, Void> worker = new SwingWorker<>() {
                 @Override
                 protected Void doInBackground() throws Exception {

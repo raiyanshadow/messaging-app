@@ -2,34 +2,38 @@ package use_case.update_chat_channel;
 
 import java.sql.Timestamp;
 
-public class MessageDTO {
-    private final String channelURL;
-    private final Integer senderID;
-    private final Integer receiverID;
+public class MessageDto {
+    private final String channelUrl;
+    private final Integer senderId;
+    private final Integer receiverId;
     private final Timestamp timestamp;
     private final String content;
 
-    public MessageDTO(String channelURL, Integer senderID, Integer receiverID,
+    public MessageDto(String channelUrl, Integer senderId, Integer receiverID,
                       Timestamp timestamp, String content) {
-        this.channelURL = channelURL;
-        this.senderID = senderID;
-        this.receiverID = receiverID;
+        this.channelUrl = channelUrl;
+        this.senderId = senderId;
+        this.receiverId = receiverID;
         this.timestamp = timestamp;
         this.content = content;
     }
 
-    public String getChannelURL() {
-        return channelURL;
+    public String getChannelUrl() {
+        return channelUrl;
     }
+
     public Integer getSenderID() {
-        return senderID;
+        return senderId;
     }
+
     public Integer getReceiverID() {
-        return receiverID;
+        return receiverId;
     }
+
     public Timestamp getTimestamp() {
         return timestamp;
     }
+
     public String getContent() {
         return content;
     }

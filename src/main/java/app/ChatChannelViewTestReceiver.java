@@ -184,7 +184,7 @@ public class ChatChannelViewTestReceiver {
         UpdateChatChannelState updateChatChannelState = vm.getState();
         updateChatChannelState.setUser1ID(2);
         updateChatChannelState.setUser2ID(1);
-        updateChatChannelState.setChatURL(channelUrl);
+        updateChatChannelState.setChatUrl(channelUrl);
         updateChatChannelState.setUser1Name("Bob");
         updateChatChannelState.setUser2Name("Alice");
         vm.setState(updateChatChannelState);
@@ -196,7 +196,7 @@ public class ChatChannelViewTestReceiver {
                 chatChannelViewModel, viewManagerModel, (SessionManager) sessionManager, viewManager,
                 sendMessageController, controller, logoutController);
         view.setUpdateChatChannelController(controller);
-        view.setBaseUIController(baseUIController);
+        view.setBaseUiController(baseUIController);
 
         // View Manager model
         viewManager.addView(view, "update chat channel");

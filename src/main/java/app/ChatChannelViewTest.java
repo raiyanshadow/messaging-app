@@ -6,7 +6,7 @@ package app;
 
 import javax.swing.*;
 
-import SendBirdAPI.MessageSender;
+import sendbirdapi.MessageSender;
 import data_access.*;
 import entity.DirectChatChannel;
 import entity.User;

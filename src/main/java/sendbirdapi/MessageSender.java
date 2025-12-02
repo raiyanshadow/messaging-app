@@ -1,4 +1,4 @@
-package SendBirdAPI;
+package sendbirdapi;
 
 import org.openapitools.client.model.SendAMessageRequest;
 import org.openapitools.client.model.SendbirdMessageResponse;

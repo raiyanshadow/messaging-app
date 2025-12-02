@@ -1,6 +1,6 @@
 package use_case.send_message;
 
-import SendBirdAPI.MessageSender;
+import sendbirdapi.MessageSender;
 import data_access.*;
 import entity.*;
 import io.github.cdimascio.dotenv.Dotenv;

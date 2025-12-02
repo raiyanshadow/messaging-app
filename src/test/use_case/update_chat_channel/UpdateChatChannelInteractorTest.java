@@ -28,11 +28,11 @@ public class UpdateChatChannelInteractorTest {
         List<Message> messages = new ArrayList<>();
         messages.add(new TextMessage((long) 1, (long) 1, url, 1, 2, "received",
                 Timestamp.from(Instant.now()), "hi"));
-        List<MessageDTO> messageDTOs = new ArrayList<>();
+        List<MessageDto> messageDtos = new ArrayList<>();
         for (Message message: messages) {
-            MessageDTO messageDto = new MessageDTO(message.getChannelUrl(), message.getSenderId(),
+            MessageDto messageDto = new MessageDto(message.getChannelUrl(), message.getSenderId(),
                     message.getReceiverId(), message.getTimestamp(), (String) message.getContent());
-            messageDTOs.add(messageDto);
+            messageDtos.add(messageDto);
         }
         DirectChatChannel chat = new DirectChatChannel("Example Chat", sender, receiver, url, messages);
         mockChatDAO.addChat(chat);
@@ -40,18 +40,18 @@ public class UpdateChatChannelInteractorTest {
         UpdateChatChannelOutputBoundary successPresenter = new UpdateChatChannelOutputBoundary() {
             @Override
             public void prepareSuccessView(UpdateChatChannelOutputData chat) {
-                assertEquals(url, chat.getChatURL());
+                assertEquals(url, chat.getChatUrl());
                 assertEquals(sender.getUsername(), chat.getUser1Username());
                 assertEquals(receiver.getUsername(), chat.getUser2Username());
                 assertEquals(sender.getUserID(), chat.getUser1ID());
                 assertEquals(receiver.getUserID(), chat.getUser2ID());
                 assertEquals("Example Chat", chat.getChatName());
-                assertEquals(messageDTOs.size(), chat.getMessages().size());
-                assertEquals(messageDTOs.get(0).getChannelURL(), chat.getMessages().get(0).getChannelURL());
-                assertEquals(messageDTOs.get(0).getSenderID(), chat.getMessages().get(0).getSenderID());
-                assertEquals(messageDTOs.get(0).getReceiverID(), chat.getMessages().get(0).getReceiverID());
-                assertEquals(messageDTOs.get(0).getTimestamp(), chat.getMessages().get(0).getTimestamp());
-                assertEquals(messageDTOs.get(0).getContent(), chat.getMessages().get(0).getContent());
+                assertEquals(messageDtos.size(), chat.getMessages().size());
+                assertEquals(messageDtos.get(0).getChannelUrl(), chat.getMessages().get(0).getChannelUrl());
+                assertEquals(messageDtos.get(0).getSenderID(), chat.getMessages().get(0).getSenderID());
+                assertEquals(messageDtos.get(0).getReceiverID(), chat.getMessages().get(0).getReceiverID());
+                assertEquals(messageDtos.get(0).getTimestamp(), chat.getMessages().get(0).getTimestamp());
+                assertEquals(messageDtos.get(0).getContent(), chat.getMessages().get(0).getContent());
             }
 
             @Override

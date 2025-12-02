@@ -169,7 +169,7 @@ public class ChatChannelViewTest {
         UpdateChatChannelState updateChatChannelState = vm.getState();
         updateChatChannelState.setUser1ID(1);
         updateChatChannelState.setUser2ID(2);
-        updateChatChannelState.setChatURL(channelUrl);
+        updateChatChannelState.setChatUrl(channelUrl);
         updateChatChannelState.setUser1Name("Alice");
         updateChatChannelState.setUser2Name("Bob");
         vm.setState(updateChatChannelState);
@@ -180,7 +180,7 @@ public class ChatChannelViewTest {
         view.setUpdateChatChannelController(updateChatChannelController);
         view.setSendMessageController(sendMessageController);
         view.setUpdateChatChannelController(controller);
-        view.setBaseUIController(baseUIController);
+        view.setBaseUiController(baseUIController);
 
         // View Manager model
         viewManager.addView(view, "update chat channel");

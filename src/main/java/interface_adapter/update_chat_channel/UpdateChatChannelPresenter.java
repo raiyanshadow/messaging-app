@@ -1,17 +1,17 @@
 package interface_adapter.update_chat_channel;
 
-import session.SessionManager;
-import use_case.update_chat_channel.MessageDTO;
-import use_case.update_chat_channel.UpdateChatChannelOutputBoundary;
-import use_case.update_chat_channel.UpdateChatChannelOutputData;
-import interface_adapter.chat_channel.MessageViewModel;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import interface_adapter.chat_channel.MessageViewModel;
+import session.SessionManager;
+import use_case.update_chat_channel.MessageDto;
+import use_case.update_chat_channel.UpdateChatChannelOutputBoundary;
+import use_case.update_chat_channel.UpdateChatChannelOutputData;
+
 public class UpdateChatChannelPresenter implements UpdateChatChannelOutputBoundary {
+    private final SessionManager sessionManager;
     private final UpdateChatChannelViewModel updateChatChannelViewModel;
-    SessionManager sessionManager;
 
     public UpdateChatChannelPresenter(UpdateChatChannelViewModel updateChatChannelViewModel,
                                       SessionManager sessionManager) {
@@ -21,42 +21,30 @@ public class UpdateChatChannelPresenter implements UpdateChatChannelOutputBounda
 
     @Override
     public void prepareSuccessView(UpdateChatChannelOutputData outputData) {
-        UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
-        List<MessageViewModel> messageViewModels = new ArrayList<>();
-        for (MessageDTO message : outputData.getMessages()) {
-            MessageViewModel messageViewModel = new MessageViewModel();
-            messageViewModel.getState().setChannelURL(message.getChannelURL());
-            messageViewModel.getState().setContent(message.getContent());
-            messageViewModel.getState().setChannelURL(message.getChannelURL());
-            messageViewModel.getState().setSenderID(message.getSenderID());
-            messageViewModel.getState().setReceiverID(message.getReceiverID());
-            messageViewModel.getState().setTimestamp(message.getTimestamp());
-            if (message.getSenderID().equals(outputData.getUser1ID())) {
-                messageViewModel.getState().setSenderName(outputData.getUser1Username());
-            } else {
-                messageViewModel.getState().setSenderName(outputData.getUser2Username());
-            }
-            messageViewModels.add(messageViewModel);
-        }
-        int senderID;
-        int receiverID;
-        String senderUsername;
-        String receiverUsername;
+        final UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
+        final List<MessageViewModel> messageViewModels = new ArrayList<>();
+        createMsgViewModel(outputData, messageViewModels);
+
+        final int senderID;
+        final int receiverID;
+        final String senderUsername;
+        final String receiverUsername;
         if (outputData.getUser1Username().equals(sessionManager.getMainUser().getUsername())) {
-            senderID = outputData.getUser1ID(); // OLD: sessionManager.getMainUser().getUserID()
+            senderID = outputData.getUser1ID();
             receiverID = outputData.getUser2ID();
-            senderUsername = outputData.getUser1Username(); // OLD: sessionManager.getMainUser().getUsername()
+            senderUsername = outputData.getUser1Username();
             receiverUsername = outputData.getUser2Username();
         }
         else {
-            senderID = outputData.getUser2ID(); // OLD: sessionManager.getMainUser().getUserID()
+            senderID = outputData.getUser2ID();
             receiverID = outputData.getUser1ID();
-            senderUsername = outputData.getUser2Username(); // OLD: sessionManager.getMainUser().getUsername()
+            senderUsername = outputData.getUser2Username();
             receiverUsername = outputData.getUser1Username();
         }
-        updateChatChannelState.setChatURL(outputData.getChatURL());
+        // NOTE: Convention is user1 is the sender and user2 is the receiver
+        updateChatChannelState.setChatUrl(outputData.getChatUrl());
         updateChatChannelState.setChatChannelName(outputData.getChatName());
-        updateChatChannelState.setUser1Name(senderUsername); // NOTE: Convention is user1 is the sender and user2 is the receiver
+        updateChatChannelState.setUser1Name(senderUsername);
         updateChatChannelState.setUser2Name(receiverUsername);
         updateChatChannelState.setUser1ID(senderID);
         updateChatChannelState.setUser2ID(receiverID);
@@ -65,9 +53,28 @@ public class UpdateChatChannelPresenter implements UpdateChatChannelOutputBounda
         updateChatChannelViewModel.firePropertyChange();
     }
 
+    private static void createMsgViewModel(UpdateChatChannelOutputData outputData, List<MessageViewModel> messageViewModels) {
+        for (MessageDto message : outputData.getMessages()) {
+            final MessageViewModel messageViewModel = new MessageViewModel();
+            messageViewModel.getState().setChannelURL(message.getChannelUrl());
+            messageViewModel.getState().setContent(message.getContent());
+            messageViewModel.getState().setChannelURL(message.getChannelUrl());
+            messageViewModel.getState().setSenderID(message.getSenderID());
+            messageViewModel.getState().setReceiverID(message.getReceiverID());
+            messageViewModel.getState().setTimestamp(message.getTimestamp());
+            if (message.getSenderID().equals(outputData.getUser1ID())) {
+                messageViewModel.getState().setSenderName(outputData.getUser1Username());
+            }
+            else {
+                messageViewModel.getState().setSenderName(outputData.getUser2Username());
+            }
+            messageViewModels.add(messageViewModel);
+        }
+    }
+
     @Override
     public void prepareFailView(String errorMessage) {
-        UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
+        final UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
         updateChatChannelState.setError(errorMessage);
         updateChatChannelViewModel.firePropertyChange();
     }

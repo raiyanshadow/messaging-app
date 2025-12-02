@@ -1,29 +1,40 @@
 package view;
 
-import interface_adapter.base_UI.baseUIController;
-import interface_adapter.chat_channel.MessageState;
-import interface_adapter.update_chat_channel.UpdateChatChannelState;
-import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
-import interface_adapter.update_chat_channel.UpdateChatChannelController;
-import interface_adapter.chat_channel.SendMessageController;
-import interface_adapter.chat_channel.MessageViewModel;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 import java.util.List;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
+
+import interface_adapter.base_UI.baseUIController;
+import interface_adapter.chat_channel.MessageState;
+import interface_adapter.chat_channel.MessageViewModel;
+import interface_adapter.chat_channel.SendMessageController;
+import interface_adapter.update_chat_channel.UpdateChatChannelController;
+import interface_adapter.update_chat_channel.UpdateChatChannelState;
+import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
 
 /**
  * View is for the user to see their chats.
  */
 public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private final UpdateChatChannelViewModel updateChatChannelViewModel;
-    private UpdateChatChannelController updateChatChannelController = null;
-    private SendMessageController sendMessageController = null;
+    private UpdateChatChannelController updateChatChannelController;
+    private SendMessageController sendMessageController;
     private MessageViewModel messageViewModel;
-    private baseUIController baseUIController = null;
+    private baseUIController baseUiController;
 
     // GUI components
     private final JLabel chatName;
@@ -32,15 +43,15 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     private final JTextField content = new JTextField(15);
 
     // Variables to call interactors
-    private final String chatURL;
+    private final String chatUrl;
     private final Integer senderID;
     private final Integer receiverID;
     private final String senderUsername;
     private final String receiverUsername;
-    private int lastRenderedCount = 0;
+    private int lastRenderedCount;
     private boolean firstOpen = true;
     private Thread thread;
-    private volatile boolean running = false;
+    private volatile boolean running;
 
     public ChatChannelView(UpdateChatChannelViewModel updateChatChannelViewModel) {
         // Initialize variables
@@ -52,7 +63,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         this.receiverID = updateChatChannelViewModel.getState().getUser2ID();
         this.senderUsername = updateChatChannelViewModel.getState().getUser1Name();
         this.receiverUsername = updateChatChannelViewModel.getState().getUser2Name();
-        this.chatURL = updateChatChannelViewModel.getState().getChatURL();
+        this.chatUrl = updateChatChannelViewModel.getState().getChatUrl();
 
         // Set layout
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -68,38 +79,39 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(30);
         scrollPane.setPreferredSize(new Dimension(400, 430));
-        JButton sendButton = new JButton("Send");
-        JButton backButton = new JButton("Back");
-        ChatPreviewPanel chatPreview = new ChatPreviewPanel(chatName, scrollPane, content, sendButton, backButton);
+        final JButton sendButton = new JButton("Send");
+        final JButton backButton = new JButton("Back");
+        final ChatPreviewPanel chatPreview = new ChatPreviewPanel(chatName, scrollPane, content, sendButton, backButton);
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(chatPreview);
 
         backButton.addActionListener(event -> {
             dispose();
             try {
-                baseUIController.displayUI();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+                baseUiController.displayUI();
+            }
+            catch (SQLException ex) {
+                throw new RuntimeException(ex);
             }
         });
 
         // Send button
         sendButton.addActionListener(evt -> {
             // Set new message state
-            String message = content.getText();
-            MessageState messageState = new MessageState();
+            final String message = content.getText();
+            final MessageState messageState = new MessageState();
             messageState.setSenderID(this.senderID);
             messageState.setReceiverID(this.receiverID);
             messageState.setSenderName(this.senderUsername);
-            messageState.setChannelURL(chatURL);
+            messageState.setChannelURL(chatUrl);
             messageState.setContent(message);
 
             // Execute the controller to send
             sendMessageController.execute(message, messageState.getChannelURL(), messageState.getReceiverID());
             content.setText("");
-            SwingUtilities.invokeLater(() ->
-                    scrollToBottom(scrollPane)
-            );
+            SwingUtilities.invokeLater(() -> {
+                scrollToBottom(scrollPane); // check
+            });
         });
 
         messageContainer.removeAll();
@@ -109,6 +121,9 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         startThread();
     }
 
+    /**
+     * Clear messages when you exit the view.
+     */
     public void clearMessages() {
         SwingUtilities.invokeLater(() -> {
             messageContainer.removeAll();
@@ -119,22 +134,34 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
         firstOpen = true;
     }
 
+    /**
+     * Interrupt and dispose the thread.
+     */
     public void dispose() {
         running = false;
         if (thread != null) {
             thread.interrupt();
-            try { thread.join(50); } catch (InterruptedException ignored) {}
+            try {
+                thread.join(50);
+            }
+            catch (InterruptedException ignored) {
+                // Do nothing if thread cannot be joined
+            }
         }
 
         try {
             updateChatChannelViewModel.removePropertyChangeListener(this);
-        } catch (Exception ignored) {
+        }
+        catch (Exception ignored) {
             // Do nothing if property change listener is not removed
         }
 
         try {
-            if (messageViewModel != null) messageViewModel.removePropertyChangeListener(this);
-        } catch (Exception ignored) {
+            if (messageViewModel != null) {
+                messageViewModel.removePropertyChangeListener(this);
+            }
+        }
+        catch (Exception ignored) {
             // Do nothing if property change listener is not removed
         }
     }
@@ -143,7 +170,7 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("state")) {
             final UpdateChatChannelState state = (UpdateChatChannelState) evt.getNewValue();
-            chatName.setText(receiverUsername); // success flow
+            chatName.setText(receiverUsername);
             updateMessage(state.getMessages());
         }
     }
@@ -155,15 +182,17 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
             while (running) {
                 try {
                     if (updateChatChannelController != null) {
-                        UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
-                        if (updateChatChannelState != null && updateChatChannelState.getChatURL() != null) {
-                            updateChatChannelController.execute(updateChatChannelState.getChatURL());
+                        final UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
+                        if (updateChatChannelState != null && updateChatChannelState.getChatUrl() != null) {
+                            updateChatChannelController.execute(updateChatChannelState.getChatUrl());
                         }
                     }
                     Thread.sleep(200);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                } catch (InterruptedException e) {
+                }
+                catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                catch (InterruptedException ex) {
                     break;
                 }
             }
@@ -174,35 +203,40 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
 
     // Redraw messages
     private void updateMessage(List<MessageViewModel> messages) {
-        if (messages == null) return;
+        if (messages == null) {
+            return;
+        }
 
-        if (messages.size() == lastRenderedCount) return;
+        if (messages.size() == lastRenderedCount) {
+            return;
+        }
 
         for (int i = lastRenderedCount; i < messages.size(); i++) {
-            MessageViewModel message = messages.get(i);
-            boolean isSelf = (message.getState().getSenderID().equals(this.senderID));
+            final MessageViewModel message = messages.get(i);
+            final boolean isSelf = message.getState().getSenderID().equals(this.senderID);
             System.out.println(this.senderID);
             System.out.println(this.receiverID);
-            String name = isSelf ? senderUsername : receiverUsername;
+            final String name = isSelf ? senderUsername : receiverUsername;
 
-            MessagePanel messagePanel = new MessagePanel(new JLabel(name),
+            final MessagePanel messagePanel = new MessagePanel(new JLabel(name),
                     new JLabel(message.getState().getContent()),
                     new JLabel(message.getState().getTimestamp().toString()));
-            JPanel bubble = messagePanel.createBubble(
+            final JPanel bubble = messagePanel.createBubble(
                     message.getState().getSenderName(),
                     message.getState().getContent(),
                     message.getState().getTimestamp().toString(),
                     isSelf
             );
 
-            JPanel wrapper = new JPanel();
+            final JPanel wrapper = new JPanel();
             wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.X_AXIS));
             wrapper.setOpaque(false);
 
             if (isSelf) {
                 wrapper.add(Box.createHorizontalGlue());
                 wrapper.add(bubble);
-            } else {
+            }
+            else {
                 wrapper.add(bubble);
                 wrapper.add(Box.createHorizontalGlue());
             }
@@ -213,39 +247,39 @@ public class ChatChannelView extends JPanel implements PropertyChangeListener {
 
         lastRenderedCount = messages.size();
 
-        boolean wasAtBottom = isAtBottom(scrollPane);
+        final boolean wasAtBottom = isAtBottom(scrollPane);
 
         messageContainer.revalidate();
         messageContainer.repaint();
 
-        SwingUtilities.invokeLater(() ->
-                SwingUtilities.invokeLater(() -> {
-                    if (firstOpen || wasAtBottom) {
-                        firstOpen = false;
-                        scrollToBottom(scrollPane);
-                    }
-                })
-        );
+        SwingUtilities.invokeLater(() -> {
+            SwingUtilities.invokeLater(() -> {
+                if (firstOpen || wasAtBottom) {
+                    firstOpen = false;
+                    scrollToBottom(scrollPane);
+                }
+            });
+        });
     }
 
     private boolean isAtBottom(JScrollPane scrollPane) {
-        JScrollBar sb = scrollPane.getVerticalScrollBar();
-        int value = sb.getValue();
-        int extent = sb.getModel().getExtent();
-        int max = sb.getMaximum();
+        final JScrollBar sb = scrollPane.getVerticalScrollBar();
+        final int value = sb.getValue();
+        final int extent = sb.getModel().getExtent();
+        final int max = sb.getMaximum();
 
         return value + extent >= max - 20;
     }
 
     private void scrollToBottom(JScrollPane scrollPane) {
         SwingUtilities.invokeLater(() -> {
-            JScrollBar sb = scrollPane.getVerticalScrollBar();
+            final JScrollBar sb = scrollPane.getVerticalScrollBar();
             sb.setValue(sb.getMaximum());
         });
     }
 
-    public void setBaseUIController(baseUIController baseUIController) {
-        this.baseUIController = baseUIController;
+    public void setBaseUiController(baseUIController baseUiController) {
+        this.baseUiController = baseUiController;
     }
 
     public void setUpdateChatChannelController(UpdateChatChannelController updateChatChannelController) {

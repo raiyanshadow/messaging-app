@@ -7,8 +7,6 @@ import use_case.profile_edit.ProfileEditOutputBoundary;
 import use_case.profile_edit.ProfileEditOutputData;
 
 public class ProfileEditPresenter implements ProfileEditOutputBoundary {
-//    private final ViewManagerModel viewManagerModel;
-//    private final HomePageViewModel homePageViewModel;
     private final ProfileEditViewModel profileEditViewModel;
 
     public ProfileEditPresenter(ProfileEditViewModel profileEditViewModel) {
@@ -21,13 +19,12 @@ public class ProfileEditPresenter implements ProfileEditOutputBoundary {
         profileEditState.setUsername(profileEditOutputData.getUser().getUsername());
         profileEditState.setPassword(profileEditOutputData.getUser().getPassword());
         profileEditState.setPreferredLanguage(profileEditOutputData.getUser().getPreferredLanguage());
-        profileEditViewModel.firePropertyChange();
-//        switchToHomePageView();
-    }
+        profileEditState.setError(null);
+        profileEditViewModel.firePropertyChange();}
 
-//    @Override
-//    public void switchToHomePageView() {
-//        viewManagerModel.setState(homePageViewModel.getViewName());
-//        viewManagerModel.firePropertyChange();
-//    }
+    public void prepareFailView(String message) {
+        ProfileEditState profileEditState = profileEditViewModel.getState();
+        profileEditState.setError(message);
+        profileEditViewModel.firePropertyChange();
+    }
 }

@@ -1,12 +1,10 @@
 package use_case.add_contact;
 
+import java.sql.SQLException;
 
 import entity.Contact;
 import entity.User;
 import session.Session;
-
-
-import java.sql.SQLException;
 
 public class AddContactInteractor implements AddContactInputBoundary {
 
@@ -15,8 +13,9 @@ public class AddContactInteractor implements AddContactInputBoundary {
     private final AddContactOutputBoundary userPresenter;
     private final Session sessionManager;
 
-
-    public AddContactInteractor(AddContactUserDataAccessInterface userDataAccessObject, AddContactContactDataAccessInterface contactDataAccessObject, AddContactOutputBoundary addContactOutputBoundary, Session sessionManager) {
+    public AddContactInteractor(AddContactUserDataAccessInterface userDataAccessObject,
+                                AddContactContactDataAccessInterface contactDataAccessObject,
+                                AddContactOutputBoundary addContactOutputBoundary, Session sessionManager) {
         this.userDataAccessObject = userDataAccessObject;
         this.contactDataAccessObject = contactDataAccessObject;
         this.userPresenter = addContactOutputBoundary;
@@ -29,12 +28,9 @@ public class AddContactInteractor implements AddContactInputBoundary {
         final String receiverUsername = addContactInputData.getReceiverUsername();
         final User receiver = userDataAccessObject.getUserFromName(receiverUsername);
         boolean inContacts = false;
-        boolean sentRequest = false;
-        boolean receivedRequest = false;
 
         contactDataAccessObject.updateUserContacts(sender, sender.getContacts());
         contactDataAccessObject.updateUserFriendRequests(sender, sender.getFriendRequests());
-
 
         for (Contact contact: sender.getContacts()) {
             if (contact.getContact().getUsername().equals(receiverUsername)) {
@@ -43,9 +39,7 @@ public class AddContactInteractor implements AddContactInputBoundary {
                 break;
             }
         }
-
-
-
+        boolean receivedRequest = false;
         for (String friendRequest: sender.getFriendRequests()) {
             System.out.println(friendRequest);
             if (friendRequest.equals(receiverUsername)) {
@@ -53,11 +47,11 @@ public class AddContactInteractor implements AddContactInputBoundary {
                 break;
             }
         }
-
+        boolean sentRequest = false;
         if (receiverUsername != null && userDataAccessObject.existsByName(receiverUsername)) {
             contactDataAccessObject.updateUserFriendRequests(receiver, receiver.getFriendRequests());
-            for (String friend_request : receiver.getFriendRequests()) {
-                if (friend_request.equals(sender.getUsername())) {
+            for (String friendRequest : receiver.getFriendRequests()) {
+                if (friendRequest.equals(sender.getUsername())) {
                     sentRequest = true;
                     break;
                 }
@@ -65,7 +59,7 @@ public class AddContactInteractor implements AddContactInputBoundary {
         }
 
         // did not enter a username
-        if (receiverUsername == null){
+        if (receiverUsername == null) {
             userPresenter.prepareFailView("Please enter in a username");
         }
 
@@ -94,12 +88,16 @@ public class AddContactInteractor implements AddContactInputBoundary {
 
         // receiver has already sent sender a friend request
         else if (receivedRequest) {
-            // System.out.println(receiver_username + " has sent you a friend request, plz go and accept to add as a contact");
-            userPresenter.prepareFailView(receiverUsername + " has sent you a friend request, please go and accept their friend request to add them as a contact");
+            // System.out.println(receiver_username + " has sent you a friend request,
+            // plz go and accept to add as a contact");
+            final String msg = """
+                     has sent you a friend request, \
+                    please go and accept their friend request to add them as a contact""";
+            userPresenter.prepareFailView(receiverUsername + msg);
         }
 
-
-        else { // receiver does exist
+        else {
+            // receiver does exist
             // send request in DAO
             userDataAccessObject.sendRequest(sender, receiverUsername);
             // prepare output

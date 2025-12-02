@@ -5,7 +5,6 @@ import java.sql.SQLException;
 public class SessionManager implements Session {
     private User mainUser;
     private boolean isLoggedIn;
-
     public SessionManager() {}
 
     public SessionManager(User mainUser, boolean isLoggedIn) throws SQLException {

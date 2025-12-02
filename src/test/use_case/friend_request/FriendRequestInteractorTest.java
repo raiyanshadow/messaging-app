@@ -1,19 +1,13 @@
 package use_case.friend_request;
 
-import data_access.DBContactDataAccessObject;
-import data_access.DBUserDataAccessObject;
+
 import data_access.InMemoryContactDAO;
-import data_access.InMemoryUserDAO;
-import entity.Contact;
+
 import entity.User;
-import io.github.cdimascio.dotenv.Dotenv;
+
 import org.junit.jupiter.api.Test;
 import session.SessionManager;
-import use_case.add_contact.AddContactInputBoundary;
-import use_case.add_contact.AddContactInteractor;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

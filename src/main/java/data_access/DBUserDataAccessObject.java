@@ -205,17 +205,16 @@ public class DBUserDataAccessObject implements UserDataAccessObject, AddContactU
 
     // Edit profile methods
     @Override
-    public void updateUsername(int userId, String newUsername) throws SQLException {
-        System.out.println("entered updateUsername");
+    public boolean updateUsername(int userId, String newUsername) throws SQLException {
         String query = "UPDATE \"user\" SET username = ? WHERE id = ?";
         try(PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, newUsername);
             statement.setInt(2, userId);
             statement.executeUpdate();
+            return true;
         }
         catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            return false;
         }
     }
 

@@ -25,7 +25,11 @@ public class ProfileEditInteractor implements ProfileEditInputBoundary {
         String preferredLanguage = inputData.getPreferredLanguage();
 
         if (!username.isEmpty()) {
-            userDataAccessObject.updateUsername(userId, username);
+            boolean noDuplicate = userDataAccessObject.updateUsername(userId, username);
+            if (!noDuplicate) {
+                userPresenter.prepareFailView("Username already exists");
+                return;
+            }
         }
 
         if (!password.isEmpty()) {
@@ -37,7 +41,6 @@ public class ProfileEditInteractor implements ProfileEditInputBoundary {
         }
 
         User user = userDataAccessObject.getUserFromID(userId);
-        System.out.println(user.getUsername());
         sessionManager.setMainUser(user);
         ProfileEditOutputData outputData = new ProfileEditOutputData(user);
         userPresenter.prepareSuccessView(outputData);

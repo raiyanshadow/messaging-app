@@ -2,15 +2,12 @@ package use_case.add_contact;
 
 import data_access.*;
 import entity.User;
-import io.github.cdimascio.dotenv.Dotenv;
+
 import org.junit.jupiter.api.Test;
-import session.Session;
+
 import session.SessionManager;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;

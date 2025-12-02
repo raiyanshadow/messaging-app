@@ -13,11 +13,4 @@ public class FriendRequestOutputData {
     public String getAcceptedUsername() {
         return acceptedUsername;
     }
-
-    /*
-    public List<Contact> getUpdatedContactList() { return updatedContactList; }
-    public void setUpdatedContactList(List<Contact> updatedContactList) {
-        this.updatedContactList = updatedContactList;
-    }
-     */
 }

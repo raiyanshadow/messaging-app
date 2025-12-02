@@ -13,7 +13,6 @@ public class FriendRequestInteractor implements FriendRequestInputBoundary {
     private final FriendRequestOutputBoundary userPresenter;
     private final SessionManager sessionManager;
 
-
     public FriendRequestInteractor(FriendRequestContactDataAccessInterface friendRequestContactDataAccessInterface, FriendRequestOutputBoundary friendRequestOutputBoundary,
                                    SessionManager sessionManager) {
         this.userDataAccessObject = friendRequestContactDataAccessInterface;
@@ -40,8 +39,6 @@ public class FriendRequestInteractor implements FriendRequestInputBoundary {
 
         // accept friend request -> add both users to each other's contacts
         else {
-            // System.out.println("acceptinggggggg............");
-
             // accept the friend request in the DAO
             userDataAccessObject.acceptRequest(acceptee, acceptedUsername);
 
@@ -50,7 +47,6 @@ public class FriendRequestInteractor implements FriendRequestInputBoundary {
 
             // create output data including full contact list
             final FriendRequestOutputData friendRequestOutputData = new FriendRequestOutputData(acceptedUsername);
-            // friendRequestOutputData.setUpdatedContactList(updatedContacts);
 
             sessionManager.getMainUser().setContacts(updatedContacts);
 

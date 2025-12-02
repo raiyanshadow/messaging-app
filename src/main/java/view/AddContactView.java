@@ -221,8 +221,6 @@ public class AddContactView extends JPanel implements PropertyChangeListener {
         }
     }
 
-
-
     public void setAddContactController(AddContactController addContactController) {
         this.addContactController = addContactController;
     }

@@ -14,14 +14,9 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SendMessageInteractorTest {
-    private final Dotenv dotenv = Dotenv.configure()
-            .directory("./assets")
-            .filename("env")
-            .load();
 
     @Test
     void successTest() throws SQLException {
@@ -147,7 +142,61 @@ class SendMessageInteractorTest {
 
         interactor.execute(inputData);
 
-        assertEquals(true, failCalled[0]);
+        assertTrue(failCalled[0]);
         assertEquals(1, chatChannel.getMessages().size());  // no new messages
+    }
+
+    @Test
+    void dbWriteFailureTest() {
+        String url = "sendbird_group_channel_50257357_374e0405b4e79b2ba44e90858baac40e23f3a397";
+        User sender = new User(1, "Alice", "abc", "English");
+        User receiver = new User(2, "Bob", "def", "English");
+
+        // session
+        SessionManager sessionManager = new SessionManager();
+        sessionManager.setMainUser(sender);
+        sessionManager.setLoggedIn(true);
+
+        // Throwing DAO to trigger the catch block
+        InMemoryMessageDAO throwingDAO = new InMemoryMessageDAO() {
+            @Override
+            public <T> Long addMessage(Message<T> message) throws SQLException {
+                throw new SQLException("Simulated DB write failure");
+            }
+        };
+
+        // Mock message sender that *succeeds* (so failure MUST be DB write)
+        MessageSender mockSender = new MessageSender(new ApiClient()) {
+            @Override
+            public Long sendMessage(String message, String apiToken, String channelUrl, Integer senderId) {
+                return 999L;  // pretend SendBird succeeded
+            }
+        };
+
+        SendMessageInputData inputData =
+                new SendMessageInputData("Hello world", url, receiver.getUserID());
+
+        final boolean[] failCalled = {false};
+
+        SendMessageOutputBoundary presenter = new SendMessageOutputBoundary() {
+            @Override
+            public void prepareSendMessageSuccessView(SendMessageOutputData outputData) {
+                fail("Should NOT succeed");
+            }
+
+            @Override
+            public void prepareSendMessageFailView(String error) {
+                failCalled[0] = true;
+                assertEquals("DB write fail", error);
+            }
+        };
+
+        SendMessageInteractor interactor =
+                new SendMessageInteractor(presenter, throwingDAO, sessionManager, mockSender);
+
+        interactor.execute(inputData);
+
+        // Check that fail branch was triggered
+        assertTrue(failCalled[0]);
     }
 }

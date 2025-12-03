@@ -5,13 +5,15 @@ import java.util.List;
 import entity.Contact;
 import entity.User;
 
+/**
+ * The contact data access interface for the methods needed by the add contact use case's interactor.
+ */
 public interface AddContactContactDataAccessInterface {
     /**
      * Update the given user's contacts list.
      * @param user the user who we want to update their contacts
      * @param contacts the user's contacts list
      */
-
     void updateUserContacts(User user, List<Contact> contacts);
 
     /**

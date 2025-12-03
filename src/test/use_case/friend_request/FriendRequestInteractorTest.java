@@ -1,10 +1,7 @@
 package use_case.friend_request;
 
-
-import data_access.InMemoryContactDAO;
-
+import data.access.InMemoryContactDao;
 import entity.User;
-
 import org.junit.jupiter.api.Test;
 import session.SessionManager;
 
@@ -18,7 +15,7 @@ public class FriendRequestInteractorTest {
     @Test
     void successTest() throws SQLException {
         // create the mock DAOs
-        InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();
+        InMemoryContactDao mockContactDAO = new InMemoryContactDao();
 
         // create users to populate the mock DAOs
         User alice = new User(1, "alice", "alice", "English");
@@ -27,7 +24,7 @@ public class FriendRequestInteractorTest {
 
         // populate the mockContactDAO
         // so now bob has sent alice a friend request
-        InMemoryContactDAO.DummyContact tempContact = new InMemoryContactDAO.DummyContact(bob, alice, true);
+        InMemoryContactDao.DummyContact tempContact = new InMemoryContactDao.DummyContact(bob, alice, true);
         mockContactDAO.addDummyContact(tempContact);
 
         FriendRequestInputData inputData = new FriendRequestInputData("bob", true);
@@ -37,8 +34,8 @@ public class FriendRequestInteractorTest {
                 assertEquals("bob", friendRequestOutputData.getAcceptedUsername());
 
                 // what the mockContactDAO should be like
-                InMemoryContactDAO expectedMockContactDAO = new InMemoryContactDAO();
-                InMemoryContactDAO.DummyContact expectedContact = new InMemoryContactDAO.DummyContact(bob, alice, false);
+                InMemoryContactDao expectedMockContactDAO = new InMemoryContactDao();
+                InMemoryContactDao.DummyContact expectedContact = new InMemoryContactDao.DummyContact(bob, alice, false);
                 expectedMockContactDAO.addDummyContact(expectedContact);
 
                 // check if the contents of the two are equal (if we correctly updated the mockContactDAO
@@ -69,7 +66,7 @@ public class FriendRequestInteractorTest {
     @Test
     void declineRequest() throws SQLException {
         // create the mock DAOs
-        InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();
+        InMemoryContactDao mockContactDAO = new InMemoryContactDao();
 
         // create users to populate the mock DAOs
         User alice = new User(1, "alice", "alice", "English");
@@ -78,7 +75,7 @@ public class FriendRequestInteractorTest {
 
         // populate the mockContactDAO
         // so now bob has sent alice a friend request
-        InMemoryContactDAO.DummyContact tempContact = new InMemoryContactDAO.DummyContact(bob, alice, true);
+        InMemoryContactDao.DummyContact tempContact = new InMemoryContactDao.DummyContact(bob, alice, true);
         mockContactDAO.addDummyContact(tempContact);
 
         FriendRequestInputData inputData = new FriendRequestInputData("bob", false);
@@ -93,7 +90,7 @@ public class FriendRequestInteractorTest {
                 assertEquals("you have declined the friend request from: bob", errorMessage);
 
                 // what the mockContactDAO should be like
-                InMemoryContactDAO expectedMockContactDAO = new InMemoryContactDAO();
+                InMemoryContactDao expectedMockContactDAO = new InMemoryContactDao();
 
                 // check if the contents of the two are equal (if we correctly updated the mockContactDAO
                 // (user, contact, isFriendRequest)
@@ -116,7 +113,7 @@ public class FriendRequestInteractorTest {
     @Test
     void failureDidNotSelectAccept() throws SQLException {
         // create the mock DAOs
-        InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();
+        InMemoryContactDao mockContactDAO = new InMemoryContactDao();
 
         // create users to populate the mock DAOs
         User alice = new User(1, "alice", "alice", "English");
@@ -125,7 +122,7 @@ public class FriendRequestInteractorTest {
 
         // populate the mockContactDAO
         // so now bob has sent alice a friend request
-        InMemoryContactDAO.DummyContact tempContact = new InMemoryContactDAO.DummyContact(bob, alice, true);
+        InMemoryContactDao.DummyContact tempContact = new InMemoryContactDao.DummyContact(bob, alice, true);
         mockContactDAO.addDummyContact(tempContact);
 
         FriendRequestInputData inputData = new FriendRequestInputData(null, true);
@@ -140,8 +137,8 @@ public class FriendRequestInteractorTest {
                 assertEquals("please select a friend request", errorMessage);
 
                 // what the mockContactDAO should be like
-                InMemoryContactDAO expectedMockContactDAO = new InMemoryContactDAO();
-                InMemoryContactDAO.DummyContact expectedContact = new InMemoryContactDAO.DummyContact(bob, alice, true);
+                InMemoryContactDao expectedMockContactDAO = new InMemoryContactDao();
+                InMemoryContactDao.DummyContact expectedContact = new InMemoryContactDao.DummyContact(bob, alice, true);
                 expectedMockContactDAO.addDummyContact(expectedContact);
 
                 // check if the contents of the two are equal (if we correctly updated the mockContactDAO
@@ -165,7 +162,7 @@ public class FriendRequestInteractorTest {
     @Test
     void failureDidNotSelectDecline() throws SQLException {
         // create the mock DAOs
-        InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();
+        InMemoryContactDao mockContactDAO = new InMemoryContactDao();
 
         // create users to populate the mock DAOs
         User alice = new User(1, "alice", "alice", "English");
@@ -174,7 +171,7 @@ public class FriendRequestInteractorTest {
 
         // populate the mockContactDAO
         // so now bob has sent alice a friend request
-        InMemoryContactDAO.DummyContact tempContact = new InMemoryContactDAO.DummyContact(bob, alice, true);
+        InMemoryContactDao.DummyContact tempContact = new InMemoryContactDao.DummyContact(bob, alice, true);
         mockContactDAO.addDummyContact(tempContact);
 
         FriendRequestInputData inputData = new FriendRequestInputData(null, false);
@@ -189,8 +186,8 @@ public class FriendRequestInteractorTest {
                 assertEquals("please select a friend request", errorMessage);
 
                 // what the mockContactDAO should be like
-                InMemoryContactDAO expectedMockContactDAO = new InMemoryContactDAO();
-                InMemoryContactDAO.DummyContact expectedContact = new InMemoryContactDAO.DummyContact(bob, alice, true);
+                InMemoryContactDao expectedMockContactDAO = new InMemoryContactDao();
+                InMemoryContactDao.DummyContact expectedContact = new InMemoryContactDao.DummyContact(bob, alice, true);
                 expectedMockContactDAO.addDummyContact(expectedContact);
 
                 // check if the contents of the two are equal (if we correctly updated the mockContactDAO

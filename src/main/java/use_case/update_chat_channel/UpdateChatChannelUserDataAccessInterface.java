@@ -4,12 +4,15 @@ import java.sql.SQLException;
 
 import entity.DirectChatChannel;
 
+/**
+ * User data access interface containing methods used by update chat channel use case's interactor.
+ */
 public interface UpdateChatChannelUserDataAccessInterface {
     /**
-     * Retrieves information about a chat from the database based on a chat URL.
-     * @param chatUrl the URL of the chat channel
-     * @return a DirectChatChannel object representing the chat that was retrieved
-     * @throws SQLException throw and exception if retrieval from the database failed
+     * Retrieves a DirectChatChannel entity from the database based on its unique channel URL.
+     * @param chatUrl The unique URL identifying the chat channel.
+     * @return The populated DirectChatChannel entity, or an empty DirectChatChannel
+     * @throws SQLException If a database access error occurs.
      */
-    DirectChatChannel getDirectChatChannelByURL(String chatUrl) throws SQLException;
+    DirectChatChannel getDirectChatChannelByUrl(String chatUrl) throws SQLException;
 }

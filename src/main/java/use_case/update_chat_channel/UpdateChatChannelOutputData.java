@@ -2,6 +2,9 @@ package use_case.update_chat_channel;
 
 import java.util.List;
 
+/**
+ * Output data of update chat channel use case.
+ */
 public class UpdateChatChannelOutputData {
     private final String chatName;
     private final String user1Username;

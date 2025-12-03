@@ -5,6 +5,9 @@ import java.util.List;
 import entity.Contact;
 import entity.User;
 
+/**
+ * Data access interface for the friend request use case's interactor.
+ */
 public interface FriendRequestContactDataAccessInterface {
 
     /**

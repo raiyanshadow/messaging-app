@@ -1,10 +1,13 @@
 package use_case.profile_edit;
 
+import java.sql.SQLException;
+
 import entity.User;
 import session.SessionManager;
 
-import java.sql.SQLException;
-
+/**
+ * Interactor for profile edit use case.
+ */
 public class ProfileEditInteractor implements ProfileEditInputBoundary {
     private final ProfileEditUserDataAccessInterface userDataAccessObject;
     private final ProfileEditOutputBoundary userPresenter;
@@ -19,17 +22,21 @@ public class ProfileEditInteractor implements ProfileEditInputBoundary {
 
     @Override
     public void execute(ProfileEditInputData inputData) throws SQLException {
-        int userId = inputData.getUserId();
-        String username = inputData.getUsername();
-        String password = inputData.getPassword();
-        String preferredLanguage = inputData.getPreferredLanguage();
+        final int userId = inputData.getUserId();
+        final String username = inputData.getUsername();
+        final String password = inputData.getPassword();
+        final String preferredLanguage = inputData.getPreferredLanguage();
 
         if (!username.isEmpty()) {
-            boolean noDuplicate = userDataAccessObject.updateUsername(userId, username);
-            if (!noDuplicate) {
+            final boolean updated = userDataAccessObject.updateUsername(userId, username);
+            if (!updated) {
                 userPresenter.prepareFailView("Username already exists");
                 return;
             }
+        }
+
+        if (!username.isEmpty()) {
+            userDataAccessObject.updateUsername(userId, username);
         }
 
         if (!password.isEmpty()) {
@@ -40,9 +47,10 @@ public class ProfileEditInteractor implements ProfileEditInputBoundary {
             userDataAccessObject.updatePreferredLanguage(userId, preferredLanguage);
         }
 
-        User user = userDataAccessObject.getUserFromID(userId);
+        final User user = userDataAccessObject.getUserFromId(userId);
+        System.out.println(user.getUsername());
         sessionManager.setMainUser(user);
-        ProfileEditOutputData outputData = new ProfileEditOutputData(user);
+        final ProfileEditOutputData outputData = new ProfileEditOutputData(user);
         userPresenter.prepareSuccessView(outputData);
     }
 }

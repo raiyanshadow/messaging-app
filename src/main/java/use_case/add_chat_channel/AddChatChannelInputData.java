@@ -1,10 +1,8 @@
 package use_case.add_chat_channel;
 
-import entity.User;
-
-import java.util.Hashtable;
-import java.util.List;
-
+/**
+ * The input data for the add chat channel use case.
+ */
 public class AddChatChannelInputData {
     private String username;
     private Integer senderID;
@@ -19,8 +17,19 @@ public class AddChatChannelInputData {
         this.receiverID = receiverID;
     }
 
-    public String getUsername() { return username; }
-    public String getChatName() { return chatName; }
-    public Integer getSenderID() { return senderID; }
-    public Integer getReceiverID() { return receiverID; }
+    public String getUsername() {
+        return username;
+    }
+
+    public String getChatName() {
+        return chatName;
+    }
+
+    public Integer getSenderID() {
+        return senderID;
+    }
+
+    public Integer getReceiverID() {
+        return receiverID;
+    }
 }

@@ -2,7 +2,10 @@ package entity;
 
 import java.sql.Timestamp;
 
-public class TextMessage extends Message<String> {
+/**
+ * A text message subclass of the abstract message class.
+ */
+public class TextMessage extends AbstractMessage<String> {
     private String content;
 
     public TextMessage(Long messageID, Long parentMessageId, String channelUrl,

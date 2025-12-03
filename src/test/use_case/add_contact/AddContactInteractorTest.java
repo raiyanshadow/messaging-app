@@ -1,10 +1,9 @@
 package use_case.add_contact;
 
-import data_access.*;
+import data.access.InMemoryContactDao;
+import data.access.InMemoryUserDao;
 import entity.User;
-
 import org.junit.jupiter.api.Test;
-
 import session.SessionManager;
 
 import java.sql.SQLException;
@@ -16,8 +15,8 @@ public class AddContactInteractorTest {
     @Test
     void successTest() throws SQLException {
         // create the mock DAOs
-        InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();
-        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
+        InMemoryContactDao mockContactDAO = new InMemoryContactDao();
+        InMemoryUserDao mockUserDAO = new InMemoryUserDao();
 
         // create users to populate the mock DAOs
         User alice = new User(1, "alice", "alice", "English");
@@ -53,8 +52,8 @@ public class AddContactInteractorTest {
     void failureDidNotEnterUsername() throws SQLException {
 
         // create the mock DAOs
-        InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();
-        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
+        InMemoryContactDao mockContactDAO = new InMemoryContactDao();
+        InMemoryUserDao mockUserDAO = new InMemoryUserDao();
 
         // create users to populate the mock DAOs
         User alice = new User(1, "alice", "alice", "English");
@@ -83,15 +82,16 @@ public class AddContactInteractorTest {
         SessionManager sessionManager = new SessionManager();
         sessionManager.setMainUser(alice);
 
-        AddContactInputBoundary interactor = new AddContactInteractor(mockUserDAO, mockContactDAO, successPresenter, sessionManager);
+        AddContactInputBoundary interactor = new AddContactInteractor(mockUserDAO, mockContactDAO, successPresenter,
+                sessionManager);
         interactor.execute(inputData);
     }
 
     @Test
     void failureSendRequestToYourself() throws SQLException {
         // create the mock DAOs
-        InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();
-        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
+        InMemoryContactDao mockContactDAO = new InMemoryContactDao();
+        InMemoryUserDao mockUserDAO = new InMemoryUserDao();
 
         // create users to populate the mock DAOs
         User alice = new User(1, "alice", "alice", "English");
@@ -120,15 +120,16 @@ public class AddContactInteractorTest {
         SessionManager sessionManager = new SessionManager();
         sessionManager.setMainUser(alice);
 
-        AddContactInputBoundary interactor = new AddContactInteractor(mockUserDAO, mockContactDAO, successPresenter, sessionManager);
+        AddContactInputBoundary interactor = new AddContactInteractor(mockUserDAO, mockContactDAO,
+                successPresenter, sessionManager);
         interactor.execute(inputData);
     }
 
     @Test
     void failureReceiverDoesNotExist() throws SQLException {
         // create the mock DAOs
-        InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();
-        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
+        InMemoryContactDao mockContactDAO = new InMemoryContactDao();
+        InMemoryUserDao mockUserDAO = new InMemoryUserDao();
 
         // create users to populate the mock DAOs
         User alice = new User(1, "alice", "alice", "English");
@@ -163,8 +164,8 @@ public class AddContactInteractorTest {
     @Test
     void failureReceiverAlreadyContact1() throws SQLException {
         // create the mock DAOs
-        InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();
-        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
+        InMemoryContactDao mockContactDAO = new InMemoryContactDao();
+        InMemoryUserDao mockUserDAO = new InMemoryUserDao();
 
         // create users to populate the mock DAOs
         User alice = new User(1, "alice", "alice", "English");
@@ -176,7 +177,7 @@ public class AddContactInteractorTest {
 
         // populate the mockContactDAO
         // so now alice and bob are contacts because isFriendRequest is false
-        InMemoryContactDAO.DummyContact tempContact = new InMemoryContactDAO.DummyContact(alice, bob, false);
+        InMemoryContactDao.DummyContact tempContact = new InMemoryContactDao.DummyContact(alice, bob, false);
         mockContactDAO.addDummyContact(tempContact);
 
         AddContactInputData inputData = new AddContactInputData("bob");
@@ -206,8 +207,8 @@ public class AddContactInteractorTest {
     @Test
     void failureAlreadySentRequest() throws SQLException {
         // create the mock DAOs
-        InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();
-        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
+        InMemoryContactDao mockContactDAO = new InMemoryContactDao();
+        InMemoryUserDao mockUserDAO = new InMemoryUserDao();
 
         // create users to populate the mock DAOs
         User alice = new User(1, "alice", "alice", "English");
@@ -219,7 +220,7 @@ public class AddContactInteractorTest {
 
         // populate the mockContactDAO
         // so now alice has already sent bob a request
-        InMemoryContactDAO.DummyContact tempContact = new InMemoryContactDAO.DummyContact(alice, bob, true);
+        InMemoryContactDao.DummyContact tempContact = new InMemoryContactDao.DummyContact(alice, bob, true);
         mockContactDAO.addDummyContact(tempContact);
 
         AddContactInputData inputData = new AddContactInputData("bob");
@@ -248,8 +249,8 @@ public class AddContactInteractorTest {
     @Test
     void failureReceiverHasSentRequest() throws SQLException {
         // create the mock DAOs
-        InMemoryContactDAO mockContactDAO = new InMemoryContactDAO();
-        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
+        InMemoryContactDao mockContactDAO = new InMemoryContactDao();
+        InMemoryUserDao mockUserDAO = new InMemoryUserDao();
 
         // create users to populate the mock DAOs
         User alice = new User(1, "alice", "alice", "English");
@@ -261,7 +262,7 @@ public class AddContactInteractorTest {
 
         // populate the mockContactDAO
         // so now bob has already sent alice a request
-        InMemoryContactDAO.DummyContact tempContact = new InMemoryContactDAO.DummyContact(bob, alice, true);
+        InMemoryContactDao.DummyContact tempContact = new InMemoryContactDao.DummyContact(bob, alice, true);
         mockContactDAO.addDummyContact(tempContact);
 
         AddContactInputData inputData = new AddContactInputData("bob");

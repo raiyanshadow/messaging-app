@@ -5,6 +5,9 @@ import java.sql.SQLException;
 import use_case.update_chat_channel.UpdateChatChannelInputBoundary;
 import use_case.update_chat_channel.UpdateChatChannelInputData;
 
+/**
+ * Controller for the update chat channel use case.
+ */
 public class UpdateChatChannelController {
     private final UpdateChatChannelInputBoundary updateChatChannelUseCaseInteractor;
 
@@ -13,9 +16,9 @@ public class UpdateChatChannelController {
     }
 
     /**
-     * Executes the interactor's method with the given input data retrieved from the view.
-     * @param chatUrl takes in a chat URL to pass to the interactor
-     * @throws SQLException throw an exception if the program failed to retrieve from the database
+     * Calls the interactor for the update chat channel use case.
+     * @param chatUrl url to update the chat for.
+     * @throws SQLException whenever we can't access or modify the database.
      */
     public void execute(String chatUrl) throws SQLException {
         final UpdateChatChannelInputData updateChatInputData = new UpdateChatChannelInputData(chatUrl);

@@ -98,11 +98,11 @@ public class SignupState {
      */
     @Override
     public String toString() {
-        return "SignupState{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", repeatPassword='" + repeatPassword + '\'' +
-                ", preferredLanguage='" + preferredLanguage + '\'' +
-                '}';
+        return "SignupState{"
+                + "username='" + username + '\''
+                + ", password='" + password + '\''
+                + ", repeatPassword='" + repeatPassword + '\''
+                + ", preferredLanguage='" + preferredLanguage + '\''
+                + '}';
     }
 }

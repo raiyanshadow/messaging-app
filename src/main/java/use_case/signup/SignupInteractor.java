@@ -1,14 +1,15 @@
 package use_case.signup;
 
-import sendbirdapi.SendbirdUserCreator;
-import data_access.UserDataAccessObject;
-import entity.User;
-import io.github.cdimascio.dotenv.Dotenv;
-import org.openapitools.client.model.SendbirdUser;
+import static java.lang.System.err;
 
 import java.sql.SQLException;
 
-import static java.lang.System.*;
+import org.openapitools.client.model.SendbirdUser;
+
+import data.access.UserDataAccessObject;
+import entity.User;
+import io.github.cdimascio.dotenv.Dotenv;
+import sendbirdapi.SendbirdUserCreator;
 
 /**
  * Interactor handling the signup use case, including validation,
@@ -86,23 +87,16 @@ public class SignupInteractor implements SignupInputBoundary {
         User user = null;
 
         try {
-            user =
-                    new User(DEFAULT_USER_ID, username, password,
+            user = new User(DEFAULT_USER_ID, username, password,
                             preferredLanguage);
 
             final Integer userId = this.userDataAccessObject.save(user);
 
             final String apiToken = this.dotenv.get("MSG_TOKEN");
-            out.println("Sendbird token: " + apiToken);
 
             final SendbirdUser sbUser =
                     this.sendbirdUserCreator.createUser(apiToken, userId,
                             username);
-
-            out.println(
-                    "Sendbird user created: "
-                            + (sbUser != null ? sbUser.getUserId() : "null")
-            );
 
             if (sbUser == null) {
                 this.userDataAccessObject.deleteByUsername(username);
@@ -115,25 +109,27 @@ public class SignupInteractor implements SignupInputBoundary {
                     new SignupOutputData(user.getUsername());
             this.userPresenter.prepareSuccessView(outputData);
 
-        } catch (SQLException e) {
+        }
+        catch (SQLException ex) {
 
             this.userPresenter.prepareFailView(
-                    "Database error: " + e.getMessage());
-
-        } catch (Exception e) {
+                    "Database error: " + ex.getMessage());
+        }
+        catch (RuntimeException ex) {
 
             if (user != null) {
                 try {
                     this.userDataAccessObject.deleteByUsername(username);
-                } catch (SQLException ex) {
+                }
+                catch (SQLException exe) {
                     err.println(
                             "Failed to rollback DB user: "
-                                    + ex.getMessage());
+                                    + exe.getMessage());
                 }
             }
 
             this.userPresenter.prepareFailView(
-                    "Signup failed: " + e.getMessage());
+                    "Signup failed: " + ex.getMessage());
         }
     }
 

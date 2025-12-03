@@ -1,5 +1,8 @@
 package interface_adapter.logout;
 
+/**
+ * State for the logout use case.
+ */
 public class LogoutState {
     private boolean isLoggedOutSuccessfully;
 

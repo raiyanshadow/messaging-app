@@ -2,6 +2,9 @@ package interface_adapter.login;
 
 import interface_adapter.ViewModel;
 
+/**
+ * View model for the login use case.
+ */
 public class LoginViewModel extends ViewModel<LoginState> {
     public static final String LOGIN_BUTTON_LABEL = "Log in";
     public static final String TO_SIGNUP_BUTTON_LABEL = "Go to Sign up";

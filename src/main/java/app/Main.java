@@ -1,17 +1,26 @@
 package app;
 
-import javax.swing.*;
-import java.sql.*;
+import java.sql.SQLException;
 
+import javax.swing.JFrame;
+
+/**
+ * Main application.
+ */
 public class Main {
-        public static void main(String[] args) throws SQLException {
-            AppBuilder appBuilder = new AppBuilder();
-            JFrame application = appBuilder
-                    .buildPreLogin()
-                    .build();
+    /**
+     * Main application method.
+     * @param args Standard Java arguments.
+     * @throws SQLException whenever a database or API read/write fails.
+     */
+    public static void main(String[] args) throws SQLException {
+        final AppBuilder appBuilder = new AppBuilder();
+        final JFrame application = appBuilder
+                .buildPreLogin()
+                .build();
 
-            application.pack();
-            application.setLocationRelativeTo(null);
-            application.setVisible(true);
-        }
+        application.pack();
+        application.setLocationRelativeTo(null);
+        application.setVisible(true);
+    }
 }

@@ -1,9 +1,9 @@
 package interface_adapter.signup;
 
+import java.sql.SQLException;
+
 import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInputData;
-
-import java.sql.SQLException;
 
 /**
  * Controller for the signup use case.

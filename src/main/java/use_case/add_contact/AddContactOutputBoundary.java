@@ -1,5 +1,8 @@
 package use_case.add_contact;
 
+/**
+ * Interface for the add contact use case's presenter.
+ */
 public interface AddContactOutputBoundary {
     /**
      * Successfully sent contact request.

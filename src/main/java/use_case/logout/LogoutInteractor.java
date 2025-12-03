@@ -2,6 +2,9 @@ package use_case.logout;
 
 import entity.User;
 
+/**
+ * Interactor for the logout use case.
+ */
 public class LogoutInteractor implements LogoutInputBoundary {
     private final LogoutOutputBoundary userPresenter;
 
@@ -11,7 +14,7 @@ public class LogoutInteractor implements LogoutInputBoundary {
 
     @Override
     public void logOut(LogoutInputData inputData) {
-        User user = inputData.getUser();
+        final User user = inputData.getUser();
         userPresenter.prepareSuccessView(new LogoutOutputData(user));
     }
 }

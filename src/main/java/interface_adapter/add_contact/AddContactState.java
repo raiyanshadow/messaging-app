@@ -1,9 +1,11 @@
 package interface_adapter.add_contact;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * State for the add contact use case.
+ */
 public class AddContactState {
     private String usernameInput;
     private String addContactError;
@@ -14,8 +16,8 @@ public class AddContactState {
         return usernameInput;
     }
 
-    public void setUsername(String usernameInput) {
-        this.usernameInput = usernameInput;
+    public void setUsername(String newUsernameInput) {
+        this.usernameInput = newUsernameInput;
     }
 
     public String getAddContactError() {

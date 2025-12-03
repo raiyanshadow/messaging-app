@@ -1,20 +1,34 @@
 package view;
 
-import interface_adapter.signup.SignupController;
-import interface_adapter.signup.SignupState;
-import interface_adapter.signup.SignupViewModel;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import interface_adapter.signup.SignupController;
+import interface_adapter.signup.SignupState;
+import interface_adapter.signup.SignupViewModel;
+
 /**
  * Signup view panel for user registration.
- * <p>
  * Displays input fields for username, password, repeat password, and preferred language.
  * Communicates with the SignupController and updates the SignupViewModel.
  */
@@ -22,6 +36,8 @@ public class SignupView extends JPanel implements PropertyChangeListener {
 
     /** Name identifier for this view. */
     private final String viewName = "signup";
+
+    private final String font = "SansSerif";
 
     /** The view model storing the state of the signup form. */
     private final SignupViewModel signupViewModel;
@@ -34,7 +50,7 @@ public class SignupView extends JPanel implements PropertyChangeListener {
             new JComboBox<>(new String[]{"English", "French", "Spanish"});
 
     /** Controller for executing signup actions. */
-    private SignupController signupController = null;
+    private SignupController signupController;
 
     /** Buttons. */
     private final JButton signUp;
@@ -55,20 +71,36 @@ public class SignupView extends JPanel implements PropertyChangeListener {
 
         // Panel setup
         this.setLayout(new BorderLayout());
-        this.setBackground(new Color(245, 248, 250));
-        this.setBorder(BorderFactory.createEmptyBorder(40, 80, 40, 80));
+        final Color signupViewBackgroundColour = new Color(245, 248, 250);
+        final int signupTop = 40;
+        final int signupLeft = 80;
+        final int signupBottom = 40;
+        final int signupRight = 80;
+        this.setBackground(signupViewBackgroundColour);
+        this.setBorder(BorderFactory.createEmptyBorder(signupTop, signupLeft, signupBottom, signupRight));
 
         // Title
         final JLabel title = new JLabel(SignupViewModel.TITLE_LABEL,
                 SwingConstants.CENTER);
-        title.setFont(new Font("SansSerif", Font.BOLD, 28));
+        final int titleFontSize = 28;
+        title.setFont(new Font(font, Font.BOLD, titleFontSize));
 
         // Form panel
-        final JPanel formPanel = new JPanel(new GridLayout(4, 1, 15, 15));
+        final int formPanelGridRow = 4;
+        final int formPanelGridColumn = 1;
+        final int formPanelHgap = 15;
+        final int formPanelVgap = 15;
+        final Color formPanelBackgroundColour = new Color(220, 220, 220);
+        final JPanel formPanel = new JPanel(new GridLayout(formPanelGridRow, formPanelGridColumn, formPanelHgap,
+                formPanelVgap));
         formPanel.setBackground(Color.WHITE);
+        final int formPanelTop = 30;
+        final int formPanelLeft = 50;
+        final int formPanelBottom = 30;
+        final int formPanelRight = 50;
         formPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(220, 220, 220)),
-                BorderFactory.createEmptyBorder(30, 50, 30, 50)
+                BorderFactory.createLineBorder(formPanelBackgroundColour),
+                BorderFactory.createEmptyBorder(formPanelTop, formPanelLeft, formPanelBottom, formPanelRight)
         ));
 
         formPanel.add(createLabelField(SignupViewModel.USERNAME_LABEL,
@@ -84,7 +116,7 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         signupViewModel.getState().setPreferredLanguage(
                 (String) languageDropdown.getSelectedItem());
 
-        languageDropdown.addActionListener(e -> {
+        languageDropdown.addActionListener(evt -> {
             final SignupState state = signupViewModel.getState();
             state.setPreferredLanguage(
                     (String) languageDropdown.getSelectedItem());
@@ -94,21 +126,27 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         // Button panel
         final JPanel buttonPanel = new JPanel(new FlowLayout(
                 FlowLayout.CENTER, 20, 10));
-        buttonPanel.setBackground(new Color(245, 248, 250));
+        final Color buttonPanelBackgroundColour = new Color(245, 248, 250);
+        buttonPanel.setBackground(buttonPanelBackgroundColour);
 
-        final Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
+        final int buttonFontSize = 14;
+        final Font buttonFont = new Font(this.font, Font.BOLD, buttonFontSize);
 
         signUp.setFont(buttonFont);
         toLogin.setFont(buttonFont);
 
-        signUp.setBackground(new Color(70, 130, 180));
+        final Color signupBackgroundColour = new Color(70, 130, 180);
+        final Dimension signupDimension = new Dimension(120, 40);
+        signUp.setBackground(signupBackgroundColour);
         signUp.setForeground(Color.WHITE);
         signUp.setFocusPainted(false);
-        signUp.setPreferredSize(new Dimension(120, 40));
+        signUp.setPreferredSize(signupDimension);
 
-        toLogin.setBackground(new Color(240, 240, 240));
+        final Color toLoginBackgroundColour = new Color(240, 240, 240);
+        final Dimension toLoginDimension = new Dimension(120, 40);
+        toLogin.setBackground(toLoginBackgroundColour);
         toLogin.setFocusPainted(false);
-        toLogin.setPreferredSize(new Dimension(120, 40));
+        toLogin.setPreferredSize(toLoginDimension);
 
         buttonPanel.add(toLogin);
         buttonPanel.add(signUp);
@@ -128,8 +166,9 @@ public class SignupView extends JPanel implements PropertyChangeListener {
                         state.getRepeatPassword(),
                         (String) languageDropdown.getSelectedItem()
                 );
-            } catch (final SQLException e) {
-                throw new RuntimeException(e);
+            }
+            catch (final SQLException ex) {
+                throw new RuntimeException(ex);
             }
         });
 
@@ -153,9 +192,12 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         final JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
         final JLabel label = new JLabel(labelText);
-        label.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        inputField.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        inputField.setPreferredSize(new Dimension(250, 30));
+        final int labelFontSize = 16;
+        final int inputFieldFontSize = 16;
+        final Dimension inputFieldDimension = new Dimension(250, 30);
+        label.setFont(new Font(this.font, Font.PLAIN, labelFontSize));
+        inputField.setFont(new Font(this.font, Font.PLAIN, inputFieldFontSize));
+        inputField.setPreferredSize(inputFieldDimension);
         panel.add(label, BorderLayout.NORTH);
         panel.add(inputField, BorderLayout.CENTER);
         return panel;
@@ -169,9 +211,17 @@ public class SignupView extends JPanel implements PropertyChangeListener {
                 signupViewModel.setState(state);
             }
 
-            @Override public void insertUpdate(final DocumentEvent e) { updateState(); }
-            @Override public void removeUpdate(final DocumentEvent e) { updateState(); }
-            @Override public void changedUpdate(final DocumentEvent e) { updateState(); }
+            @Override public void insertUpdate(final DocumentEvent e) {
+                updateState();
+            }
+
+            @Override public void removeUpdate(final DocumentEvent e) {
+                updateState();
+            }
+
+            @Override public void changedUpdate(final DocumentEvent e) {
+                updateState();
+            }
         });
     }
 
@@ -183,9 +233,17 @@ public class SignupView extends JPanel implements PropertyChangeListener {
                 signupViewModel.setState(state);
             }
 
-            @Override public void insertUpdate(final DocumentEvent e) { updateState(); }
-            @Override public void removeUpdate(final DocumentEvent e) { updateState(); }
-            @Override public void changedUpdate(final DocumentEvent e) { updateState(); }
+            @Override public void insertUpdate(final DocumentEvent e) {
+                updateState();
+            }
+
+            @Override public void removeUpdate(final DocumentEvent e) {
+                updateState();
+            }
+
+            @Override public void changedUpdate(final DocumentEvent e) {
+                updateState();
+            }
         });
     }
 
@@ -199,9 +257,17 @@ public class SignupView extends JPanel implements PropertyChangeListener {
                         signupViewModel.setState(state);
                     }
 
-                    @Override public void insertUpdate(final DocumentEvent e) { updateState(); }
-                    @Override public void removeUpdate(final DocumentEvent e) { updateState(); }
-                    @Override public void changedUpdate(final DocumentEvent e) { updateState(); }
+                    @Override public void insertUpdate(final DocumentEvent e) {
+                        updateState();
+                    }
+
+                    @Override public void removeUpdate(final DocumentEvent e) {
+                        updateState();
+                    }
+
+                    @Override public void changedUpdate(final DocumentEvent e) {
+                        updateState();
+                    }
                 });
     }
 
@@ -218,7 +284,9 @@ public class SignupView extends JPanel implements PropertyChangeListener {
      *
      * @return view name
      */
-    public String getViewName() { return viewName; }
+    public String getViewName() {
+        return viewName;
+    }
 
     /**
      * Sets the signup controller.

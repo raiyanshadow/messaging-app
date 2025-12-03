@@ -4,6 +4,9 @@ import java.util.List;
 
 import interface_adapter.chat_channel.MessageViewModel;
 
+/**
+ * State for the update chat channel use case.
+ */
 public class UpdateChatChannelState {
     private String chatChannelName;
     private List<MessageViewModel> messages;

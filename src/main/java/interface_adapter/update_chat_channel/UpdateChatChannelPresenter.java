@@ -9,9 +9,12 @@ import use_case.update_chat_channel.MessageDto;
 import use_case.update_chat_channel.UpdateChatChannelOutputBoundary;
 import use_case.update_chat_channel.UpdateChatChannelOutputData;
 
+/**
+ * Presenter for the update chat channel use case.
+ */
 public class UpdateChatChannelPresenter implements UpdateChatChannelOutputBoundary {
-    private final SessionManager sessionManager;
     private final UpdateChatChannelViewModel updateChatChannelViewModel;
+    private final SessionManager sessionManager;
 
     public UpdateChatChannelPresenter(UpdateChatChannelViewModel updateChatChannelViewModel,
                                       SessionManager sessionManager) {
@@ -23,8 +26,22 @@ public class UpdateChatChannelPresenter implements UpdateChatChannelOutputBounda
     public void prepareSuccessView(UpdateChatChannelOutputData outputData) {
         final UpdateChatChannelState updateChatChannelState = updateChatChannelViewModel.getState();
         final List<MessageViewModel> messageViewModels = new ArrayList<>();
-        createMsgViewModel(outputData, messageViewModels);
-
+        for (MessageDto message : outputData.getMessages()) {
+            final MessageViewModel messageViewModel = new MessageViewModel();
+            messageViewModel.getState().setChannelUrl(message.getChannelUrl());
+            messageViewModel.getState().setContent(message.getContent());
+            messageViewModel.getState().setChannelUrl(message.getChannelUrl());
+            messageViewModel.getState().setSenderID(message.getSenderID());
+            messageViewModel.getState().setReceiverID(message.getReceiverID());
+            messageViewModel.getState().setTimestamp(message.getTimestamp());
+            if (message.getSenderID().equals(outputData.getUser1ID())) {
+                messageViewModel.getState().setSenderName(outputData.getUser1Username());
+            }
+            else {
+                messageViewModel.getState().setSenderName(outputData.getUser2Username());
+            }
+            messageViewModels.add(messageViewModel);
+        }
         final int senderID;
         final int receiverID;
         final String senderUsername;
@@ -41,7 +58,6 @@ public class UpdateChatChannelPresenter implements UpdateChatChannelOutputBounda
             senderUsername = outputData.getUser2Username();
             receiverUsername = outputData.getUser1Username();
         }
-        // NOTE: Convention is user1 is the sender and user2 is the receiver
         updateChatChannelState.setChatUrl(outputData.getChatUrl());
         updateChatChannelState.setChatChannelName(outputData.getChatName());
         updateChatChannelState.setUser1Name(senderUsername);
@@ -51,25 +67,6 @@ public class UpdateChatChannelPresenter implements UpdateChatChannelOutputBounda
         updateChatChannelState.setMessages(messageViewModels);
         updateChatChannelState.setError(null);
         updateChatChannelViewModel.firePropertyChange();
-    }
-
-    private static void createMsgViewModel(UpdateChatChannelOutputData outputData, List<MessageViewModel> messageViewModels) {
-        for (MessageDto message : outputData.getMessages()) {
-            final MessageViewModel messageViewModel = new MessageViewModel();
-            messageViewModel.getState().setChannelURL(message.getChannelUrl());
-            messageViewModel.getState().setContent(message.getContent());
-            messageViewModel.getState().setChannelURL(message.getChannelUrl());
-            messageViewModel.getState().setSenderID(message.getSenderID());
-            messageViewModel.getState().setReceiverID(message.getReceiverID());
-            messageViewModel.getState().setTimestamp(message.getTimestamp());
-            if (message.getSenderID().equals(outputData.getUser1ID())) {
-                messageViewModel.getState().setSenderName(outputData.getUser1Username());
-            }
-            else {
-                messageViewModel.getState().setSenderName(outputData.getUser2Username());
-            }
-            messageViewModels.add(messageViewModel);
-        }
     }
 
     @Override

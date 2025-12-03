@@ -1,16 +1,20 @@
 package entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DirectChatChannel entity to represent a chat channel between two User entities containing a
+ * list of AbstractMessage entities.
+ */
 public class DirectChatChannel {
     private String chatName;
     private final User sender;
     private final User receiver;
     private String chatUrl;
-    private List<Message> messages;
+    private List<AbstractMessage> messages;
 
-    public DirectChatChannel(String chatName, User sender, User receiver, String chatUrl, List<Message> messages) {
+    public DirectChatChannel(String chatName, User sender, User receiver, String chatUrl,
+                             List<AbstractMessage> messages) {
         this.chatName = chatName;
         this.sender = sender;
         this.receiver = receiver;
@@ -42,11 +46,11 @@ public class DirectChatChannel {
         this.chatUrl = chatUrl;
     }
 
-    public List<Message> getMessages() {
+    public List<AbstractMessage> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<Message> messages) {
+    public void setMessages(List<AbstractMessage> messages) {
         this.messages = messages;
     }
 

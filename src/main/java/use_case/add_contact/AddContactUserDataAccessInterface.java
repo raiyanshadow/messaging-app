@@ -4,12 +4,16 @@ import java.sql.SQLException;
 
 import entity.User;
 
+/**
+ * The user data access interface for the methods needed by the add contact use case's interactor.
+ */
 public interface AddContactUserDataAccessInterface {
 
     /**
-     * Check if a user with username exists.
+     * Check if username exists in the database.
      * @param username the username who we want to add to our contacts
      * @return true if the given user exists; meaning it is possible to add to contacts
+     * @throws SQLException whenever we can't access the database.
      */
     boolean existsByName(String username) throws SQLException;
 
@@ -24,6 +28,7 @@ public interface AddContactUserDataAccessInterface {
      * Get the user of the given username.
      * @param username the username of the user we want to get
      * @return the user of the corresponding username
+     * @throws SQLException whenever we can't access the database.
      */
     User getUserFromName(String username) throws SQLException;
 }

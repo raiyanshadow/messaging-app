@@ -1,7 +1,8 @@
 package use_case.send_message;
 
+import data.access.InMemoryChatDao;
+import data.access.InMemoryMessageDao;
 import sendbirdapi.MessageSender;
-import data_access.*;
 import entity.*;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ class SendMessageInteractorTest {
         User sender = new User(1, "Alice", "abc", "English");
         User receiver = new User(2, "Bob", "def", "English");
 
-        List<Message> messages = new ArrayList<>();
+        List<AbstractMessage> messages = new ArrayList<>();
         messages.add(new TextMessage(
                 1L, 1L, url,
                 1, 2, "received",
@@ -32,10 +33,10 @@ class SendMessageInteractorTest {
                 "Test chat"
         ));
 
-        InMemoryMessageDAO messageDAO = new InMemoryMessageDAO();
-        for (Message m : messages) messageDAO.addMessage(m);
+        InMemoryMessageDao messageDAO = new InMemoryMessageDao();
+        for (AbstractMessage m : messages) messageDAO.addMessage(m);
 
-        InMemoryChatDAO chatDAO = new InMemoryChatDAO();
+        InMemoryChatDao chatDAO = new InMemoryChatDao();
         DirectChatChannel chatChannel =
                 DirectChatChannelFactory.createDirectChatChannel("Example Chat", sender, receiver, url, messages);
         chatDAO.addChat(chatChannel);
@@ -61,8 +62,8 @@ class SendMessageInteractorTest {
                 assertEquals(receiver.getUserID(), outputData.getReceiverID());
 
                 // The interactor MUST have appended a message
-                List<Message> msgs = chatChannel.getMessages();
-                Message last = msgs.get(msgs.size() - 1);
+                List<AbstractMessage> msgs = chatChannel.getMessages();
+                AbstractMessage last = msgs.get(msgs.size() - 1);
 
                 assertEquals("Test chat", last.getContent());
                 assertEquals(outputData.getChannelUrl(), chatChannel.getChatUrl());
@@ -86,7 +87,7 @@ class SendMessageInteractorTest {
         User sender = new User(1, "Alice", "abc", "English");
         User receiver = new User(2, "Bob", "def", "English");
 
-        List<Message> messages = new ArrayList<>();
+        List<AbstractMessage> messages = new ArrayList<>();
         messages.add(new TextMessage(
                 1L, 1L, url,
                 1, 2,
@@ -95,10 +96,10 @@ class SendMessageInteractorTest {
                 "Initial message"
         ));
 
-        InMemoryMessageDAO messageDAO = new InMemoryMessageDAO();
+        InMemoryMessageDao messageDAO = new InMemoryMessageDao();
         messageDAO.addMessage(messages.get(0));
 
-        InMemoryChatDAO mockChatDAO = new InMemoryChatDAO();
+        InMemoryChatDao mockChatDAO = new InMemoryChatDao();
         DirectChatChannel chatChannel = DirectChatChannelFactory.createDirectChatChannel(
                 "Example Chat", sender, receiver, url, messages
         );
@@ -158,9 +159,9 @@ class SendMessageInteractorTest {
         sessionManager.setLoggedIn(true);
 
         // Throwing DAO to trigger the catch block
-        InMemoryMessageDAO throwingDAO = new InMemoryMessageDAO() {
+        InMemoryMessageDao throwingDAO = new InMemoryMessageDao() {
             @Override
-            public <T> Long addMessage(Message<T> message) throws SQLException {
+            public <T> Long addMessage(AbstractMessage<T> message) throws SQLException {
                 throw new SQLException("Simulated DB write failure");
             }
         };

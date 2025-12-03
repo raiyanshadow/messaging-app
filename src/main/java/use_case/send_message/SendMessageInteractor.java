@@ -1,20 +1,23 @@
 package use_case.send_message;
 
-import entity.Message;
-import entity.MessageFactory;
-import entity.User;
-import io.github.cdimascio.dotenv.Dotenv;
-import session.Session;
-
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+import entity.MessageFactory;
+import entity.TextMessage;
+import entity.User;
+import io.github.cdimascio.dotenv.Dotenv;
+import session.Session;
+
+/**
+ * Interactor for the send message use case.
+ */
 public class SendMessageInteractor implements SendMessageInputBoundary {
     private final SendMessageOutputBoundary presenter;
     private final SendMessageDataAccessInterface messageDataAccessObject;
     private final Session sessionManager;
-    private final SendMessageAPIAccessInterface messageSender;
+    private final SendMessageApiAccessInterface messageSender;
     private final Dotenv dotenv = Dotenv.configure()
             .directory("./assets")
             .filename("env")
@@ -23,24 +26,23 @@ public class SendMessageInteractor implements SendMessageInputBoundary {
     public SendMessageInteractor(SendMessageOutputBoundary presenter,
                                  SendMessageDataAccessInterface messageDataAccessObject,
                                  Session sessionManager,
-                                 SendMessageAPIAccessInterface messageSender) {
+                                 SendMessageApiAccessInterface messageSender) {
         this.presenter = presenter;
         this.messageDataAccessObject = messageDataAccessObject;
         this.sessionManager = sessionManager;
         this.messageSender = messageSender;
     }
 
-
     @Override
     public void execute(SendMessageInputData request) {
         final User currentUser = sessionManager.getMainUser();
 
-        Long messageId = messageSender.sendMessage(request.getMessage(),
+        final Long messageId = messageSender.sendMessage(request.getMessage(),
                 dotenv.get("MSG_TOKEN"),
                 request.getChannelUrl(),
                 currentUser.getUserID());
 
-        Message<String> message = MessageFactory.createTextMessage(messageId,
+        final TextMessage message = MessageFactory.createTextMessage(messageId,
                 request.getChannelUrl(),
                 currentUser.getUserID(),
                 request.getReceiverID(),
@@ -55,12 +57,13 @@ public class SendMessageInteractor implements SendMessageInputBoundary {
 
         try {
             messageDataAccessObject.addMessage(message);
-        } catch (SQLException e) {
+        }
+        catch (SQLException ex) {
             presenter.prepareSendMessageFailView("DB write fail");
             return;
         }
 
-        SendMessageOutputData response = new SendMessageOutputData(
+        final SendMessageOutputData response = new SendMessageOutputData(
                 messageId,
                 currentUser.getUserID(),
                 request.getReceiverID(),

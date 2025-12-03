@@ -1,11 +1,13 @@
 package interface_adapter.add_chat_channel;
 
-import use_case.add_chat_channel.AddChatChannelInputBoundary;
-import use_case.add_chat_channel.AddChatChannelInputData;
-import use_case.add_chat_channel.AddChatChannelInteractor;
-
 import java.sql.SQLException;
 
+import use_case.add_chat_channel.AddChatChannelInputBoundary;
+import use_case.add_chat_channel.AddChatChannelInputData;
+
+/**
+ * Controller for adding chat channel use case.
+ */
 public class AddChatChannelController {
     private final AddChatChannelInputBoundary addChatChannelInteractor;
 
@@ -13,12 +15,20 @@ public class AddChatChannelController {
         this.addChatChannelInteractor = addChatChannelInteractor;
     }
 
-    public void CreateChannel(String username, String chatName,
+    /**
+     * Calling interactor to create a new chat channel.
+     * @param username username of the person to add to the chat channel.
+     * @param chatName name of the chat channel.
+     * @param senderID id of the sender.
+     * @param receiverID id of the receiver.
+     * @throws SQLException whenever we can't access the API/database or modify the database
+     */
+    public void createChannel(String username, String chatName,
                               Integer senderID, Integer receiverID) throws SQLException {
 
-        AddChatChannelInputData request = new AddChatChannelInputData(username, chatName,
+        final AddChatChannelInputData request = new AddChatChannelInputData(username, chatName,
                 senderID, receiverID);
-        addChatChannelInteractor.CreateChannel(request);
+        addChatChannelInteractor.createChannel(request);
     }
 
 }

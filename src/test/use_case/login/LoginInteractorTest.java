@@ -1,11 +1,9 @@
 package use_case.login;
 
-import data_access.ChatChannelDataAccessObject;
 import entity.DirectChatChannel;
-import entity.Message;
 import entity.User;
-import interface_adapter.base_UI.baseUIState;
-import interface_adapter.base_UI.baseUIViewModel;
+import interface_adapter.base_UI.BaseUiState;
+import interface_adapter.base_UI.BaseUiViewModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +17,7 @@ class LoginInteractorTest {
     private FakeUserDAO userDAO;
     private FakeChatDAO chatDAO;
     private FakePresenter presenter;
-    private baseUIViewModel baseUIViewModel;
+    private BaseUiViewModel baseUIViewModel;
 
     private LoginInteractor interactor;
 
@@ -28,7 +26,7 @@ class LoginInteractorTest {
         userDAO = new FakeUserDAO();
         chatDAO = new FakeChatDAO();
         presenter = new FakePresenter();
-        baseUIViewModel = new baseUIViewModel("base");
+        baseUIViewModel = new BaseUiViewModel("base");
 
         interactor = new LoginInteractor(
                 userDAO,
@@ -61,7 +59,7 @@ class LoginInteractorTest {
         assertTrue(presenter.successCalled);
         assertEquals("john", presenter.lastUser.getUsername());
 
-        baseUIState state = baseUIViewModel.getState();
+        BaseUiState state = baseUIViewModel.getState();
         assertEquals(2, state.getChatnames().size());
         assertEquals(Arrays.asList("Chat A", "Chat B"), state.getChatnames());
     }
@@ -202,7 +200,7 @@ class LoginInteractorTest {
         }
     }
 
-    private static class FakeChatDAO implements ChatChannelDataAccessObject {
+    private static class FakeChatDAO implements LoginChatChannelDataAccessInterface {
         Map<Integer, List<String>> urlsByUser = new HashMap<>();
         Map<String, DirectChatChannel> channels = new HashMap<>();
 
@@ -215,31 +213,15 @@ class LoginInteractorTest {
         }
 
         @Override
-        public List<String> getChatURLsByUserId(int userId) throws SQLException {
+        public List<String> getChatUrlsByUserId(int userId) throws SQLException {
             if (throwOnGetURLs) throw new SQLException();
             return urlsByUser.getOrDefault(userId, new ArrayList<>());
         }
 
         @Override
-        public DirectChatChannel getDirectChatChannelByURL(String url) throws SQLException {
+        public DirectChatChannel getDirectChatChannelByUrl(String url) throws SQLException {
             if (throwOnGetChannel) throw new SQLException();
             return channels.get(url);
-        }
-
-        @Override
-        public DirectChatChannel getDirectChatChannelByID(int id) throws SQLException {
-            return null; // no-op
-        }
-
-        @Override
-        public int addChat(DirectChatChannel channel) throws SQLException {
-            // no-op
-            return 0;
-        }
-
-        @Override
-        public Message getLastMessage(String chatUrl) throws SQLException {
-            return null; // no-op
         }
     }
 }

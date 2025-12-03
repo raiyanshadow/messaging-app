@@ -1,82 +1,87 @@
 package use_case.login;
 
-import data_access.ChatChannelDataAccessObject;
-import entity.DirectChatChannel;
-import entity.User;
-import interface_adapter.base_UI.baseUIState;
-import interface_adapter.base_UI.baseUIViewModel;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import entity.DirectChatChannel;
+import entity.User;
+import interface_adapter.base_UI.BaseUiState;
+import interface_adapter.base_UI.BaseUiViewModel;
+
+/**
+ * Interactor for the login use case.
+ */
 public class LoginInteractor implements LoginInputBoundary {
     private final LoginUserDataAccessInterface userDataAccess;
-    private final ChatChannelDataAccessObject chatChannelDataAccessObject;
+    private final LoginChatChannelDataAccessInterface chatChannelDataAccessObject;
     private final LoginOutputBoundary userPresenter;
-    private baseUIViewModel baseUIViewModel;
+    private BaseUiViewModel baseUiViewModel;
+    private final String dbReadFailString;
 
     public LoginInteractor(LoginUserDataAccessInterface userDataAccess, LoginOutputBoundary userPresenter,
-                           ChatChannelDataAccessObject chatChannelDataAccessObject, baseUIViewModel baseUIViewModel) {
+                           LoginChatChannelDataAccessInterface chatChannelDataAccessObject,
+                           BaseUiViewModel baseUiViewModel) {
         this.userDataAccess = userDataAccess;
         this.userPresenter = userPresenter;
         this.chatChannelDataAccessObject = chatChannelDataAccessObject;
-        this.baseUIViewModel = baseUIViewModel;
+        this.baseUiViewModel = baseUiViewModel;
+        dbReadFailString = "DB read fail";
     }
 
     @Override
     public void logIn(LoginInputData data) {
-        String username = data.getUsername();
-        String password = data.getPassword();
+        final String username = data.getUsername();
+        final String password = data.getPassword();
 
         boolean isValid = false;
         try {
             isValid = userDataAccess.validateCredentials(username, password);
-        } catch (SQLException e) {
-            userPresenter.prepareFailureView("DB read fail");
+        }
+        catch (SQLException ex) {
+            userPresenter.prepareFailureView(dbReadFailString);
         }
 
         if (isValid) {
             User user = null;
             try {
                 user = userDataAccess.getUserFromName(username);
-            } catch (SQLException e) {
-                userPresenter.prepareFailureView("DB read fail");
+            }
+            catch (SQLException ex) {
+                userPresenter.prepareFailureView(dbReadFailString);
                 return;
             }
-
-            List<String> chatUrls;
+            final List<String> chatUrls;
             try {
-                chatUrls = chatChannelDataAccessObject.getChatURLsByUserId(user.getUserID());
-            } catch (SQLException e) {
-                userPresenter.prepareFailureView("DB read fail");
+                chatUrls = chatChannelDataAccessObject.getChatUrlsByUserId(user.getUserID());
+            }
+            catch (SQLException ex) {
+                ex.printStackTrace();
+                userPresenter.prepareFailureView(dbReadFailString);
                 return;
             }
-
-            List<DirectChatChannel> chatEntities = new ArrayList<>();
-            List<String> chatNames = new ArrayList<>();
-
-            for (String url : chatUrls) {
+            final List<DirectChatChannel> chatEntities = new ArrayList<>();
+            final List<String> chatNames = new ArrayList<>();
+            for (int i = 0; i < chatUrls.size(); i++) {
                 try {
-                    DirectChatChannel channel = chatChannelDataAccessObject.getDirectChatChannelByURL(url);
-                    chatEntities.add(channel);
-                    chatNames.add(channel.getChatName());
-                } catch (SQLException e) {
-                    userPresenter.prepareFailureView("DB read fail");
+                    chatEntities.add(chatChannelDataAccessObject.getDirectChatChannelByUrl(chatUrls.get(i)));
+                    chatNames.add(chatEntities.get(i).getChatName());
+                }
+                catch (SQLException ex) {
+                    ex.printStackTrace();
+                    userPresenter.prepareFailureView(dbReadFailString);
                     return;
                 }
             }
-
-            baseUIState state = new baseUIState();
+            final BaseUiState state = new BaseUiState();
             state.setChatnames(chatNames);
             state.setChatEntities(chatEntities);
-            baseUIViewModel.setState(state);
-            baseUIViewModel.firePropertyChange();
-
-            LoginOutputData outputData = new LoginOutputData(user);
+            baseUiViewModel.setState(state);
+            baseUiViewModel.firePropertyChange();
+            final LoginOutputData outputData = new LoginOutputData(user);
             userPresenter.prepareSuccessView(outputData);
-
-        } else {
+        }
+        else {
             userPresenter.prepareFailureView("Invalid username or password.");
         }
     }

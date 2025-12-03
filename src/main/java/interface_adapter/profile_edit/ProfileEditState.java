@@ -1,9 +1,9 @@
 package interface_adapter.profile_edit;
 
-import entity.User;
-
+/**
+ * State of the profile edit use case.
+ */
 public class ProfileEditState {
-    private Integer userId;
     private String username;
     private String password;
     private String preferredLanguage;
@@ -27,10 +27,6 @@ public class ProfileEditState {
 
     public void setPreferredLanguage(String preferredLanguage) {
         this.preferredLanguage = preferredLanguage;
-    }
-
-    public String getPreferredLanguage() {
-        return this.preferredLanguage;
     }
 
     public void setError(String error) {

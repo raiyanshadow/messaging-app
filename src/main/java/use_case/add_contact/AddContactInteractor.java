@@ -6,6 +6,9 @@ import entity.Contact;
 import entity.User;
 import session.Session;
 
+/**
+ * Interactor of the add contact use case.
+ */
 public class AddContactInteractor implements AddContactInputBoundary {
 
     private final AddContactUserDataAccessInterface userDataAccessObject;
@@ -39,6 +42,8 @@ public class AddContactInteractor implements AddContactInputBoundary {
                 break;
             }
         }
+
+        boolean sentRequest = false;
         boolean receivedRequest = false;
         for (String friendRequest: sender.getFriendRequests()) {
             System.out.println(friendRequest);
@@ -47,7 +52,7 @@ public class AddContactInteractor implements AddContactInputBoundary {
                 break;
             }
         }
-        boolean sentRequest = false;
+
         if (receiverUsername != null && userDataAccessObject.existsByName(receiverUsername)) {
             contactDataAccessObject.updateUserFriendRequests(receiver, receiver.getFriendRequests());
             for (String friendRequest : receiver.getFriendRequests()) {
@@ -69,31 +74,24 @@ public class AddContactInteractor implements AddContactInputBoundary {
 
         // receiver (user who should receive add contact request) does not exist
         else if (!userDataAccessObject.existsByName(receiverUsername)) {
-
-            // System.out.println("The user: " + receiver_username +  " u want to add does not exist");
             userPresenter.prepareFailView("The user you want to add does not exist");
         }
 
         // receiverUsername is already a contact
         else if (inContacts) {
-            // System.out.println("The user: " + receiver_username + " is already in your contacts");
             userPresenter.prepareFailView(receiverUsername + " is already a contact");
         }
 
         // sender has already sent a friend request
         else if (sentRequest) {
-            // System.out.println("You have already sent " + receiver_username + " a friend request");
             userPresenter.prepareFailView("You have already sent " + receiverUsername + " a friend request");
         }
 
         // receiver has already sent sender a friend request
         else if (receivedRequest) {
-            // System.out.println(receiver_username + " has sent you a friend request,
-            // plz go and accept to add as a contact");
-            final String msg = """
-                     has sent you a friend request, \
-                    please go and accept their friend request to add them as a contact""";
-            userPresenter.prepareFailView(receiverUsername + msg);
+            userPresenter.prepareFailView(receiverUsername
+                    + " has sent you a friend request, please go and accept their "
+                    + "friend request to add them as a contact");
         }
 
         else {

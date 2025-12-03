@@ -3,6 +3,9 @@ package entity;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A user entity for our application.
+ */
 public class User {
 
     private int userID;
@@ -14,14 +17,8 @@ public class User {
     private List<String> friendRequests;
 
     public User(int userID, String username, String password, String preferredLanguage) {
-        this.userChats = new ArrayList<String>();
+        this.userChats = new ArrayList<>();
         this.userID = userID;
-        if ("".equals(username)) {
-            throw new IllegalArgumentException("Username cannot be empty");
-        }
-        if ("".equals(password)) {
-            throw new IllegalArgumentException("Password cannot be empty");
-        }
         this.username = username;
         this.password = password;
         this.preferredLanguage = preferredLanguage;
@@ -31,6 +28,7 @@ public class User {
 
     /**
      * Adds the inputed User to the contacts of the current User.
+     * @param user The user to establish a contact with.
      */
     public void addContact(User user) {
         final Contact toAdd = new Contact(this, user);
@@ -41,6 +39,7 @@ public class User {
 
     /**
      * Removes the inputed User form the contacs of the current user.
+     * @param user the user to remove an established contact with.
      */
     public void removeContact(User user) {
         final Contact toRemove = new Contact(this, user);
@@ -61,6 +60,7 @@ public class User {
 
     /**
      * Removes Url from User chats.
+     * @param url the chats to remove for a user given the url of the chat channel.
      */
     public void removeChat(String url) {
         userChats.remove(url);
@@ -68,13 +68,10 @@ public class User {
 
     /**
      * Adds Url to User chats.
+     * @param url adds a chat url to the list of chat urls for this user.
      */
     public void addChat(String url) {
         userChats.add(url);
-    }
-
-    public List<String> returnChats() {
-        return userChats;
     }
 
     public int getUserID() {
@@ -130,6 +127,6 @@ public class User {
     }
 
     public void setFriendRequests(List<String> friendRequests) {
-        this.friendRequests = friendRequests; }
-
+        this.friendRequests = friendRequests;
+    }
 }

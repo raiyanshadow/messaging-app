@@ -2,6 +2,9 @@ package use_case.logout;
 
 import entity.User;
 
+/**
+ * Input data for the logout use case.
+ */
 public class LogoutInputData {
     private final User user;
 

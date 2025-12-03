@@ -3,7 +3,10 @@ package interface_adapter.chat_channel;
 import use_case.send_message.SendMessageOutputBoundary;
 import use_case.send_message.SendMessageOutputData;
 
-public class ChatChannelPresenter implements SendMessageOutputBoundary{
+/**
+ * Presenter for the associated use cases of chat channel.
+ */
+public class ChatChannelPresenter implements SendMessageOutputBoundary {
 
     private final MessageViewModel messageViewModel;
 
@@ -13,8 +16,8 @@ public class ChatChannelPresenter implements SendMessageOutputBoundary{
 
     @Override
     public void prepareSendMessageSuccessView(SendMessageOutputData outputData) {
-        MessageState messageState = messageViewModel.getState();
-        messageState.setChannelURL(outputData.getChannelUrl());
+        final MessageState messageState = messageViewModel.getState();
+        messageState.setChannelUrl(outputData.getChannelUrl());
         messageState.setContent(outputData.getContent());
         messageState.setSenderID(outputData.getSenderID());
         messageState.setReceiverID(outputData.getReceiverID());
@@ -24,9 +27,8 @@ public class ChatChannelPresenter implements SendMessageOutputBoundary{
 
     @Override
     public void prepareSendMessageFailView(String error) {
-        MessageState messageState = messageViewModel.getState();
+        final MessageState messageState = messageViewModel.getState();
         messageState.setError(error);
         messageViewModel.firePropertyChange();
     }
-
 }

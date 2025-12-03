@@ -2,6 +2,9 @@ package use_case.send_message;
 
 import java.sql.Timestamp;
 
+/**
+ * Output data of the send message use case.
+ */
 public class SendMessageOutputData {
     private Long messageId;
     private final Integer senderID;
@@ -24,17 +27,43 @@ public class SendMessageOutputData {
         this.timestamp = timestamp;
     }
 
-    public Long getMessageId() { return messageId; }
-    public Integer getSenderID() { return senderID; }
-    public Integer getReceiverID() { return receiverID; }
-    public String getChannelUrl() { return channelUrl; }
-    public String getContent() { return content; }
-    public Timestamp getTimestamp() { return timestamp; }
+    public Long getMessageId() {
+        return messageId;
+    }
 
-    public void setMessageId(Long messageId) { this.messageId = messageId; }
+    public Integer getSenderID() {
+        return senderID;
+    }
+
+    public Integer getReceiverID() {
+        return receiverID;
+    }
+
+    public String getChannelUrl() {
+        return channelUrl;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+
+    public void setMessageId(Long messageId) {
+        this.messageId = messageId;
+    }
+
     public void setContent(String content) {
         this.content = content;
     }
-    public void setChannelUrl(String channelUrl) { this.channelUrl = channelUrl; }
-    public void setTimestamp(Timestamp timestamp) { this.timestamp = timestamp; }
+
+    public void setChannelUrl(String channelUrl) {
+        this.channelUrl = channelUrl;
+    }
+
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
+    }
 }

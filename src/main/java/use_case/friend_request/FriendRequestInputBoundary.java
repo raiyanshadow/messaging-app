@@ -1,5 +1,8 @@
 package use_case.friend_request;
 
+/**
+ * Interface for the friend request use case's interactor.
+ */
 public interface FriendRequestInputBoundary {
     /**
      * Executes the friend request use case (accept or decline).

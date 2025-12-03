@@ -2,11 +2,14 @@ package use_case.update_chat_channel;
 
 import java.sql.SQLException;
 
+/**
+ * Interface for the update chat channel use case interactor.
+ */
 public interface UpdateChatChannelInputBoundary {
     /**
-     * Retrieves information about a given chat to update the chat on the view.
-     * @param data Input data containing a chatUrl required to update a chat
-     * @throws SQLException throws an SQLException if database cannot be connected to
+     * Updates the chat channel with the current data held in the database.
+     * @param data input data needed to update a chat channel.
+     * @throws SQLException whenever we fail to read the database.
      */
     void execute(UpdateChatChannelInputData data) throws SQLException;
 }

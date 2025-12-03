@@ -9,4 +9,10 @@ public interface ProfileEditOutputBoundary {
      * @param signupOutputData the data to present to the user
      */
     void prepareSuccessView(ProfileEditOutputData signupOutputData);
+
+    /**
+     * Called when profile edit is not successful.
+     * @param message the error message
+     */
+    void prepareFailView(String message);
 }

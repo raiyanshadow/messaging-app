@@ -126,8 +126,8 @@ class AddChatChannelInteractorTest {
 
         @Override public boolean existsByName(String username) { return false; }
         @Override
-        public User getUserFromID(int UserID) {
-            return users.stream().filter(u -> u.getUserID() == UserID).findFirst().orElse(null);
+        public User getUserFromId(int UserId) {
+            return users.stream().filter(u -> u.getUserID() == UserId).findFirst().orElse(null);
         }
         @Override public List<User> getAllUsers() { return users; }
         @Override public Integer save(User user) { return 0; }

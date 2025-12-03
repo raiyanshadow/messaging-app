@@ -50,11 +50,11 @@ public class DbContactDataAccessObject implements ContactDataAccessObject, Frien
                 if (!isFriendRequest) {
                     if (rs.getInt(userIdString) == user.getUserID()) {
                         final int contactId = rs.getInt(this.contactIdString);
-                        contacts.add(new Contact(user, userDao.getUserFromID(contactId)));
+                        contacts.add(new Contact(user, userDao.getUserFromId(contactId)));
                     }
                     else if (rs.getInt(contactIdString) == user.getUserID()) {
                         final int contactId = rs.getInt(userIdString);
-                        contacts.add(new Contact(user, userDao.getUserFromID(contactId)));
+                        contacts.add(new Contact(user, userDao.getUserFromId(contactId)));
                     }
                 }
             }
@@ -76,7 +76,7 @@ public class DbContactDataAccessObject implements ContactDataAccessObject, Frien
                 if (rs.getInt(userIdString) == user.getUserID() && !rs.getBoolean(isFriendRequestString)) {
 
                     final int contactId = rs.getInt(contactIdString);
-                    contacts.add(new Contact(user, userDao.getUserFromID(contactId)));
+                    contacts.add(new Contact(user, userDao.getUserFromId(contactId)));
 
                 }
 
@@ -90,7 +90,7 @@ public class DbContactDataAccessObject implements ContactDataAccessObject, Frien
                 else if (rs.getInt(contactIdString) == user.getUserID()
                         && !rs.getBoolean(isFriendRequestString)) {
                     final int contactId = rs.getInt(userIdString);
-                    contacts.add(new Contact(user, userDao.getUserFromID(contactId)));
+                    contacts.add(new Contact(user, userDao.getUserFromId(contactId)));
                 }
             }
         }
@@ -109,7 +109,7 @@ public class DbContactDataAccessObject implements ContactDataAccessObject, Frien
                 // the one who sent out the friend request
                 if (rs.getInt(contactIdString) == user.getUserID() && rs.getBoolean(isFriendRequestString)) {
                     final int contactId = rs.getInt(userIdString);
-                    friendRequests.add(userDao.getNameFromID(contactId));
+                    friendRequests.add(userDao.getNameFromId(contactId));
                 }
             }
         }
@@ -125,7 +125,7 @@ public class DbContactDataAccessObject implements ContactDataAccessObject, Frien
         try (PreparedStatement statement = conn.prepareStatement(acceptRequestQuery, Statement.RETURN_GENERATED_KEYS)) {
             statement.setBoolean(1, false);
 
-            statement.setInt(2, userDao.getIDFromName(accepted_username));
+            statement.setInt(2, userDao.getIdFromName(accepted_username));
 
             final int userIdPosition = 3;
             // where contact_id = accepter's user ID because the accepter was the one who got added by accepted
@@ -143,9 +143,9 @@ public class DbContactDataAccessObject implements ContactDataAccessObject, Frien
     public void deleteRequest(User accepter, String accepted_username) {
         final String deleteRequestQuery = "DELETE FROM \"contact\" WHERE user_id = ? AND contact_id = ?";
         try (PreparedStatement statement = conn.prepareStatement(deleteRequestQuery)) {
-            statement.setInt(1, userDao.getIDFromName(accepted_username));
+            statement.setInt(1, userDao.getIdFromName(accepted_username));
             // where contact_id = accepter's user ID because the accepter was the one who got added by accepted
-            statement.setInt(2, userDao.getIDFromName(accepter.getUsername()));
+            statement.setInt(2, userDao.getIdFromName(accepter.getUsername()));
             statement.executeUpdate();
 
         }

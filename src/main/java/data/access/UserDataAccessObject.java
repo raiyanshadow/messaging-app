@@ -20,11 +20,11 @@ public interface UserDataAccessObject {
 
     /**
      * Retrieves a {@code User} entity based on their unique integer ID.
-     * @param UserID The unique ID of the user.
+     * @param UserId The unique ID of the user.
      * @return The populated {@code User} entity.
      * @throws SQLException If a database access error occurs or the user is not found.
      */
-    User getUserFromID(int UserID) throws SQLException;
+    User getUserFromId(int UserId) throws SQLException;
 
     /**
      * Retrieves a list of all {@code User} entities stored in the data store.

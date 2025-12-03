@@ -159,9 +159,9 @@ class SendMessageInteractorTest {
         sessionManager.setLoggedIn(true);
 
         // Throwing DAO to trigger the catch block
-        InMemoryMessageDAO throwingDAO = new InMemoryMessageDAO() {
+        InMemoryMessageDao throwingDAO = new InMemoryMessageDao() {
             @Override
-            public <T> Long addMessage(Message<T> message) throws SQLException {
+            public <T> Long addMessage(AbstractMessage<T> message) throws SQLException {
                 throw new SQLException("Simulated DB write failure");
             }
         };

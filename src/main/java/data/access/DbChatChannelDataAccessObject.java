@@ -44,8 +44,8 @@ public class DbChatChannelDataAccessObject implements UpdateChatChannelUserDataA
             if (resultSet.next()) {
                 chatChannel = DirectChatChannelFactory.createDirectChatChannel(
                         resultSet.getString("name"),
-                        userDao.getUserFromID(resultSet.getInt("user1_id")),
-                        userDao.getUserFromID(resultSet.getInt("user2_id")),
+                        userDao.getUserFromId(resultSet.getInt("user1_id")),
+                        userDao.getUserFromId(resultSet.getInt("user2_id")),
                         resultSet.getString(this.channelUrlString),
                         messageDao.getMessagesFromChannelUrl(channelUrl)
                 );
@@ -70,8 +70,8 @@ public class DbChatChannelDataAccessObject implements UpdateChatChannelUserDataA
                 final String channelUrl = resultSet.getString(this.channelUrlString);
                 chatChannel = DirectChatChannelFactory.createDirectChatChannel(
                         resultSet.getString("name"),
-                        userDao.getUserFromID(resultSet.getInt("user1_id")),
-                        userDao.getUserFromID(resultSet.getInt("user2_id")),
+                        userDao.getUserFromId(resultSet.getInt("user1_id")),
+                        userDao.getUserFromId(resultSet.getInt("user2_id")),
                         resultSet.getString(this.channelUrlString),
                         messageDao.getMessagesFromChannelUrl(channelUrl));
                 chatChannel.setChatUrl(channelUrl);

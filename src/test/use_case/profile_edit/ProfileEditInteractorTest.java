@@ -31,7 +31,7 @@ class ProfileEditInteractorTest {
             }
 
             @Override
-            public User getUserFromID(int userId) {
+            public User getUserFromId(int userId) {
                 return user;
             }
         };
@@ -77,7 +77,7 @@ class ProfileEditInteractorTest {
             }
 
             @Override
-            public User getUserFromID(int userId) {
+            public User getUserFromId(int userId) {
                 return user;
             }
         };
@@ -123,7 +123,7 @@ class ProfileEditInteractorTest {
             }
 
             @Override
-            public User getUserFromID(int userId) {
+            public User getUserFromId(int userId) {
                 return user;
             }
         };
@@ -169,7 +169,7 @@ class ProfileEditInteractorTest {
             }
 
             @Override
-            public User getUserFromID(int userId) {
+            public User getUserFromId(int userId) {
                 return user;
             }
         };
@@ -213,7 +213,7 @@ class ProfileEditInteractorTest {
             }
 
             @Override
-            public User getUserFromID(int userId) {
+            public User getUserFromId(int userId) {
                 return user;
             }
         };
@@ -239,32 +239,34 @@ class ProfileEditInteractorTest {
     @Test
     void failDuplicate() throws Exception {
         ProfileEditInputData inputData = new ProfileEditInputData(1, "Alice", "", "");
+
         ProfileEditUserDataAccessInterface userDataAccess = new ProfileEditUserDataAccessInterface() {
-            private User user = new User(1, "username", "password", "English");
+            final private User user = new User(1, "Alice",
+                    "password", "English");
 
             @Override
             public boolean updateUsername(int userId, String username) {
-                return false;
+                return false; // simulate failure
             }
 
             @Override
-            public void updatePassword(int userId, String password) {
-            }
+            public void updatePassword(int userId, String password) {}
 
             @Override
-            public void updatePreferredLanguage(int userId, String preferredLanguage) {
-            }
+            public void updatePreferredLanguage(int userId, String preferredLanguage) {}
 
             @Override
-            public User getUserFromID(int userId) {
+            public User getUserFromId(int userId) {
                 return user;
             }
         };
-        ProfileEditOutputBoundary successPresenter = new ProfileEditOutputBoundary() {
+
+        ProfileEditOutputBoundary presenter = new ProfileEditOutputBoundary() {
             @Override
             public void prepareSuccessView(ProfileEditOutputData outputData) {
                 fail("Use case success is unexpected");
             }
+
             @Override
             public void prepareFailView(String message) {
                 assertEquals("Username already exists", message);
@@ -272,7 +274,9 @@ class ProfileEditInteractorTest {
         };
 
         SessionManager sessionManager = new SessionManager();
-        ProfileEditInputBoundary interactor = new ProfileEditInteractor(userDataAccess, successPresenter, sessionManager);
+        ProfileEditInputBoundary interactor =
+                new ProfileEditInteractor(userDataAccess, presenter, sessionManager);
+
         interactor.execute(inputData);
     }
 }

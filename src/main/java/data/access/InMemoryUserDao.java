@@ -40,7 +40,7 @@ public class InMemoryUserDao implements UserDataAccessObject, AddContactUserData
     }
 
     @Override
-    public User getUserFromID(int userID) throws SQLException {
+    public User getUserFromId(int userID) throws SQLException {
         return users.stream()
                 .filter(user -> user.getUserID() == userID)
                 .findFirst()

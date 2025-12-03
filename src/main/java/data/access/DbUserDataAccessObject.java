@@ -95,8 +95,8 @@ public class DbUserDataAccessObject implements UserDataAccessObject, AddContactU
         final String query = "INSERT INTO \"contact\" (user_id, contact_id, is_friend_request, created_at) "
                 + "VALUES (?, ?, ?, NOW())";
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setInt(1, this.getIDFromName(sender.getUsername()));
-            statement.setInt(2, this.getIDFromName(receiverUsername));
+            statement.setInt(1, this.getIdFromName(sender.getUsername()));
+            statement.setInt(2, this.getIdFromName(receiverUsername));
             final int isFriendRequestPosition = 3;
             statement.setBoolean(isFriendRequestPosition, true);
             statement.executeUpdate();
@@ -113,7 +113,7 @@ public class DbUserDataAccessObject implements UserDataAccessObject, AddContactU
      * @return A generated User entity corresponding to the user id.
      * @throws SQLException whenever we can't access the database.
      */
-    public User getUserFromID(int userId) throws SQLException {
+    public User getUserFromId(int userId) throws SQLException {
         final String query = "SELECT * FROM \"user\" WHERE id = ?";
         User user = null;
         try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -200,7 +200,7 @@ public class DbUserDataAccessObject implements UserDataAccessObject, AddContactU
      * @return The id of associated username.
      * @throws SQLException whenever we can't access the database.
      */
-    public int getIDFromName(String username) throws SQLException {
+    public int getIdFromName(String username) throws SQLException {
         final String query = "SELECT * FROM \"user\" WHERE username = ?";
         int ret = 0;
         try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -221,7 +221,7 @@ public class DbUserDataAccessObject implements UserDataAccessObject, AddContactU
      * @return The name of the associated user id.
      * @throws SQLException whenever we can't access the database.
      */
-    public String getNameFromID(int id) throws SQLException {
+    public String getNameFromId(int id) throws SQLException {
         final String query = "SELECT * FROM \"user\" WHERE id = ?";
         String username = null;
         try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -275,7 +275,7 @@ public class DbUserDataAccessObject implements UserDataAccessObject, AddContactU
 
     // Edit profile methods
     @Override
-    public void updateUsername(int userId, String newUsername) throws SQLException {
+    public boolean updateUsername(int userId, String newUsername) throws SQLException {
         System.out.println("entered updateUsername");
         final String query = "UPDATE \"user\" SET username = ? WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -287,6 +287,7 @@ public class DbUserDataAccessObject implements UserDataAccessObject, AddContactU
             ex.printStackTrace();
             throw new RuntimeException(ex);
         }
+        return false;
     }
 
     @Override

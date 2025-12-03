@@ -1,8 +1,5 @@
 package interface_adapter.profile_edit;
 
-import interface_adapter.ViewManagerModel;
-import interface_adapter.home_page.HomePageState;
-import interface_adapter.home_page.HomePageViewModel;
 import use_case.profile_edit.ProfileEditOutputBoundary;
 import use_case.profile_edit.ProfileEditOutputData;
 

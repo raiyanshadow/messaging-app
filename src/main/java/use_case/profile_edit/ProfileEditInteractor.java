@@ -28,6 +28,14 @@ public class ProfileEditInteractor implements ProfileEditInputBoundary {
         final String preferredLanguage = inputData.getPreferredLanguage();
 
         if (!username.isEmpty()) {
+            final boolean updated = userDataAccessObject.updateUsername(userId, username);
+            if (!updated) {
+                userPresenter.prepareFailView("Username already exists");
+                return;
+            }
+        }
+
+        if (!username.isEmpty()) {
             userDataAccessObject.updateUsername(userId, username);
         }
 
@@ -39,7 +47,7 @@ public class ProfileEditInteractor implements ProfileEditInputBoundary {
             userDataAccessObject.updatePreferredLanguage(userId, preferredLanguage);
         }
 
-        final User user = userDataAccessObject.getUserFromID(userId);
+        final User user = userDataAccessObject.getUserFromId(userId);
         System.out.println(user.getUsername());
         sessionManager.setMainUser(user);
         final ProfileEditOutputData outputData = new ProfileEditOutputData(user);

@@ -42,5 +42,5 @@ public interface ProfileEditUserDataAccessInterface {
      * @return The User object corresponding to the given userId.
      * @throws SQLException whenever it fails to modify the database.
      */
-    User getUserFromID(int userId) throws SQLException;
+    User getUserFromId(int userId) throws SQLException;
 }

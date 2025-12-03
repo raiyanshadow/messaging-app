@@ -41,7 +41,7 @@ public class AddChatChannelInteractor implements AddChatChannelInputBoundary {
     @Override
     public void createChannel(AddChatChannelInputData request) throws SQLException {
         final User currentUser = sessionManager.getMainUser();
-        final User toAdd = userDataAccess.getUserFromID(request.getReceiverID());
+        final User toAdd = userDataAccess.getUserFromId(request.getReceiverID());
         final List<Integer> contactIds = currentUser.getContactIds();
 
         // create response model for any new info needed for view

@@ -183,7 +183,7 @@ class BaseUiInteractorTest {
 
     static class MockUserDAO implements UserDataAccessObject {
         @Override public boolean existsByName(String username) { return false; }
-        @Override public User getUserFromID(int UserID) { return null; }
+        @Override public User getUserFromId(int UserId) { return null; }
         @Override public List<User> getAllUsers() { return null; }
         @Override public Integer save(User user) { return 0; }
         @Override public void deleteByUsername(String username) {}

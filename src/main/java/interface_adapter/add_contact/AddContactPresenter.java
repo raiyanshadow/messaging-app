@@ -4,18 +4,18 @@ import interface_adapter.ViewManagerModel;
 import use_case.add_contact.AddContactOutputBoundary;
 import use_case.add_contact.AddContactOutputData;
 
-public class AddContactPresenter implements AddContactOutputBoundary{
+/**
+ * Presenter for the add contact use case.
+ */
+public class AddContactPresenter implements AddContactOutputBoundary {
     private final AddContactViewModel addContactViewModel;
-    private final ViewManagerModel viewManagerModel;
 
-    public AddContactPresenter(AddContactViewModel addContactViewModel, ViewManagerModel viewManagerModel) {
+    public AddContactPresenter(AddContactViewModel addContactViewModel) {
         this.addContactViewModel = addContactViewModel;
-        this.viewManagerModel = viewManagerModel;
     }
 
     /**
-     * successfully sent out add contact request -> have pop up to show successfully sent out request
-     *
+     * Successfully sent out add contact request -> have pop up to show successfully sent out request.
      * @param response the data to present
      */
     @Override
@@ -27,7 +27,7 @@ public class AddContactPresenter implements AddContactOutputBoundary{
     }
 
     /**
-     * failed to send out add contact request
+     * Failed to send out add contact request.
      * @param errorMessage the error message to display when failed to add contact
      */
     @Override

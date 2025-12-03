@@ -1,5 +1,8 @@
 package use_case.send_message;
 
+/**
+ * Input data of the send message use case.
+ */
 public class SendMessageInputData {
     private String message;
     private String channelUrl;
@@ -15,12 +18,19 @@ public class SendMessageInputData {
         return message;
     }
 
-    public void setMessage(String message) { this.message = message; }
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-    public String getChannelUrl() { return channelUrl; }
+    public String getChannelUrl() {
+        return channelUrl;
+    }
 
-    public void setChannelUrl(String channelUrl) { this.channelUrl = channelUrl; }
+    public void setChannelUrl(String channelUrl) {
+        this.channelUrl = channelUrl;
+    }
 
-    public Integer getReceiverID() { return receiverID; }
-
+    public Integer getReceiverID() {
+        return receiverID;
+    }
 }

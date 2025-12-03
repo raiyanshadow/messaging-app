@@ -1,10 +1,13 @@
 package use_case.delete_message;
 
-import sendbirdapi.MessageDeleter;
-import io.github.cdimascio.dotenv.Dotenv;
-
 import java.sql.SQLException;
 
+import io.github.cdimascio.dotenv.Dotenv;
+import sendbirdapi.MessageDeleter;
+
+/**
+ * Interactor for the delete message use case.
+ */
 public class DeleteMessageInteractor implements DeleteMessageInputBoundary {
     private final DeleteMessageOutputBoundary presenter;
     private final DeleteMessageDataAccessInterface messageDataAccessObject;
@@ -24,9 +27,10 @@ public class DeleteMessageInteractor implements DeleteMessageInputBoundary {
 
     @Override
     public void execute(DeleteMessageInputData deleteMessageInputData) {
-        String status = messageDeleter.deleteMessage(dotenv.get("MSG_TOKEN"), deleteMessageInputData.getMessageId(),
+        final String status = messageDeleter.deleteMessage(dotenv.get("MSG_TOKEN"),
+                deleteMessageInputData.getMessageId(),
                 deleteMessageInputData.getChannelUrl());
-        if (status.equals("fail")) {
+        if ("fail".equals(status)) {
             presenter.prepareDeleteMessageFailView("Sendbird write fail");
             return;
         }
@@ -34,12 +38,13 @@ public class DeleteMessageInteractor implements DeleteMessageInputBoundary {
         try {
             messageDataAccessObject.deleteMessage(deleteMessageInputData.getMessageId(),
                     deleteMessageInputData.getChannelUrl());
-        } catch (SQLException e) {
+        }
+        catch (SQLException ex) {
             presenter.prepareDeleteMessageFailView("DB write fail");
             return;
         }
 
-        DeleteMessageOutputData response = new DeleteMessageOutputData(
+        final DeleteMessageOutputData response = new DeleteMessageOutputData(
                 deleteMessageInputData.getMessageId()
         );
 

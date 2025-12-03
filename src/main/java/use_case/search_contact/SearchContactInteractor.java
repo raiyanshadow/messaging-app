@@ -1,11 +1,14 @@
 package use_case.search_contact;
 
-import entity.User;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import entity.User;
+
+/**
+ * Interactor for search contact use case.
+ */
 public class SearchContactInteractor implements SearchContactInputBoundary {
     private final SearchContactUserDataAccessInterface userDataAccessObject;
     private final SearchContactOutputBoundary userPresenter;
@@ -23,18 +26,17 @@ public class SearchContactInteractor implements SearchContactInputBoundary {
             return;
         }
 
-        List<User> users = userDataAccessObject.searchUsers(inputData.getQuery());
+        final List<User> users = userDataAccessObject.searchUsers(inputData.getQuery());
 
         if (users.isEmpty()) {
             userPresenter.prepareFailView("No users found.");
         }
         else {
-            List<String> matchingUsernames = new ArrayList<>();
-            for  (User user : users) {
+            final List<String> matchingUsernames = new ArrayList<>();
+            for (User user : users) {
                 matchingUsernames.add(user.getUsername());
-                // System.out.println(user.getUsername());
             }
-            SearchContactOutputData outputData = new SearchContactOutputData(matchingUsernames, false);
+            final SearchContactOutputData outputData = new SearchContactOutputData(matchingUsernames, false);
             userPresenter.prepareSuccessView(outputData);
         }
     }

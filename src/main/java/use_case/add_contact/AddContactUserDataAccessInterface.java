@@ -1,29 +1,34 @@
 package use_case.add_contact;
 
-import entity.User;
-
 import java.sql.SQLException;
 
+import entity.User;
+
+/**
+ * The user data access interface for the methods needed by the add contact use case's interactor.
+ */
 public interface AddContactUserDataAccessInterface {
 
     /**
-     *
+     * Check if username exists in the database.
      * @param username the username who we want to add to our contacts
      * @return true if the given user exists; meaning it is possible to add to contacts
+     * @throws SQLException whenever we can't access the database.
      */
     boolean existsByName(String username) throws SQLException;
 
     /**
-     * sender send a contact request to receiver
+     * Sender send a contact request to receiver.
      * @param sender the user who wants to add a contact (sends out add contact request)
      * @param receiver_username the user to be added (receives add contact request)
      */
     void sendRequest(User sender, String receiver_username);
 
     /**
-     * get the user of the given username
+     * Get the user of the given username.
      * @param username the username of the user we want to get
      * @return the user of the corresponding username
+     * @throws SQLException whenever we can't access the database.
      */
     User getUserFromName(String username) throws SQLException;
 }

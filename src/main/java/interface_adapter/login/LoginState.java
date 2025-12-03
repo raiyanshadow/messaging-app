@@ -1,14 +1,15 @@
 package interface_adapter.login;
 
-import entity.User;
-
+/**
+ * State for the login use case.
+ */
 public class LoginState {
     private String username;
     private String password;
     private String errorMessage;
     private boolean isSuccessful;
 
-    public LoginState(){
+    public LoginState() {
         this.password = "";
         this.username = "";
         this.errorMessage = null;

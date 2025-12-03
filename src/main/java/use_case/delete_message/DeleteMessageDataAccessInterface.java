@@ -2,6 +2,9 @@ package use_case.delete_message;
 
 import java.sql.SQLException;
 
+/**
+ * The data access interface for the delete message use case's interactor.
+ */
 public interface DeleteMessageDataAccessInterface {
     /**
      * Permanently deletes a message record from the database.

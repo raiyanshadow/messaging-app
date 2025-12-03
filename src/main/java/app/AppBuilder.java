@@ -1,15 +1,19 @@
 package app;
 
-import sendbirdapi.*;
-import data_access.*;
-import interface_adapter.profile_edit.ProfileEditController;
-import interface_adapter.profile_edit.ProfileEditPresenter;
-import interface_adapter.profile_edit.ProfileEditViewModel;
-import interface_adapter.search_contact.SearchContactController;
-import interface_adapter.search_contact.SearchContactPresenter;
-import interface_adapter.update_chat_channel.UpdateChatChannelController;
-import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
+
 import org.sendbird.client.ApiClient;
+import org.sendbird.client.Configuration;
+
+import data.access.DbChatChannelDataAccessObject;
+import data.access.DbContactDataAccessObject;
+import data.access.DbMessageDataAccessObject;
+import data.access.DbUserDataAccessObject;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.add_chat_channel.AddChatChannelController;
 import interface_adapter.add_chat_channel.AddChatChannelPresenter;
@@ -17,9 +21,9 @@ import interface_adapter.add_chat_channel.AddChatChannelViewModel;
 import interface_adapter.add_contact.AddContactController;
 import interface_adapter.add_contact.AddContactPresenter;
 import interface_adapter.add_contact.AddContactViewModel;
-import interface_adapter.base_UI.baseUIController;
-import interface_adapter.base_UI.baseUIPresenter;
-import interface_adapter.base_UI.baseUIViewModel;
+import interface_adapter.base_UI.BaseUiController;
+import interface_adapter.base_UI.BaseUiPresenter;
+import interface_adapter.base_UI.BaseUiViewModel;
 import interface_adapter.chat_channel.ChatChannelPresenter;
 import interface_adapter.chat_channel.ChatChannelViewModel;
 import interface_adapter.chat_channel.MessageViewModel;
@@ -33,12 +37,21 @@ import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.logout.LogoutViewModel;
+import interface_adapter.profile_edit.ProfileEditController;
+import interface_adapter.profile_edit.ProfileEditPresenter;
+import interface_adapter.profile_edit.ProfileEditViewModel;
+import interface_adapter.search_contact.SearchContactController;
+import interface_adapter.search_contact.SearchContactPresenter;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
+import interface_adapter.update_chat_channel.UpdateChatChannelController;
+import interface_adapter.update_chat_channel.UpdateChatChannelPresenter;
 import interface_adapter.update_chat_channel.UpdateChatChannelViewModel;
 import io.github.cdimascio.dotenv.Dotenv;
-import org.sendbird.client.Configuration;
+import sendbirdapi.ChannelCreator;
+import sendbirdapi.MessageSender;
+import sendbirdapi.SendbirdUserCreator;
 import session.SessionManager;
 import use_case.add_chat_channel.AddChatChannelInputBoundary;
 import use_case.add_chat_channel.AddChatChannelInteractor;
@@ -46,8 +59,8 @@ import use_case.add_chat_channel.AddChatChannelOutputBoundary;
 import use_case.add_contact.AddContactInputBoundary;
 import use_case.add_contact.AddContactInteractor;
 import use_case.add_contact.AddContactOutputBoundary;
-import use_case.baseUI.BaseUIInteractor;
-import use_case.baseUI.BaseUIOutputBoundary;
+import use_case.baseUI.BaseUiInteractor;
+import use_case.baseUI.BaseUiOutputBoundary;
 import use_case.friend_request.FriendRequestInputBoundary;
 import use_case.friend_request.FriendRequestInteractor;
 import use_case.friend_request.FriendRequestOutputBoundary;
@@ -72,15 +85,20 @@ import use_case.signup.SignupOutputBoundary;
 import use_case.update_chat_channel.UpdateChatChannelInputBoundary;
 import use_case.update_chat_channel.UpdateChatChannelInteractor;
 import use_case.update_chat_channel.UpdateChatChannelOutputBoundary;
-import view.*;
+import view.AddContactView;
+import view.BaseUiView;
+import view.CreateChatView;
+import view.FriendRequestView;
+import view.LoginView;
+import view.ProfileEditView;
+import view.SignupView;
+import view.ViewManager;
 
-import javax.swing.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
+/**
+ * Builder for creating the application software.
+ */
 public class AppBuilder {
-    final ViewManagerModel viewManagerModel = new ViewManagerModel();
+    private final ViewManagerModel viewManagerModel = new ViewManagerModel();
     private ViewManager viewManager = new ViewManager(viewManagerModel);
 
     private final Dotenv dotenv = Dotenv.configure()
@@ -88,22 +106,22 @@ public class AppBuilder {
             .filename("env")
             .load();
 
-    Connection connection = DriverManager.getConnection(dotenv.get("DB_URL"),
+    private final Connection connection = DriverManager.getConnection(dotenv.get("DB_URL"),
             dotenv.get("DB_USER"), dotenv.get("DB_PASSWORD"));
 
-    final DBChatChannelDataAccessObject chatChannelDataAccessObject = new DBChatChannelDataAccessObject(connection);
-    final DBContactDataAccessObject contactDataAccessObject = new DBContactDataAccessObject(connection);
-    final DBMessageDataAccessObject messageDataAccessObject = new DBMessageDataAccessObject(connection);
-    final DBUserDataAccessObject userDataAccessObject = new DBUserDataAccessObject(connection);
-    final InMemoryChatDAO inMemoryChatDAO = new InMemoryChatDAO();
+    private final DbChatChannelDataAccessObject chatChannelDataAccessObject = new
+            DbChatChannelDataAccessObject(connection);
+    private final DbContactDataAccessObject contactDataAccessObject = new DbContactDataAccessObject(connection);
+    private final DbMessageDataAccessObject messageDataAccessObject = new DbMessageDataAccessObject(connection);
+    private final DbUserDataAccessObject userDataAccessObject = new DbUserDataAccessObject(connection);
 
     private SessionManager sessionManager = new SessionManager();
     private SignupView signupView;
     private SignupViewModel signupViewModel;
     private LoginView loginView;
     private LoginViewModel loginViewModel;
-    private BaseUIView baseUIView;
-    private baseUIViewModel baseUIViewModel;
+    private BaseUiView baseUiView;
+    private BaseUiViewModel baseUiViewModel;
     private ChatChannelViewModel chatChannelViewModel;
     private FriendRequestView friendRequestView;
     private FriendRequestViewModel friendRequestViewModel;
@@ -114,29 +132,26 @@ public class AppBuilder {
     private AddChatChannelViewModel addChatChannelViewModel;
     private AddContactView addContactView;
     private AddContactViewModel addContactViewModel;
-    private LogoutView logoutView;
     private LogoutViewModel logoutViewModel;
     private MessageViewModel messageViewModel;
 
-    private BaseUIOutputBoundary baseUIPresenter;
-    private BaseUIInteractor baseUIInteractor;
-    private baseUIController baseUIController;
+    private BaseUiOutputBoundary baseUiPresenter;
+    private BaseUiController baseUiController;
 
-    private AddChatChannelOutputBoundary addChatChannelPresenter;
-    private AddChatChannelInteractor addChatChannelInteractor;
-    private AddChatChannelController addChatChannelController;
-
-    ApiClient defaultClient = Configuration.getDefaultApiClient().setBasePath(
+    private final ApiClient defaultClient = Configuration.getDefaultApiClient().setBasePath(
             "https://api-" + dotenv.get("MSG_APP_ID") + ".sendbird.com"
     );
-    private ChannelCreator channelCreator = new ChannelCreator(defaultClient);
-    private MessageSender messageSender = new MessageSender(defaultClient);
-    private MessageEditor messageEditor;
-    private MessageDeleter messageDeleter;
+    private final ChannelCreator channelCreator = new ChannelCreator(defaultClient);
+    private final MessageSender messageSender = new MessageSender(defaultClient);
 
     public AppBuilder() throws SQLException {
+        // Needed to throw the SQL exception.
     }
 
+    /**
+     * Main method to build the final app.
+     * @return A JFrame that contains the application.
+     */
     public JFrame build() {
         final JFrame application = new JFrame("Messaging App");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -146,24 +161,29 @@ public class AppBuilder {
         return application;
     }
 
+    /**
+     * Builds the pre login views.
+     * @return An AppBuilder instance with all pre login views with their respective interactors.
+     */
     public AppBuilder buildPreLogin() {
         signupViewModel = new SignupViewModel();
         loginViewModel = new LoginViewModel();
-        baseUIViewModel = new baseUIViewModel("baseUIView");
+        baseUiViewModel = new BaseUiViewModel("baseUIView");
 
-        SendbirdUserCreator sendbirdUserCreator = new SendbirdUserCreator(dotenv.get("MSG_APP_ID"));
+        final SendbirdUserCreator sendbirdUserCreator = new SendbirdUserCreator(dotenv.get("MSG_APP_ID"));
 
-        SignupOutputBoundary signupPresenter = new SignupPresenter(viewManagerModel, signupViewModel, loginViewModel);
-        LoginOutputBoundary loginPresenter = new LoginPresenter(viewManagerModel, loginViewModel,
-                signupViewModel, baseUIViewModel, sessionManager, this);
+        final SignupOutputBoundary signupPresenter = new SignupPresenter(viewManagerModel, signupViewModel,
+                loginViewModel);
+        final LoginOutputBoundary loginPresenter = new LoginPresenter(viewManagerModel, loginViewModel,
+                signupViewModel, baseUiViewModel, sessionManager, this);
 
-        SignupInputBoundary signupInteractor = new SignupInteractor(userDataAccessObject, signupPresenter,
+        final SignupInputBoundary signupInteractor = new SignupInteractor(userDataAccessObject, signupPresenter,
                 sendbirdUserCreator);
-        LoginInputBoundary loginInteractor = new LoginInteractor(userDataAccessObject, loginPresenter,
-                chatChannelDataAccessObject, baseUIViewModel);
+        final LoginInputBoundary loginInteractor = new LoginInteractor(userDataAccessObject, loginPresenter,
+                chatChannelDataAccessObject, baseUiViewModel);
 
-        SignupController signupController = new SignupController(signupInteractor);
-        LoginController loginController = new LoginController(loginInteractor);
+        final SignupController signupController = new SignupController(signupInteractor);
+        final LoginController loginController = new LoginController(loginInteractor);
 
         signupView = new SignupView(signupViewModel);
         loginView = new LoginView(loginViewModel);
@@ -172,7 +192,7 @@ public class AppBuilder {
         loginView.setLoginController(loginController);
 
         viewManager.addView(signupView, signupView.getViewName());
-        viewManager.addView(loginView,  loginView.getViewName());
+        viewManager.addView(loginView, loginView.getViewName());
 
         viewManagerModel.setState(signupView.getViewName());
         viewManagerModel.firePropertyChange();
@@ -180,6 +200,10 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Builds all views after user has logged in.
+     * @return An AppBuilder instance with all views after user has logged in, with their respective interactors.
+     */
     public AppBuilder buildPostLogin() {
         System.out.println("SESSION USER = " + sessionManager.getMainUser().getUserID());
         addChatChannelViewModel = new AddChatChannelViewModel("addChatChannelView");
@@ -190,67 +214,71 @@ public class AppBuilder {
         friendRequestViewModel = new FriendRequestViewModel();
         logoutViewModel = new LogoutViewModel();
         profileEditViewModel = new ProfileEditViewModel();
-        AddChatChannelOutputBoundary addChatChannelPresenter = new AddChatChannelPresenter(chatChannelViewModel,
-                addChatChannelViewModel, viewManagerModel);
-        AddContactOutputBoundary addContactPresenter = new AddContactPresenter(addContactViewModel, viewManagerModel);
-        baseUIPresenter = new baseUIPresenter(baseUIViewModel, viewManagerModel, addChatChannelViewModel,
+        final AddChatChannelOutputBoundary addChatChannelPresenter = new AddChatChannelPresenter(
+                addChatChannelViewModel);
+        final AddContactOutputBoundary addContactPresenter = new AddContactPresenter(addContactViewModel);
+        baseUiPresenter = new BaseUiPresenter(baseUiViewModel, viewManagerModel, addChatChannelViewModel,
                 friendRequestViewModel, addContactViewModel, profileEditViewModel);
-        FriendRequestOutputBoundary friendRequestPresenter = new FriendRequestPresenter(friendRequestViewModel,
-                viewManagerModel, baseUIViewModel, sessionManager);
-        LogoutOutputBoundary logoutPresenter = new LogoutPresenter(logoutViewModel, viewManagerModel, loginViewModel,
-                sessionManager, this);
-        UpdateChatChannelOutputBoundary updatePresenter = new UpdateChatChannelPresenter(updateChatChannelViewModel,
-                sessionManager);
-        SendMessageOutputBoundary sendMessagePresenter = new ChatChannelPresenter(messageViewModel);
-        ProfileEditOutputBoundary profileEditPresenter = new ProfileEditPresenter(profileEditViewModel);
-        SearchContactOutputBoundary searchContactPresenter = new SearchContactPresenter(addContactViewModel, viewManagerModel);
+        final FriendRequestOutputBoundary friendRequestPresenter = new FriendRequestPresenter(friendRequestViewModel,
+                baseUiViewModel, sessionManager);
+        final LogoutOutputBoundary logoutPresenter = new LogoutPresenter(logoutViewModel, viewManagerModel,
+                loginViewModel, sessionManager, this);
+        final UpdateChatChannelOutputBoundary updatePresenter = new UpdateChatChannelPresenter(
+                updateChatChannelViewModel, sessionManager);
+        final SendMessageOutputBoundary sendMessagePresenter = new ChatChannelPresenter(messageViewModel);
+        final ProfileEditOutputBoundary profileEditPresenter = new ProfileEditPresenter(profileEditViewModel);
+        final SearchContactOutputBoundary searchContactPresenter = new SearchContactPresenter(addContactViewModel,
+                viewManagerModel);
 
-        AddChatChannelInputBoundary addChatChannelInteractor = new AddChatChannelInteractor(
+        final AddChatChannelInputBoundary addChatChannelInteractor = new AddChatChannelInteractor(
                 addChatChannelPresenter, chatChannelDataAccessObject, userDataAccessObject, sessionManager,
                 channelCreator
         );
-        AddContactInputBoundary addContactInteractor = new AddContactInteractor(
+        final AddContactInputBoundary addContactInteractor = new AddContactInteractor(
                 userDataAccessObject, contactDataAccessObject, addContactPresenter, sessionManager
         );
-        FriendRequestInputBoundary friendRequestInteractor = new FriendRequestInteractor(
+        final FriendRequestInputBoundary friendRequestInteractor = new FriendRequestInteractor(
                 contactDataAccessObject, friendRequestPresenter, sessionManager
         );
-        LogoutInputBoundary logoutInteractor = new LogoutInteractor(logoutPresenter);
-        UpdateChatChannelInputBoundary updateInteractor = new UpdateChatChannelInteractor(chatChannelDataAccessObject,
-                updatePresenter);
-        SendMessageInputBoundary sendInteractor = new SendMessageInteractor(sendMessagePresenter,
+        final LogoutInputBoundary logoutInteractor = new LogoutInteractor(logoutPresenter);
+        final UpdateChatChannelInputBoundary updateInteractor = new UpdateChatChannelInteractor(
+                chatChannelDataAccessObject, updatePresenter);
+        final SendMessageInputBoundary sendInteractor = new SendMessageInteractor(sendMessagePresenter,
                 messageDataAccessObject, sessionManager, messageSender);
-        ProfileEditInputBoundary profileEditInteractor = new ProfileEditInteractor(userDataAccessObject,
+        final ProfileEditInputBoundary profileEditInteractor = new ProfileEditInteractor(userDataAccessObject,
                 profileEditPresenter, sessionManager);
-        BaseUIInteractor baseUIInteractor = new BaseUIInteractor(baseUIPresenter, chatChannelDataAccessObject,
-                userDataAccessObject, sessionManager, contactDataAccessObject);
-        SearchContactInputBoundary searchContactInteractor = new SearchContactInteractor(userDataAccessObject, searchContactPresenter );
+        final BaseUiInteractor baseUiInteractor = new BaseUiInteractor(baseUiPresenter, chatChannelDataAccessObject,
+                sessionManager, contactDataAccessObject);
+        final SearchContactInputBoundary searchContactInteractor = new SearchContactInteractor(userDataAccessObject,
+                searchContactPresenter);
 
-        AddChatChannelController addChatChannelController = new AddChatChannelController(addChatChannelInteractor);
-        AddContactController addContactController = new AddContactController(addContactInteractor);
-        FriendRequestController friendRequestController = new FriendRequestController(friendRequestInteractor);
-        LogoutController logoutController = new LogoutController(logoutInteractor);
-        UpdateChatChannelController updateChatChannelController = new UpdateChatChannelController(updateInteractor);
-        ProfileEditController profileEditController = new ProfileEditController(profileEditInteractor);
-        SendMessageController sendMessageController = new SendMessageController(sendInteractor);
-        SearchContactController searchContactController = new SearchContactController(searchContactInteractor);
-        baseUIController = new baseUIController(baseUIInteractor);
+        final AddChatChannelController addChatChannelController =
+                new AddChatChannelController(addChatChannelInteractor);
+        final AddContactController addContactController = new AddContactController(addContactInteractor);
+        final FriendRequestController friendRequestController = new FriendRequestController(friendRequestInteractor);
+        final LogoutController logoutController = new LogoutController(logoutInteractor);
+        final UpdateChatChannelController updateChatChannelController =
+                new UpdateChatChannelController(updateInteractor);
+        final ProfileEditController profileEditController = new ProfileEditController(profileEditInteractor);
+        final SendMessageController sendMessageController = new SendMessageController(sendInteractor);
+        final SearchContactController searchContactController = new SearchContactController(searchContactInteractor);
+        baseUiController = new BaseUiController(baseUiInteractor);
 
         createChatView = new CreateChatView(sessionManager, addChatChannelController,
-                baseUIViewModel, baseUIController, addChatChannelViewModel);
-        addContactView = new AddContactView(addContactViewModel, baseUIController);
-        profileEditView = new ProfileEditView(profileEditViewModel, baseUIController, sessionManager);
+                baseUiController, addChatChannelViewModel);
+        addContactView = new AddContactView(addContactViewModel, baseUiController);
+        profileEditView = new ProfileEditView(profileEditViewModel, baseUiController, sessionManager);
 
         try {
-            baseUIView = new BaseUIView(baseUIViewModel, baseUIController, updateChatChannelViewModel,
+            baseUiView = new BaseUiView(baseUiViewModel, baseUiController, updateChatChannelViewModel,
                     chatChannelViewModel, viewManagerModel, sessionManager, viewManager,
                     sendMessageController, updateChatChannelController, logoutController);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        }
+        catch (SQLException ex) {
+            ex.printStackTrace();
         }
         friendRequestView = new FriendRequestView(friendRequestViewModel, sessionManager,
-                baseUIController);
-        logoutView = new LogoutView();
+                baseUiController);
 
         createChatView.setAddChatChannelController(addChatChannelController);
         addContactView.setAddContactController(addContactController);
@@ -262,22 +290,26 @@ public class AppBuilder {
         viewManager.addView(addContactView, addContactViewModel.getViewName());
         viewManager.addView(friendRequestView, friendRequestViewModel.getViewName());
         viewManager.addView(profileEditView, profileEditViewModel.getViewName());
-        viewManager.addView(baseUIView, baseUIViewModel.getViewName());
+        viewManager.addView(baseUiView, baseUiViewModel.getViewName());
 
         // run displayUI off-EDT or in SwingWorker; simple immediate call (acceptable if light)
         try {
-            baseUIController.displayUI(); // triggers BaseUIInteractor -> presenter -> model.firePropertyChange()
-            viewManagerModel.setState(baseUIViewModel.getViewName());
+            baseUiController.displayUi();
+            viewManagerModel.setState(baseUiViewModel.getViewName());
             viewManagerModel.firePropertyChange();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        }
+        catch (SQLException ex) {
+            ex.printStackTrace();
         }
 
         return this;
     }
 
+    /**
+     * Destroys all views once user has logged out.
+     */
     public void destroyPostLogin() {
-        viewManager.remove(baseUIView);
+        viewManager.remove(baseUiView);
         viewManager.remove(friendRequestView);
         viewManager.remove(addContactView);
         viewManager.remove(createChatView);

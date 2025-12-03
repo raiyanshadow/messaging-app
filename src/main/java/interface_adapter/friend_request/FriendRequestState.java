@@ -1,5 +1,8 @@
 package interface_adapter.friend_request;
 
+/**
+ * State of the friend request use case.
+ */
 public class FriendRequestState {
     private String friendRequestError;
     private String acceptedUsername;

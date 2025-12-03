@@ -1,12 +1,16 @@
 package use_case.update_chat_channel;
 
+/**
+ * Input data of the update chat channel use case.
+ */
 public class UpdateChatChannelInputData {
-    private final String chatURL;
+    private final String chatUrl;
 
-    public UpdateChatChannelInputData(String chatURL) {
-        this.chatURL = chatURL;
+    public UpdateChatChannelInputData(String chatUrl) {
+        this.chatUrl = chatUrl;
     }
-    public String getChatURL() {
-        return chatURL;
+
+    public String getChatUrl() {
+        return chatUrl;
     }
 }

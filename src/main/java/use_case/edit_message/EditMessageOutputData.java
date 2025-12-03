@@ -2,6 +2,9 @@ package use_case.edit_message;
 
 import java.sql.Timestamp;
 
+/**
+ * Output data for the edit message use case.
+ */
 public class EditMessageOutputData {
     private Long messageId;
     private String channelUrl;
@@ -30,30 +33,39 @@ public class EditMessageOutputData {
     public Long getMessageId() {
         return messageId;
     }
+
     public void setMessageId(Long messageId) {
         this.messageId = messageId;
     }
+
     public String getChannelUrl() {
         return channelUrl;
     }
+
     public void setChannelUrl(String channelUrl) {
         this.channelUrl = channelUrl;
     }
+
     public String getNewContent() {
         return content;
     }
+
     public void setContent(String content) {
         this.content = content;
     }
+
     public Integer getSenderId() {
         return senderId;
     }
+
     public Integer getReceiverId() {
         return receiverId;
     }
+
     public Timestamp getOldTimestamp() {
         return oldTimestamp;
     }
+
     public Timestamp getNewTimestamp() {
         return newTimestamp;
     }

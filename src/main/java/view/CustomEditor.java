@@ -1,21 +1,27 @@
 package view;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class CustomEditor implements ComboBoxEditor, ActionListener{
+import javax.swing.ComboBoxEditor;
+import javax.swing.JTextField;
+
+/**
+ * Custom editor.
+ */
+public class CustomEditor implements ComboBoxEditor, ActionListener {
     private final JTextField editorComponent;
     private Object currentItem;
     private ActionListener actionListener;
 
     public CustomEditor() {
-        this.editorComponent = new JTextField(20);
+        final int textFieldColumns = 20;
+        this.editorComponent = new JTextField(textFieldColumns);
         editorComponent.setBackground(Color.WHITE);
         editorComponent.addActionListener(this);
     }
-
 
     @Override
     public Component getEditorComponent() {
@@ -26,7 +32,12 @@ public class CustomEditor implements ComboBoxEditor, ActionListener{
     public void setItem(Object anObject) {
         currentItem = anObject;
         // Display the item in the text field
-        editorComponent.setText(anObject != null ? anObject.toString() : "");
+        if (anObject != null) {
+            editorComponent.setText(anObject.toString());
+        }
+        else {
+            editorComponent.setText("");
+        }
     }
 
     @Override

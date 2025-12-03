@@ -1,12 +1,19 @@
 package session;
-import entity.User;
+
 import java.sql.SQLException;
 
+import entity.User;
+
+/**
+ * Session manager class that encapsulates the current user that is logged into the app.
+ */
 public class SessionManager implements Session {
     private User mainUser;
     private boolean isLoggedIn;
 
-    public SessionManager() {}
+    public SessionManager() {
+        // For initial construction during opening the app.
+    }
 
     public SessionManager(User mainUser, boolean isLoggedIn) throws SQLException {
         this.mainUser = mainUser;
@@ -16,6 +23,7 @@ public class SessionManager implements Session {
     public User getMainUser() {
         return mainUser;
     }
+    
     public void setMainUser(User mainUser) {
         this.mainUser = mainUser;
     }

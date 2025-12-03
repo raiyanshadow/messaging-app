@@ -1,15 +1,17 @@
 package interface_adapter.add_chat_channel;
 
-import interface_adapter.ViewModel;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import interface_adapter.ViewModel;
+
+/**
+ * View model for the add chat channel use case.
+ */
 public class AddChatChannelViewModel extends ViewModel<AddChatChannelState> {
     private String message;
     private String error;
-    private Boolean HasError;
-    public final List<ViewModelListener> listeners = new ArrayList<>();
+    private final List<ViewModelListener> listeners = new ArrayList<>();
 
     public AddChatChannelViewModel(String viewName) {
         super(viewName);
@@ -19,39 +21,53 @@ public class AddChatChannelViewModel extends ViewModel<AddChatChannelState> {
 
     @Override
     public void setState(AddChatChannelState state) {
-        super.setState(state); // Update the parent's state variable
-        firePropertyChange();  // Trigger the event using the parent's state
-    }
-
-    public boolean getHasError() {
-        return HasError;
-    }
-
-    public interface ViewModelListener {
-        void onViewModelChange(AddChatChannelViewModel viewModel);
+        super.setState(state);
+        firePropertyChange();
     }
 
     public String getMessage() {
         return message;
     }
+
+    /**
+     * Sets the message of the current view model and notifies the listener.
+     * @param message the new message to set to.
+     */
     public void setMessage(String message) {
         this.message = message;
-        NotifyListeners();
+        notifyListeners();
     }
 
     public String getError() {
         return error;
     }
 
+    /**
+     * Sets the error for the view model and notifies its listeners.
+     * @param error the error to set the view model to.
+     */
     public void setError(String error) {
         this.error = error;
-        NotifyListeners();
+        notifyListeners();
     }
 
-    public void NotifyListeners(){
-        for(ViewModelListener listener : listeners){
+    /**
+     * Notifies the listener in this observer design.
+     */
+    public void notifyListeners() {
+        for (ViewModelListener listener : listeners) {
             listener.onViewModelChange(this);
         }
     }
 
+    /**
+     * An inner interface for a view model listener for the add chat channel use case.
+     */
+    public interface ViewModelListener {
+        /**
+         * Fired when view model changes.
+         * @param viewModel the new view model it has changed to.
+         */
+        void onViewModelChange(AddChatChannelViewModel viewModel);
+    }
 }

@@ -1,5 +1,8 @@
 package use_case.delete_message;
 
+/**
+ * Output data for delete message use case.
+ */
 public class DeleteMessageOutputData {
     private final Long messageId;
 
@@ -7,5 +10,7 @@ public class DeleteMessageOutputData {
         this.messageId = messageId;
     }
 
-    public long getMessageId() { return messageId; }
+    public long getMessageId() {
+        return messageId;
+    }
 }

@@ -1,14 +1,17 @@
 package interface_adapter.search_contact;
 
-import entity.User;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import entity.User;
+
+/**
+ * State of the search contact use case.
+ */
 public class SearchContactState {
     private String query = "";
     private List<User> results = new ArrayList<>();
-    private String error = null;
+    private String error;
 
     public SearchContactState(SearchContactState copy) {
         query = copy.query;

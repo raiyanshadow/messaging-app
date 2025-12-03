@@ -1,17 +1,13 @@
 package use_case.add_chat_channel;
 
+import entity.AbstractMessage;
+import org.sendbird.client.ApiClient;
 import sendbirdapi.ChannelCreator;
-import data_access.ChatChannelDataAccessObject;
-import data_access.UserDataAccessObject;
+import data.access.UserDataAccessObject;
 import entity.DirectChatChannel;
-import entity.Message;
 import entity.User;
 import org.junit.jupiter.api.Test;
 import session.Session;
-import use_case.add_chat_channel.AddChatChannelInputData;
-import use_case.add_chat_channel.AddChatChannelInteractor;
-import use_case.add_chat_channel.AddChatChannelOutputBoundary;
-import use_case.add_chat_channel.AddChatChannelOutputData;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -46,7 +42,7 @@ class AddChatChannelInteractorTest {
         );
 
         // Act
-        interactor.CreateChannel(inputData);
+        interactor.createChannel(inputData);
 
         // Assert
         assertTrue(presenter.response.isNewChat());
@@ -85,7 +81,7 @@ class AddChatChannelInteractorTest {
         );
 
         // Act
-        interactor.CreateChannel(inputData);
+        interactor.createChannel(inputData);
 
         // Assert
         assertFalse(presenter.response.isNewChat());
@@ -97,12 +93,12 @@ class AddChatChannelInteractorTest {
     static class MockPresenter implements AddChatChannelOutputBoundary {
         AddChatChannelOutputData response;
         @Override
-        public void PresentChat(AddChatChannelOutputData response) {
+        public void presentChat(AddChatChannelOutputData response) {
             this.response = response;
         }
     }
 
-    static class MockChatDAO implements ChatChannelDataAccessObject {
+    static class MockChatDAO implements AddChatChannelDataAccessInterface {
         List<DirectChatChannel> chats = new ArrayList<>();
         // Map user ID to list of chat URLs for testing overlap
         java.util.Map<Integer, List<String>> userChatUrls = new java.util.HashMap<>();
@@ -112,20 +108,15 @@ class AddChatChannelInteractorTest {
         }
 
         @Override
-        public DirectChatChannel getDirectChatChannelByURL(String channelURL) { return null; }
-        @Override
-        public DirectChatChannel getDirectChatChannelByID(int channelID) { return null; }
-        @Override
         public int addChat(DirectChatChannel chat) {
             chats.add(chat);
             return 0;
         }
-        @Override
-        public List<String> getChatURLsByUserId(int userId) {
+
+        public List<String> getChatUrlsByUserId(int userId) {
             return userChatUrls.getOrDefault(userId, new ArrayList<>());
         }
-        @Override
-        public Message getLastMessage(String channelUrl) { return null; }
+
     }
 
     static class MockUserDAO implements UserDataAccessObject {
@@ -158,10 +149,10 @@ class AddChatChannelInteractorTest {
     }
 
     static class MockChannelCreator extends ChannelCreator {
-        public MockChannelCreator() { super(); }
+        public MockChannelCreator() { super(new ApiClient()); }
 
         @Override
-        public String SendbirdChannelCreator(String apiToken, String channelName, Integer senderId, Integer receiverId) {
+        public String sendbirdChannelCreator(String apiToken, String channelName, Integer senderId, Integer receiverId) {
             return "mock_url";
         }
     }

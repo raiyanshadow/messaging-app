@@ -1,14 +1,17 @@
 package interface_adapter.chat_channel;
 
-import use_case.send_message.SendMessageOutputBoundary;
-import use_case.edit_message.EditMessageOutputBoundary;
-import use_case.reply_message.ReplyMessageOutputBoundary;
 import use_case.delete_message.DeleteMessageOutputBoundary;
-import use_case.send_message.SendMessageOutputData;
-import use_case.edit_message.EditMessageOutputData;
-import use_case.reply_message.ReplyMessageOutputData;
 import use_case.delete_message.DeleteMessageOutputData;
+import use_case.edit_message.EditMessageOutputBoundary;
+import use_case.edit_message.EditMessageOutputData;
+import use_case.reply_message.ReplyMessageOutputBoundary;
+import use_case.reply_message.ReplyMessageOutputData;
+import use_case.send_message.SendMessageOutputBoundary;
+import use_case.send_message.SendMessageOutputData;
 
+/**
+ * Presenter for the associated use cases of chat channel.
+ */
 public class ChatChannelPresenter implements SendMessageOutputBoundary, EditMessageOutputBoundary,
                                              ReplyMessageOutputBoundary, DeleteMessageOutputBoundary {
 
@@ -20,8 +23,8 @@ public class ChatChannelPresenter implements SendMessageOutputBoundary, EditMess
 
     @Override
     public void prepareSendMessageSuccessView(SendMessageOutputData outputData) {
-        MessageState messageState = messageViewModel.getState();
-        messageState.setChannelURL(outputData.getChannelUrl());
+        final MessageState messageState = messageViewModel.getState();
+        messageState.setChannelUrl(outputData.getChannelUrl());
         messageState.setContent(outputData.getContent());
         messageState.setSenderID(outputData.getSenderID());
         messageState.setReceiverID(outputData.getReceiverID());
@@ -31,16 +34,16 @@ public class ChatChannelPresenter implements SendMessageOutputBoundary, EditMess
 
     @Override
     public void prepareSendMessageFailView(String error) {
-        MessageState messageState = messageViewModel.getState();
+        final MessageState messageState = messageViewModel.getState();
         messageState.setError(error);
         messageViewModel.firePropertyChange();
     }
 
     @Override
     public void prepareEditMessageSuccessView(EditMessageOutputData outputData) {
-        MessageState messageState = messageViewModel.getState();
+        final MessageState messageState = messageViewModel.getState();
         messageState.setContent(outputData.getNewContent());
-        messageState.setChannelURL(outputData.getChannelUrl());
+        messageState.setChannelUrl(outputData.getChannelUrl());
         messageState.setSenderID(outputData.getSenderId());
         messageState.setReceiverID(outputData.getReceiverId());
         messageState.setTimestamp(outputData.getOldTimestamp());
@@ -51,16 +54,16 @@ public class ChatChannelPresenter implements SendMessageOutputBoundary, EditMess
 
     @Override
     public void prepareEditMessageFailView(String error) {
-        MessageState messageState = messageViewModel.getState();
+        final MessageState messageState = messageViewModel.getState();
         messageState.setError(error);
         messageViewModel.firePropertyChange();
     }
 
     @Override
     public void prepareReplyMessageSuccessView(ReplyMessageOutputData outputData) {
-        MessageState messageState = messageViewModel.getState();
+        final MessageState messageState = messageViewModel.getState();
         messageState.setContent(outputData.getContent());
-        messageState.setChannelURL(outputData.getChannelUrl());
+        messageState.setChannelUrl(outputData.getChannelUrl());
         messageState.setSenderID(outputData.getSenderId());
         messageState.setReceiverID(outputData.getReceiverId());
         messageState.setTimestamp(outputData.getTimestamp());
@@ -70,16 +73,16 @@ public class ChatChannelPresenter implements SendMessageOutputBoundary, EditMess
 
     @Override
     public void prepareReplyMessageFailView(String error) {
-        MessageState messageState = messageViewModel.getState();
+        final MessageState messageState = messageViewModel.getState();
         messageState.setError(error);
         messageViewModel.firePropertyChange();
     }
 
     @Override
     public void prepareDeleteMessageSuccessView(DeleteMessageOutputData outputData) {
-        MessageState messageState = messageViewModel.getState();
+        final MessageState messageState = messageViewModel.getState();
         messageState.setContent(null);
-        messageState.setChannelURL(null);
+        messageState.setChannelUrl(null);
         messageState.setReceiverID(null);
         messageState.setSenderID(null);
         messageViewModel.firePropertyChange();
@@ -87,13 +90,8 @@ public class ChatChannelPresenter implements SendMessageOutputBoundary, EditMess
 
     @Override
     public void prepareDeleteMessageFailView(String error) {
-        MessageState messageState = messageViewModel.getState();
+        final MessageState messageState = messageViewModel.getState();
         messageState.setError(error);
-        messageViewModel.firePropertyChange();
-    }
-
-    public void prepareReturnToHome() {
-        MessageState messageState = messageViewModel.getState();
         messageViewModel.firePropertyChange();
     }
 }

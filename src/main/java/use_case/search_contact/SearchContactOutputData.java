@@ -1,9 +1,10 @@
 package use_case.search_contact;
 
-import entity.User;
-
 import java.util.List;
 
+/**
+ * Output data of the search contact use case.
+ */
 public class SearchContactOutputData {
     private final List<String> matchingUsernames;
     private final boolean useCaseFailed;

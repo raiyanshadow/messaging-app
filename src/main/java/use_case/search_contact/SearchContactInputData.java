@@ -1,5 +1,8 @@
 package use_case.search_contact;
 
+/**
+ * Input data for search contact use case.
+ */
 public class SearchContactInputData {
     private final String query;
 

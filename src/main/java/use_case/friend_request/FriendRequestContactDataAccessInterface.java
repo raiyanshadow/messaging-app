@@ -1,27 +1,31 @@
 package use_case.friend_request;
 
-import entity.Contact;
-import entity.User;
 import java.util.List;
 
+import entity.Contact;
+import entity.User;
+
+/**
+ * Data access interface for the friend request use case's interactor.
+ */
 public interface FriendRequestContactDataAccessInterface {
 
     /**
-     * Accept a friend request
+     * Accept a friend request.
      * @param accepter person who is accepting the request
      * @param acceptedUsername person who got accepted
      */
     void acceptRequest(User accepter, String acceptedUsername);
 
     /**
-     * Decline a friend request
+     * Decline a friend request.
      * @param decliner user who is declining request
      * @param acceptedUsername person whose request got declined
      */
     void deleteRequest(User decliner, String acceptedUsername);
 
     /**
-     * Fetch the updated contacts for a user
+     * Fetch the updated contacts for a user.
      * @param user the user whose contacts are needed
      * @return list of Contact objects
      */

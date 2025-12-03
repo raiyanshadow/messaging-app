@@ -1,18 +1,21 @@
 package use_case.edit_message;
 
-import entity.Message;
-import io.github.cdimascio.dotenv.Dotenv;
-import sendbirdapi.MessageEditor;
-
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+import entity.AbstractMessage;
+import io.github.cdimascio.dotenv.Dotenv;
+import sendbirdapi.MessageEditor;
+
+/**
+ * Interactor for the edit message use case.
+ */
 public class EditMessageInteractor implements EditMessageInputBoundary {
     private final EditMessageOutputBoundary presenter;
     private final EditMessageDataAccessInterface messageDataAccessObject;
     private final MessageEditor messageEditor;
 
-    private final Dotenv dotenv =  Dotenv.configure()
+    private final Dotenv dotenv = Dotenv.configure()
             .directory("./assets")
             .filename("env")
             .load();
@@ -31,30 +34,32 @@ public class EditMessageInteractor implements EditMessageInputBoundary {
         final String channelUrl = inputData.getChannelUrl();
         final Long messageId = inputData.getMessageId();
 
-        String status = messageEditor.editMessage(dotenv.get("MSG_TOKEN"), newMessage, channelUrl, messageId);
+        final String status = messageEditor.editMessage(dotenv.get("MSG_TOKEN"), newMessage, channelUrl, messageId);
 
-        if (status.equals("fail")) {
+        if ("fail".equals(status)) {
             presenter.prepareEditMessageFailView("Sendbird write fail");
             return;
         }
 
-        Timestamp oldTimestamp;
+        final Timestamp oldTimestamp;
         try {
             oldTimestamp = messageDataAccessObject.editMessage(newMessage, channelUrl, messageId);
-        } catch (SQLException e) {
+        }
+        catch (SQLException ex) {
             presenter.prepareEditMessageFailView("DB write fail");
             return;
         }
 
-        Message<String> message;
+        final AbstractMessage<String> message;
         try {
             message = messageDataAccessObject.getMessageFromID(messageId);
-        } catch (SQLException e) {
+        }
+        catch (SQLException ex) {
             presenter.prepareEditMessageFailView("DB read fail");
             return;
         }
 
-        EditMessageOutputData outputData = new EditMessageOutputData(message.getMessageID(),
+        final EditMessageOutputData outputData = new EditMessageOutputData(message.getMessageID(),
                 message.getChannelUrl(),
                 message.getContent(),
                 message.getSenderId(),
@@ -63,8 +68,5 @@ public class EditMessageInteractor implements EditMessageInputBoundary {
                 message.getTimestamp());
 
         presenter.prepareEditMessageSuccessView(outputData);
-
-
-
     }
 }

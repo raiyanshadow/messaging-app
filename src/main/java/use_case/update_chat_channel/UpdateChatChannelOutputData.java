@@ -9,10 +9,10 @@ public class UpdateChatChannelOutputData {
     private final int user1ID;
     private final int user2ID;
     private final String chatURL;
-    private final List<MessageDTO> messages;
+    private final List<MessageDto> messages;
 
     public UpdateChatChannelOutputData(String chatName, String chatURL, String user1Username, int user1ID,
-                                       String user2Username, int user2ID, List<MessageDTO> messages) {
+                                       String user2Username, int user2ID, List<MessageDto> messages) {
         this.chatName = chatName;
         this.user1Username = user1Username;
         this.user2Username = user2Username;
@@ -40,7 +40,7 @@ public class UpdateChatChannelOutputData {
     public String getChatURL() {
         return chatURL;
     }
-    public List<MessageDTO> getMessages() {
+    public List<MessageDto> getMessages() {
         return messages;
     }
 }

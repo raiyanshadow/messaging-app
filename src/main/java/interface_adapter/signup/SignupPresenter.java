@@ -20,7 +20,7 @@ public class SignupPresenter implements SignupOutputBoundary {
     private final LoginViewModel loginViewModel;
 
     /** Manager for switching between views. */
-    private final ViewManagerModel viewManagerModel;
+    private final interface_adapter.ViewManagerModel viewManagerModel;
 
     /**
      * Constructs a SignupPresenter.

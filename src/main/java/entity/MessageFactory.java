@@ -2,11 +2,14 @@ package entity;
 
 import java.sql.Timestamp;
 
+/**
+ * A factory for creating types of messages.
+ */
 public class MessageFactory {
 
     /**
-     * Returns a new Text Message Entity.
-     * @return the Text Message Entity
+     * Returns a new Text AbstractMessage Entity.
+     * @return the Text AbstractMessage Entity
      * @throws IllegalArgumentException if any input is unusable/invalid
      */
     public static TextMessage createTextMessage(Long messageID, Long parentMessageId,
@@ -27,8 +30,8 @@ public class MessageFactory {
     }
 
     /**
-     * Returns a new Text Message Entity using Message Factory.
-     * @return the Text Message Entity
+     * Returns a new Text AbstractMessage Entity using AbstractMessage Factory.
+     * @return the Text AbstractMessage Entity
      */
     public static TextMessage createTextMessage(Long messageID, String channelUrl, Integer senderId,
                                                 Integer receiverId, String status,
@@ -38,8 +41,8 @@ public class MessageFactory {
     }
 
     /**
-     * Returns a new Text Message Entity that is empty.
-     * @return the Text Message Entity
+     * Returns a new Text AbstractMessage Entity that is empty.
+     * @return the Text AbstractMessage Entity
      */
     public static TextMessage createEmptyMessage() {
         return new TextMessage(-1L, "", 0, 0, "",

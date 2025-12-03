@@ -1,26 +1,25 @@
 package interface_adapter.friend_request;
 
-
-import interface_adapter.ViewManagerModel;
-import interface_adapter.base_UI.baseUIState;
-import interface_adapter.base_UI.baseUIViewModel;
+import interface_adapter.base_UI.BaseUiState;
+import interface_adapter.base_UI.BaseUiViewModel;
 import session.SessionManager;
 import use_case.friend_request.FriendRequestOutputBoundary;
 import use_case.friend_request.FriendRequestOutputData;
 
+/**
+ * Presenter of the friend request use case.
+ */
 public class FriendRequestPresenter implements FriendRequestOutputBoundary {
     private final FriendRequestViewModel friendRequestViewModel;
-    private final ViewManagerModel viewManagerModel;
-    private final baseUIViewModel baseUIViewModel;
+    private final BaseUiViewModel baseUiViewModel;
     private final SessionManager sessionManager;
 
-    public FriendRequestPresenter(FriendRequestViewModel friendRequestViewModel, ViewManagerModel viewManagerModel, baseUIViewModel baseUIViewModel, SessionManager sessionManager) {
+    public FriendRequestPresenter(FriendRequestViewModel friendRequestViewModel, BaseUiViewModel baseUiViewModel,
+                                  SessionManager sessionManager) {
         this.friendRequestViewModel = friendRequestViewModel;
-        this.viewManagerModel = viewManagerModel;
-        this.baseUIViewModel = baseUIViewModel;
+        this.baseUiViewModel = baseUiViewModel;
         this.sessionManager = sessionManager;
     }
-
 
     @Override
     public void prepareSuccessView(FriendRequestOutputData friendRequestOutputData) {
@@ -30,13 +29,10 @@ public class FriendRequestPresenter implements FriendRequestOutputBoundary {
         friendRequestViewModel.firePropertyChange();
 
         // Use the updated contact list fetched from DAO
-        baseUIState baseState = baseUIViewModel.getState();
-        //baseState.setContacts(friendRequestOutputData.getUpdatedContactList());
+        final BaseUiState baseState = baseUiViewModel.getState();
         baseState.setContacts(sessionManager.getMainUser().getContacts());
-        baseUIViewModel.firePropertyChange("contacts_updated");
+        baseUiViewModel.firePropertyChange("contacts_updated");
     }
-
-
 
     @Override
     public void prepareFailView(String errorMessage) {
@@ -46,5 +42,4 @@ public class FriendRequestPresenter implements FriendRequestOutputBoundary {
         friendRequestViewModel.firePropertyChange();
 
     }
-
 }

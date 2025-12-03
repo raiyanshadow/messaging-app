@@ -1,5 +1,8 @@
 package use_case.profile_edit;
 
+/**
+ * Input data for profile edit use case.
+ */
 public class ProfileEditInputData {
     private final int userId;
     private final String username;
@@ -13,8 +16,19 @@ public class ProfileEditInputData {
         this.preferredLanguage = preferredLanguage;
     }
 
-    public int getUserId() { return userId; }
-    public String getUsername() { return username; }
-    public String getPassword() { return password; }
-    public String getPreferredLanguage() { return preferredLanguage; }
+    public int getUserId() {
+        return userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getPreferredLanguage() {
+        return preferredLanguage;
+    }
 }

@@ -1,5 +1,8 @@
 package use_case.friend_request;
 
+/**
+ * Input data of the friend request use case.
+ */
 public class FriendRequestInputData {
     // the username of the person who got accepted/declined
     private final String acceptedUsername;
@@ -11,6 +14,11 @@ public class FriendRequestInputData {
         this.accept = accept;
     }
 
-    String getAcceptedUsername() { return acceptedUsername; }
-    boolean getAccept() { return accept; }
+    String getAcceptedUsername() {
+        return acceptedUsername;
+    }
+
+    boolean getAccept() {
+        return accept;
+    }
 }

@@ -2,6 +2,9 @@ package entity;
 
 import java.util.Objects;
 
+/**
+ * Relationship between two User entities is identified as a Contact entity.
+ */
 public class Contact {
     private User user;
     private User contact;
@@ -32,18 +35,19 @@ public class Contact {
 
     @Override
     public boolean equals(Object o) {
+        boolean ret = false;
 
+        final Contact con;
         if (this == o) {
-            return true;
+            ret = true;
         }
-        if (!(o instanceof Contact)) {
-            return false;
+        else if (o instanceof Contact) {
+            con = (Contact) o;
+            ret = user.getUserID() == con.user.getUserID()
+                    && contact.getUserID() == con.contact.getUserID();
         }
 
-        final Contact that = (Contact) o;
-
-        return user.getUserID() == that.user.getUserID()
-                && contact.getUserID() == that.contact.getUserID();
+        return ret;
     }
 
     @Override

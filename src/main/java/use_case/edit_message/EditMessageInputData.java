@@ -1,5 +1,8 @@
 package use_case.edit_message;
 
+/**
+ * Input data for the edit message use case.
+ */
 public class EditMessageInputData {
     private final String newMessage;
     private String channelUrl;

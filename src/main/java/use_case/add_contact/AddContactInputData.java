@@ -1,6 +1,8 @@
 package use_case.add_contact;
 
-
+/**
+ * Input data of the add contact use case.
+ */
 public class AddContactInputData {
     // the username that the user inputs -> the user who will receive the friend request
     private final String receiverUsername;

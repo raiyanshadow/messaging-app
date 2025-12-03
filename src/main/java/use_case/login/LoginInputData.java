@@ -1,5 +1,8 @@
 package use_case.login;
 
+/**
+ * Input data of the login use case.
+ */
 public class LoginInputData {
     private final String username;
     private final String password;

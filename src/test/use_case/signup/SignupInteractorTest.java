@@ -1,7 +1,7 @@
 package use_case.signup;
 
-import data_access.InMemoryUserDAO;
-import data_access.UserDataAccessObject;
+import data.access.InMemoryUserDao;
+import data.access.UserDataAccessObject;
 import entity.User;
 import entity.UserFactory;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ public class SignupInteractorTest {
     // -------------------------
     @Test
     void successTest() throws SQLException {
-        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
+        InMemoryUserDao mockUserDAO = new InMemoryUserDao();
         UserFactory userFactory = new UserFactory();
 
         // Sendbird stub
@@ -67,7 +67,7 @@ public class SignupInteractorTest {
     // -------------------------
     @Test
     void failureUsernameExistsTest() throws SQLException {
-        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
+        InMemoryUserDao mockUserDAO = new InMemoryUserDao();
         UserFactory userFactory = new UserFactory();
 
         // Pre-store an existing user
@@ -109,7 +109,7 @@ public class SignupInteractorTest {
 
     @Test
     void failurePasswordsDoNotMatchTest() throws SQLException {
-        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
+        InMemoryUserDao mockUserDAO = new InMemoryUserDao();
         UserFactory userFactory = new UserFactory();
 
         SendbirdUserCreator sendbirdStub = new SendbirdUserCreator("dummyAppId") {
@@ -148,7 +148,7 @@ public class SignupInteractorTest {
 
     @Test
     void failureMissingUsernameTest() throws SQLException {
-        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
+        InMemoryUserDao mockUserDAO = new InMemoryUserDao();
         UserFactory userFactory = new UserFactory();
 
         SendbirdUserCreator sendbirdStub = new SendbirdUserCreator("dummyAppId") {
@@ -187,7 +187,7 @@ public class SignupInteractorTest {
 
     @Test
     void failureMissingPasswordTest() throws SQLException {
-        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
+        InMemoryUserDao mockUserDAO = new InMemoryUserDao();
         UserFactory userFactory = new UserFactory();
 
         SendbirdUserCreator sendbirdStub = new SendbirdUserCreator("dummyAppId") {
@@ -230,7 +230,7 @@ public class SignupInteractorTest {
 
     @Test
     void failureSendbirdNullTest() throws SQLException {
-        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
+        InMemoryUserDao mockUserDAO = new InMemoryUserDao();
 
         SignupInputData inputData = new SignupInputData(
                 "newUser", "pass123", "pass123", "English"
@@ -272,7 +272,7 @@ public class SignupInteractorTest {
     @Test
     void failureSQLExceptionTest() throws SQLException {
         // DAO that throws SQLException on save
-        UserDataAccessObject mockDAO = new InMemoryUserDAO() {
+        UserDataAccessObject mockDAO = new InMemoryUserDao() {
             @Override
             public Integer save(User user) throws SQLException {
                 throw new SQLException("DB save error");
@@ -308,7 +308,7 @@ public class SignupInteractorTest {
 
     @Test
     void failureGeneralExceptionTest() throws SQLException {
-        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
+        InMemoryUserDao mockUserDAO = new InMemoryUserDao();
 
         SignupInputData inputData = new SignupInputData(
                 "newUser", "pass123", "pass123", "English"
@@ -347,7 +347,7 @@ public class SignupInteractorTest {
 
     @Test
     void switchToLoginViewTest() throws SQLException {
-        InMemoryUserDAO mockUserDAO = new InMemoryUserDAO();
+        InMemoryUserDao mockUserDAO = new InMemoryUserDao();
 
         SendbirdUserCreator sendbirdStub = new SendbirdUserCreator("dummyAppId");
 
@@ -374,7 +374,7 @@ public class SignupInteractorTest {
     @Test
     void failureRollbackSQLExceptionTest() throws SQLException {
         // DAO that throws SQLException when deleting
-        UserDataAccessObject mockDAO = new InMemoryUserDAO() {
+        UserDataAccessObject mockDAO = new InMemoryUserDao() {
             @Override
             public Integer save(User user) throws SQLException {
                 return 1;

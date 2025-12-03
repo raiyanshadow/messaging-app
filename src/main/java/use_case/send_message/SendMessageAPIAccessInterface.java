@@ -1,9 +1,11 @@
 package use_case.send_message;
 
+/**
+ * Api access interface used by the send message use case's interactor.
+ */
 public interface SendMessageAPIAccessInterface {
-
     /**
-     * Sends a message using the Sendbird API
+     * Sends a message using the Sendbird API.
      * @param message text message to send
      * @param apiToken required for API authentication
      * @param channelUrl tells the api which channel to send the message in

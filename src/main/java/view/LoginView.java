@@ -1,64 +1,102 @@
 package view;
 
-import interface_adapter.login.LoginController;
-import interface_adapter.login.LoginState;
-import interface_adapter.login.LoginViewModel;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import interface_adapter.login.LoginController;
+import interface_adapter.login.LoginState;
+import interface_adapter.login.LoginViewModel;
+
+/**
+ * Login View.
+ */
 public class LoginView extends JPanel implements PropertyChangeListener {
     private final String viewName = "login";
     private final LoginViewModel loginViewModel;
     private final JTextField usernameInputField = new JTextField(20);
     private final JPasswordField passwordInputField = new JPasswordField(20);
-    private LoginController loginController = null;
+    private LoginController loginController;
+    private final String font = "SansSerif";
 
     public LoginView(LoginViewModel loginViewModel) {
         this.loginViewModel = loginViewModel;
         loginViewModel.addPropertyChangeListener(this);
 
-        JButton loginButton = new JButton(LoginViewModel.LOGIN_BUTTON_LABEL);
-        JButton toSignupButton = new JButton(LoginViewModel.TO_SIGNUP_BUTTON_LABEL);
+        final JButton loginButton = new JButton(LoginViewModel.LOGIN_BUTTON_LABEL);
+        final JButton toSignupButton = new JButton(LoginViewModel.TO_SIGNUP_BUTTON_LABEL);
 
+        final Color backgroundColour = new Color(245, 248, 250);
+        final int backgroundTop = 40;
+        final int backgroundLeft = 80;
+        final int backgroundBottom = 40;
+        final int backgroundRight = 80;
         this.setLayout(new BorderLayout());
-        this.setBackground(new Color(245, 248, 250));
-        this.setBorder(BorderFactory.createEmptyBorder(40, 80, 40, 80));
+        this.setBackground(backgroundColour);
+        this.setBorder(BorderFactory.createEmptyBorder(backgroundTop, backgroundLeft,
+                backgroundBottom, backgroundRight));
 
-        JLabel title = new JLabel(LoginViewModel.TITLE_LABEL, SwingConstants.CENTER);
-        title.setFont(new Font("SansSerif", Font.BOLD, 28));
+        final JLabel title = new JLabel(LoginViewModel.TITLE_LABEL, SwingConstants.CENTER);
+        final int titleFontSize = 28;
+        title.setFont(new Font(font, Font.BOLD, titleFontSize));
 
-        JPanel formPanel = new JPanel(new GridLayout(4, 1, 15, 15));
+        final Color formPanelColour = new Color(220, 220, 220);
+        final int formPanelTop = 30;
+        final int formPanelLeft = 50;
+        final int formPanelBottom = 30;
+        final int formPanelRight = 50;
+        final JPanel formPanel = new JPanel(new GridLayout(4, 1, 15, 15));
         formPanel.setBackground(Color.WHITE);
         formPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(220, 220, 220)),
-                BorderFactory.createEmptyBorder(30, 50, 30, 50)
+                BorderFactory.createLineBorder(formPanelColour),
+                BorderFactory.createEmptyBorder(formPanelTop, formPanelLeft, formPanelBottom, formPanelRight)
         ));
 
         formPanel.add(createLabelField(LoginViewModel.USERNAME_LABEL, usernameInputField));
         formPanel.add(createLabelField(LoginViewModel.PASSWORD_LABEL, passwordInputField));
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        buttonPanel.setBackground(new Color(245, 248, 250));
+        final int buttonPanelHgap = 20;
+        final int buttonPanelVgap = 10;
+        final Color buttonPanelBackgroundColour = new Color(245, 248, 250);
+        final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, buttonPanelHgap, buttonPanelVgap));
+        buttonPanel.setBackground(buttonPanelBackgroundColour);
 
-        Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
+        final int buttonFontSize = 14;
+        final Font buttonFont = new Font(font, Font.BOLD, buttonFontSize);
 
         loginButton.setFont(buttonFont);
         toSignupButton.setFont(buttonFont);
 
-        loginButton.setBackground(new Color(70, 130, 180));
+        final Color loginButtonColour = new Color(70, 130, 180);
+        final Dimension loginButtonDimension = new Dimension(120, 40);
+        loginButton.setBackground(loginButtonColour);
         loginButton.setForeground(Color.WHITE);
         loginButton.setFocusPainted(false);
-        loginButton.setPreferredSize(new Dimension(120, 40));
+        loginButton.setPreferredSize(loginButtonDimension);
 
-        toSignupButton.setBackground(new Color(240, 240, 240));
+        final Color toSignupButtonColour = new Color(240, 240, 240);
+        final Dimension toSignupButtonDimension = new Dimension(120, 40);
+        toSignupButton.setBackground(toSignupButtonColour);
         toSignupButton.setFocusPainted(false);
-        toSignupButton.setPreferredSize(new Dimension(120, 40));
+        toSignupButton.setPreferredSize(toSignupButtonDimension);
 
         buttonPanel.add(loginButton);
         buttonPanel.add(toSignupButton);
@@ -69,7 +107,7 @@ public class LoginView extends JPanel implements PropertyChangeListener {
         this.add(buttonPanel, BorderLayout.SOUTH);
 
         loginButton.addActionListener(evt -> {
-            LoginState state = loginViewModel.getState();
+            final LoginState state = loginViewModel.getState();
             try {
                 loginController.logIn(
                         state.getUsername(),
@@ -77,8 +115,9 @@ public class LoginView extends JPanel implements PropertyChangeListener {
                 );
                 this.usernameInputField.setText("");
                 this.passwordInputField.setText("");
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+            }
+            catch (SQLException ex) {
+                throw new RuntimeException(ex);
             }
         });
 
@@ -93,12 +132,15 @@ public class LoginView extends JPanel implements PropertyChangeListener {
     }
 
     private JPanel createLabelField(String labelText, JComponent inputField) {
-        JPanel panel = new JPanel(new BorderLayout());
+        final JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
-        JLabel label = new JLabel(labelText);
-        label.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        inputField.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        inputField.setPreferredSize(new Dimension(250, 30));
+        final JLabel label = new JLabel(labelText);
+        final int labelFontSize = 16;
+        final int inputFieldFontSize = 16;
+        final Dimension inputFieldDimension = new Dimension(250, 30);
+        label.setFont(new Font(this.font, Font.PLAIN, labelFontSize));
+        inputField.setFont(new Font(this.font, Font.PLAIN, inputFieldFontSize));
+        inputField.setPreferredSize(inputFieldDimension);
         panel.add(label, BorderLayout.NORTH);
         panel.add(inputField, BorderLayout.CENTER);
         return panel;
@@ -107,34 +149,50 @@ public class LoginView extends JPanel implements PropertyChangeListener {
     private void addUsernameListener() {
         usernameInputField.getDocument().addDocumentListener(new DocumentListener() {
             private void updateState() {
-                LoginState state = loginViewModel.getState();
+                final LoginState state = loginViewModel.getState();
                 state.setUsername(usernameInputField.getText());
                 loginViewModel.setState(state);
             }
 
-            @Override public void insertUpdate(DocumentEvent e) { updateState(); }
-            @Override public void removeUpdate(DocumentEvent e) { updateState(); }
-            @Override public void changedUpdate(DocumentEvent e) { updateState(); }
+            @Override public void insertUpdate(DocumentEvent e) {
+                updateState();
+            }
+
+            @Override public void removeUpdate(DocumentEvent e) {
+                updateState();
+            }
+
+            @Override public void changedUpdate(DocumentEvent e) {
+                updateState();
+            }
         });
     }
 
     private void addPasswordListener() {
         passwordInputField.getDocument().addDocumentListener(new DocumentListener() {
             private void updateState() {
-                LoginState state = loginViewModel.getState();
+                final LoginState state = loginViewModel.getState();
                 state.setPassword(new String(passwordInputField.getPassword()));
                 loginViewModel.setState(state);
             }
 
-            @Override public void insertUpdate(DocumentEvent e) { updateState(); }
-            @Override public void removeUpdate(DocumentEvent e) { updateState(); }
-            @Override public void changedUpdate(DocumentEvent e) { updateState(); }
+            @Override public void insertUpdate(DocumentEvent e) {
+                updateState();
+            }
+
+            @Override public void removeUpdate(DocumentEvent e) {
+                updateState();
+            }
+
+            @Override public void changedUpdate(DocumentEvent e) {
+                updateState();
+            }
         });
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        LoginState state = (LoginState) evt.getNewValue();
+        final LoginState state = (LoginState) evt.getNewValue();
         if (state.getErrorMessage() != null) {
             JOptionPane.showMessageDialog(this, state.getErrorMessage());
         }

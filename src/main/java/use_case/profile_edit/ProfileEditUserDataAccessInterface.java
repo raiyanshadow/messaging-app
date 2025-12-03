@@ -1,15 +1,19 @@
 package use_case.profile_edit;
 
-import entity.User;
-
 import java.sql.SQLException;
 
+import entity.User;
+
+/**
+ * The user data access interface containing methods used by the profile edit use case's interactor.
+ */
 public interface ProfileEditUserDataAccessInterface {
     /**
      * Update the username of a user in the data store.
      *
      * @param userId      The unique identifier of the user.
      * @param newUsername The new username to be set for the user.
+     * @throws SQLException whenever it fails to modify the database.
      */
     void updateUsername(int userId, String newUsername) throws SQLException;
 
@@ -18,6 +22,7 @@ public interface ProfileEditUserDataAccessInterface {
      *
      * @param userId      The unique identifier of the user.
      * @param newPassword The new password to be set for the user.
+     * @throws SQLException whenever it fails to modify the database.
      */
     void updatePassword(int userId, String newPassword) throws SQLException;
 
@@ -26,6 +31,7 @@ public interface ProfileEditUserDataAccessInterface {
      *
      * @param userId                The unique identifier of the user.
      * @param newPreferredLanguage  The new preferred language to be set for the user.
+     * @throws SQLException whenever it fails to modify the database.
      */
     void updatePreferredLanguage(int userId, String newPreferredLanguage) throws SQLException;
 
@@ -34,6 +40,7 @@ public interface ProfileEditUserDataAccessInterface {
      *
      * @param userId The unique identifier of the user.
      * @return The User object corresponding to the given userId.
+     * @throws SQLException whenever it fails to modify the database.
      */
     User getUserFromID(int userId) throws SQLException;
 }

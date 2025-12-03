@@ -58,7 +58,7 @@ public class UpdateChatChannelPresenter implements UpdateChatChannelOutputBounda
             senderUsername = outputData.getUser2Username();
             receiverUsername = outputData.getUser1Username();
         }
-        updateChatChannelState.setChatUrl(outputData.getChatURL());
+        updateChatChannelState.setChatUrl(outputData.getChatUrl());
         updateChatChannelState.setChatChannelName(outputData.getChatName());
         updateChatChannelState.setUser1Name(senderUsername);
         updateChatChannelState.setUser2Name(receiverUsername);

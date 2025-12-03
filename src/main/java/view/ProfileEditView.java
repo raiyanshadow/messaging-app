@@ -139,7 +139,7 @@ public class ProfileEditView extends JPanel implements PropertyChangeListener {
         saveChanges.addActionListener(evt -> {
             try {
                 profileEditController.editProfile(session.getMainUser().getUserID(), usernameField.getText(),
-                new String(passwordField.getPassword()), (String) languages.getSelectedItem());
+                    new String(passwordField.getPassword()), (String) languages.getSelectedItem());
                 if (profileEditViewModel.getState().getError() != null) {
                     JOptionPane.showMessageDialog(this, profileEditViewModel.getState().getError());
                 }

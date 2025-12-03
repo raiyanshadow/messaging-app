@@ -3,7 +3,8 @@ package entity;
 import java.util.List;
 
 /**
- * DirectChatChannel entity to represent a chat channel between two User entities containing a list of AbstractMessage entities.
+ * DirectChatChannel entity to represent a chat channel between two User entities containing a
+ * list of AbstractMessage entities.
  */
 public class DirectChatChannel {
     private String chatName;
@@ -12,7 +13,8 @@ public class DirectChatChannel {
     private String chatUrl;
     private List<AbstractMessage> messages;
 
-    public DirectChatChannel(String chatName, User sender, User receiver, String chatUrl, List<AbstractMessage> messages) {
+    public DirectChatChannel(String chatName, User sender, User receiver, String chatUrl,
+                             List<AbstractMessage> messages) {
         this.chatName = chatName;
         this.sender = sender;
         this.receiver = receiver;

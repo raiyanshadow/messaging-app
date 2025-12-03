@@ -17,7 +17,7 @@ public class SendMessageInteractor implements SendMessageInputBoundary {
     private final SendMessageOutputBoundary presenter;
     private final SendMessageDataAccessInterface messageDataAccessObject;
     private final Session sessionManager;
-    private final SendMessageAPIAccessInterface messageSender;
+    private final SendMessageApiAccessInterface messageSender;
     private final Dotenv dotenv = Dotenv.configure()
             .directory("./assets")
             .filename("env")
@@ -26,7 +26,7 @@ public class SendMessageInteractor implements SendMessageInputBoundary {
     public SendMessageInteractor(SendMessageOutputBoundary presenter,
                                  SendMessageDataAccessInterface messageDataAccessObject,
                                  Session sessionManager,
-                                 SendMessageAPIAccessInterface messageSender) {
+                                 SendMessageApiAccessInterface messageSender) {
         this.presenter = presenter;
         this.messageDataAccessObject = messageDataAccessObject;
         this.sessionManager = sessionManager;

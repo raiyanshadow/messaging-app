@@ -1,9 +1,9 @@
 package use_case.baseUI;
 
-import entity.DirectChatChannel;
-
 import java.sql.SQLException;
 import java.util.List;
+
+import entity.DirectChatChannel;
 
 /**
  * The chat channel data access interface containing methods needed by the base UI use case's interactor.
@@ -23,5 +23,5 @@ public interface BaseUiChatChannelDataAccessInterface {
      * @return The populated DirectChatChannel entity, or an empty DirectChatChannel
      * @throws SQLException If a database access error occurs.
      */
-    public DirectChatChannel getDirectChatChannelByUrl(String channelUrl) throws SQLException;
+    DirectChatChannel getDirectChatChannelByUrl(String channelUrl) throws SQLException;
 }

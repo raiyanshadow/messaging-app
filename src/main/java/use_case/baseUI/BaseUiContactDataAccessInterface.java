@@ -1,10 +1,9 @@
 package use_case.baseUI;
 
+import java.util.List;
+
 import entity.Contact;
 import entity.User;
-
-import java.sql.SQLException;
-import java.util.List;
 
 /**
  * The contact data access interface containing methods needed by the base UI use case's interactor.

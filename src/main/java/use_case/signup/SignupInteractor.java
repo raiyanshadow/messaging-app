@@ -1,5 +1,7 @@
 package use_case.signup;
 
+import static java.lang.System.err;
+
 import java.sql.SQLException;
 
 import org.openapitools.client.model.SendbirdUser;
@@ -8,8 +10,6 @@ import data.access.UserDataAccessObject;
 import entity.User;
 import io.github.cdimascio.dotenv.Dotenv;
 import sendbirdapi.SendbirdUserCreator;
-
-import static java.lang.System.err;
 
 /**
  * Interactor handling the signup use case, including validation,

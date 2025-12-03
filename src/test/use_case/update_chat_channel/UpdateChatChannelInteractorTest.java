@@ -40,7 +40,7 @@ public class UpdateChatChannelInteractorTest {
         UpdateChatChannelOutputBoundary successPresenter = new UpdateChatChannelOutputBoundary() {
             @Override
             public void prepareSuccessView(UpdateChatChannelOutputData chat) {
-                assertEquals(url, chat.getChatURL());
+                assertEquals(url, chat.getChatUrl());
                 assertEquals(sender.getUsername(), chat.getUser1Username());
                 assertEquals(receiver.getUsername(), chat.getUser2Username());
                 assertEquals(sender.getUserID(), chat.getUser1ID());

@@ -1,6 +1,5 @@
 package interface_adapter.add_contact;
 
-import interface_adapter.ViewManagerModel;
 import use_case.add_contact.AddContactOutputBoundary;
 import use_case.add_contact.AddContactOutputData;
 

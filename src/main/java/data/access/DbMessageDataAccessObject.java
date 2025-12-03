@@ -11,17 +11,13 @@ import java.util.List;
 
 import entity.AbstractMessage;
 import entity.MessageFactory;
-import use_case.delete_message.DeleteMessageDataAccessInterface;
-import use_case.edit_message.EditMessageDataAccessInterface;
-import use_case.reply_message.ReplyMessageDataAccessInterface;
 import use_case.send_message.SendMessageDataAccessInterface;
 
 /**
  * The data access object containing methods to extract data from the message table in our database.
  */
 public class DbMessageDataAccessObject implements MessageDataAccessObject,
-        SendMessageDataAccessInterface, ReplyMessageDataAccessInterface,
-        EditMessageDataAccessInterface, DeleteMessageDataAccessInterface {
+        SendMessageDataAccessInterface {
     private final Connection connection;
     private String timeSentString;
 

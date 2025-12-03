@@ -6,12 +6,12 @@ import org.sendbird.client.ApiClient;
 import org.sendbird.client.ApiException;
 import org.sendbird.client.api.MessageApi;
 
-import use_case.send_message.SendMessageAPIAccessInterface;
+import use_case.send_message.SendMessageApiAccessInterface;
 
 /**
  * Facade for sending a message using SendBird.
  */
-public class MessageSender implements SendMessageAPIAccessInterface {
+public class MessageSender implements SendMessageApiAccessInterface {
     private final MessageApi messageApi;
 
     public MessageSender(ApiClient defaultClient) {

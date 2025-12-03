@@ -1,9 +1,9 @@
 package use_case.add_chat_channel;
 
-import entity.DirectChatChannel;
-
 import java.sql.SQLException;
 import java.util.List;
+
+import entity.DirectChatChannel;
 
 /**
  * Interface for methods needed by the add chat channel use case's interactor in order to access/modify the database.

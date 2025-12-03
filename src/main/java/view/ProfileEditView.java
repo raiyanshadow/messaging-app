@@ -139,7 +139,10 @@ public class ProfileEditView extends JPanel implements PropertyChangeListener {
         saveChanges.addActionListener(evt -> {
             try {
                 profileEditController.editProfile(session.getMainUser().getUserID(), usernameField.getText(),
-                    new String(passwordField.getPassword()), (String) languages.getSelectedItem());
+                new String(passwordField.getPassword()), (String) languages.getSelectedItem());
+                if (profileEditViewModel.getState().getError() != null) {
+                    JOptionPane.showMessageDialog(this, profileEditViewModel.getState().getError());
+                }
             }
             catch (SQLException ex) {
                 throw new RuntimeException(ex);
@@ -149,6 +152,9 @@ public class ProfileEditView extends JPanel implements PropertyChangeListener {
         backButton.addActionListener(evt -> {
             try {
                 baseUiController.displayUi();
+                usernameField.setText("");
+                passwordField.setText("");
+                languages.setSelectedIndex(0);
             }
             catch (SQLException ex) {
                 throw new RuntimeException(ex);
@@ -165,13 +171,12 @@ public class ProfileEditView extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("state")) {
             final ProfileEditState state = (ProfileEditState) evt.getNewValue();
-            if (state.getError() != null) {
-                JOptionPane.showMessageDialog(this, state.getError());
-            }
-            else {
+            if (state.getError() == null) {
                 try {
-                    System.out.println("entered");
                     baseUiController.displayUi();
+                    usernameField.setText("");
+                    passwordField.setText("");
+                    languages.setSelectedIndex(0);
                 }
                 catch (SQLException ex) {
                     throw new RuntimeException(ex);

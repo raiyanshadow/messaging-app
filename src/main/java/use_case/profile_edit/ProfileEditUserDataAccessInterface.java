@@ -15,7 +15,7 @@ public interface ProfileEditUserDataAccessInterface {
      * @param newUsername The new username to be set for the user.
      * @throws SQLException whenever it fails to modify the database.
      */
-    void updateUsername(int userId, String newUsername) throws SQLException;
+    boolean updateUsername(int userId, String newUsername) throws SQLException;
 
     /**
      * Update the password of a user in the data store.
